@@ -1,0 +1,65 @@
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  &Wrapper {
+    padding: 1.5rem 0;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
+  }
+}
+
+.input {
+  width: 400px;
+  padding: 1rem;
+  font-size: 1.25rem;
+  background-color: color.adjust($color-light-gray, $lightness: 5%);
+  border: 3px solid $color-white;
+  border-radius: 10px;
+  transition: border-color 0.3s ease;
+  outline: none;
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+
+  @include hover {
+    background-color: $color-linen;
+    border-color: $color-mindaro;
+  }
+
+  &:focus {
+    background-color: $color-linen;
+    border-color: $color-mindaro;
+  }
+}
+
+.buttons {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  font-size: 1.13rem;
+}
+
+.button {
+  padding: 1rem 2rem;
+  font-weight: 700;
+  background-color: $color-mindaro;
+
+  @include hover {
+    background-color: color.adjust($color-mindaro, $lightness: -20%);
+  }
+
+  &:active {
+    background-color: color.adjust($color-mindaro, $lightness: -10%);
+  }
+}
+
+.delete {
+  background-color: $color-red;
+
+  @include hover {
+    background-color: color.adjust($color-red, $lightness: -20%);
+  }
+
+  &:active {
+    background-color: color.adjust($color-red, $lightness: -10%);
+  }
+}

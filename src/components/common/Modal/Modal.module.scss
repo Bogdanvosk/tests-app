@@ -1,0 +1,30 @@
+.wrapper {
+  position: fixed;
+  z-index: 5;
+  inset: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.modal {
+  position: fixed;
+  z-index: 10;
+  padding: 0 1rem;
+}
+
+.delete {
+  @include delete(15px, 30px);
+
+  @include mobile {
+    display: none;
+  }
+
+  &::before,
+  &::after {
+    @media (max-width: $xs) {
+      width: 15px;
+    }
+  }
+}

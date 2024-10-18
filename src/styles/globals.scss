@@ -1,0 +1,17 @@
+@use 'reset';
+@use 'variables' as *;
+@use 'mixins' as *;
+
+body {
+  font-family: $primary-font;
+  font-size: 1rem;
+  color: $color-rich-black;
+  scroll-behavior: smooth;
+}
+
+textarea,
+button,
+input {
+  font-family: inherit;
+  font-size: inherit;
+}

@@ -1,0 +1,52 @@
+.tabs {
+  display: flex;
+  justify-content: space-between;
+  gap: 1.88rem;
+  margin-top: 1.88rem;
+}
+
+.tab {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.63rem;
+  width: 50%;
+  padding: 1.25rem;
+  background-color: $color-gray;
+  border: 5px solid transparent;
+  border-radius: 10px;
+  transition: border-color 0.3s ease, background-color 0.3s ease,
+    transform 0.3s ease;
+  cursor: pointer;
+
+  @include hover {
+    background-color: color.adjust($color-gray, $lightness: 10%);
+    transform: translateY(-5px);
+  }
+
+  &:active {
+    background-color: color.adjust($color-gray, $lightness: -5%);
+  }
+
+  &.active {
+    border-color: $color-mindaro;
+  }
+
+  @media (max-width: $xs) {
+    padding: 0.75rem;
+  }
+}
+
+.title {
+  text-align: center;
+}
+
+.icon {
+  width: 60px;
+  height: 60px;
+
+  @media (max-width: $xs) {
+    width: 30px;
+    height: 30px;
+  }
+}

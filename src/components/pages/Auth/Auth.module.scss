@@ -1,0 +1,39 @@
+.auth {
+  height: 100vh;
+  padding: 3.13rem 0;
+  color: $color-white;
+  background-color: $color-rich-black;
+  overflow-y: auto;
+}
+
+.wrapper {
+  display: flex;
+  justify-content: space-between;
+  gap: 3.13rem;
+
+  @media (max-width: $lg) {
+    justify-content: center;
+  }
+}
+
+.image {
+  height: 100%;
+  margin-top: 6rem;
+  background-color: $color-linen;
+  border-radius: 20px;
+
+  @media (max-width: $lg) {
+    display: none;
+  }
+}
+
+.title {
+  margin-top: 3.13rem;
+  font-size: 1.56rem;
+  font-weight: 700;
+  color: $color-mindaro;
+}
+
+.form {
+  margin-top: 1.56rem;
+}

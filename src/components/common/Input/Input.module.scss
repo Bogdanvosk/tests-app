@@ -1,0 +1,94 @@
+.input {
+  width: 100%;
+  margin-top: 0.31rem;
+  padding: 1rem 1rem 1rem 3.75rem;
+  color: $color-white;
+  background-color: transparent;
+  border: 3px solid $color-white;
+  border-radius: 10px;
+  transition: border-color 0.3s ease;
+  outline: none;
+
+  &::placeholder {
+    font-family: inherit;
+    font-size: 0.88rem;
+    font-weight: 300;
+    color: $color-white;
+  }
+
+  &:focus {
+    border-color: $color-mindaro;
+  }
+
+  &Wrapper {
+    position: relative;
+  }
+}
+
+.icon {
+  position: absolute;
+  left: 20px;
+  top: 50%;
+  width: 25px;
+  height: 25px;
+  transform: translateY(-50%);
+}
+
+.error {
+  border-color: $color-red;
+
+  &Text {
+    display: block;
+    margin-top: 0.63rem;
+    color: $color-red;
+    font-size: 0.88rem;
+    transition: opacity 0.1s ease;
+
+    &::first-letter {
+      text-transform: capitalize;
+    }
+  }
+}
+
+.hidden {
+  position: absolute;
+  width: 0;
+  height: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.checkbox {
+  position: relative;
+  width: 25px;
+  height: 25px;
+  border: 3px solid $color-white;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.checkmark {
+  position: absolute;
+  left: 4px;
+  top: 4px;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.checkmark::after {
+  position: absolute;
+  width: 11px;
+  height: 11px;
+  background-color: $color-white;
+  border-radius: 1px;
+  transition: background-color 0.3s ease;
+  content: '';
+}
+
+.checkInput:checked ~ .checkmark {
+  opacity: 1;
+
+  &::after {
+    background-color: $color-mindaro;
+  }
+}
