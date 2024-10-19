@@ -44,13 +44,13 @@ const Test = () => {
           <div className={s.questions}>
             <Questions />
             <div className={s.controls}>
-              <Button
+              {/* <Button
                 className={s.button}
                 type='button'
                 onClick={onAddQuestion}
               >
                 Добавить вопрос
-              </Button>
+              </Button> */}
             </div>
           </div>
         </div>

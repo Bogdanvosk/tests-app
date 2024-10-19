@@ -10,18 +10,21 @@ import {
   selectError,
   selectUser,
 } from '../../../store/features/auth/selectors';
+import { useRouter } from 'next/router';
 
 import Button from '../Button/Button';
 import Input from '../Input/Input';
 import Label from '../Label/Label';
 
 import s from './Form.module.scss';
-import { useRouter } from 'next/router';
+import useLocalStorage from '@/hooks/useLocalStorage';
 
 const Form = ({ mode, className = '' }) => {
+  const [user, setUser] = useLocalStorage('user');
   const [isAdmin, setIsAdmin] = useState(false);
   const serverError = useSelector(selectError);
   const dispatch = useDispatch();
+  const currentUser = useSelector(selectUser);
   const router = useRouter();
 
   const methods = useForm({
@@ -37,6 +40,13 @@ const Form = ({ mode, className = '' }) => {
     methods.clearErrors();
     methods.reset();
   }, [mode]);
+
+  useEffect(() => {
+    if (currentUser !== null) {
+      setUser(currentUser);
+      router.push('/test');
+    }
+  }, [currentUser]);
 
   const handleSubmit = methods.handleSubmit((data) => {
     const signInData = { username: data.username, password: data.password };

@@ -1,7 +1,7 @@
 import Image from 'next/image';
 
 import { authTabs } from '@/content';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { selectMode } from '@/store/features/auth/selectors';
 import { useRouter } from 'next/router';
 
@@ -14,16 +14,20 @@ import Tabs from '../../common/Tabs/Tabs';
 import Form from '../../common/Form/Form';
 
 import s from './Auth.module.scss';
+import Button from '@/components/common/Button/Button';
+import { getUserAction } from '@/store/features/auth';
+import useLocalStorage from '@/hooks/useLocalStorage';
 
 const Auth = () => {
-  const mode = localStorage.getItem('mode');
+  const [mode, setMode] = useLocalStorage('mode');
   const router = useRouter();
+  const dispatch = useDispatch();
 
-  const handleSetFormMode = (mode) => {
-    if (mode === 'signUp') router.push('/sign-up');
+  const handleSetFormMode = (modeValue) => {
+    if (modeValue === 'signUp') router.push('/sign-up');
     else router.push('/sign-in');
 
-    localStorage.setItem('mode', mode);
+    setMode(modeValue);
   };
 
   return (
@@ -43,6 +47,7 @@ const Auth = () => {
           <div className={s.image}>
             <Image width={450} src={authImg} alt='Auth' />
           </div>
+          <Button onClick={() => dispatch(getUserAction())}>get user</Button>
         </div>
       </Container>
     </div>
