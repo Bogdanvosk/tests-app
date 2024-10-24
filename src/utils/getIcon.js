@@ -1,3 +1,4 @@
+import Delete from '@/components/icons/Delete';
 import Password from '../components/icons/Password';
 import Submit from '../components/icons/Submit';
 import Create from '../components/icons/Tabs/Create';
@@ -16,6 +17,8 @@ export const getIcon = (iconName) => {
       return Password;
     case 'submit':
       return Submit;
+    case 'delete':
+      return Delete;
     default:
       break;
   }

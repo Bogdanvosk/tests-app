@@ -1,11 +1,12 @@
 import { combineReducers, configureStore } from '@reduxjs/toolkit';
+import logger from 'redux-logger';
 import { all, fork } from 'redux-saga/effects';
 import createSagaMiddleware from 'redux-saga';
+
 import authSlice from './features/auth';
+import testSlice from './features/test';
 import { authSagaWatcher } from './features/auth/saga';
-import logger from 'redux-logger';
 import { testSagaWatcher } from './features/test/saga';
-import { testSlice } from './features/test';
 
 const sagaMiddleware = createSagaMiddleware();
 

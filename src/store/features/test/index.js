@@ -3,6 +3,7 @@ import { createSlice } from '@reduxjs/toolkit';
 const initialState = {
   isLoading: false,
   currentTest: null,
+  tests: [],
   error: null,
 };
 
@@ -23,6 +24,18 @@ export const testSlice = createSlice({
       state.currentTest = null;
       state.error = action.payload;
     },
+    createTestAction: (state) => {
+      state.isLoading = true;
+    },
+    createTestSuccess: (state, action) => {
+      state.isLoading = false;
+      state.tests = [...state.tests, action.payload];
+      state.error = null;
+    },
+    createTestError: (state, action) => {
+      state.isLoading = false;
+      state.error = action.payload;
+    },
   },
 });
 
@@ -32,4 +45,7 @@ export const {
   getCurrentTestAction,
   getCurrentTestSuccess,
   getCurrentTestError,
+  createTestAction,
+  createTestSuccess,
+  createTestError,
 } = testSlice.actions;

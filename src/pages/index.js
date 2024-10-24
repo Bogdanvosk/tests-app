@@ -9,9 +9,11 @@ export default function Home() {
   const [user, setUser] = useLocalStorage('user');
 
   useEffect(() => {
-    if (user !== null) router.push('/test');
-    else router.push('/sign-in');
-  }, []);
+    if (user !== null) {
+      if (user.is_admin) router.push('/test');
+      else router.push('/tests');
+    } else router.push('/sign-in');
+  }, [router, user]);
   return (
     <>
       <HeadLayout favicon='/favicon.png' title='Tests app' />

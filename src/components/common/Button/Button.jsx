@@ -29,6 +29,7 @@ export default Button;
 
 Button.propTypes = {
   children: PropTypes.node,
+  variant: PropTypes.oneOf(['default', 'tabs']),
   iconName: PropTypes.string,
   type: PropTypes.string,
   className: PropTypes.string,

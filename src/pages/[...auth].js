@@ -10,14 +10,17 @@ const Page = () => {
   const router = useRouter();
   const { query } = router;
 
-  const getModeFromUrl = () => {
-    if (query.auth) return query.auth[0] === 'sign-in' ? 'signIn' : 'signUp';
-  };
-
   useEffect(() => {
+    const getModeFromUrl = () => {
+      if (query.auth) return query.auth[0] === 'sign-in' ? 'signIn' : 'signUp';
+    };
+
     query.auth && setMode(getModeFromUrl());
-    if (user !== null) router.push('/test');
-  }, []);
+    if (user !== null) {
+      if (user.is_admin) router.push('/test');
+      else router.push('/tests');
+    }
+  }, [user]);
 
   if (
     query.auth &&

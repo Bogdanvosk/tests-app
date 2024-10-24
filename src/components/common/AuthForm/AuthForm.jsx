@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import cn from 'classnames';
 
-import { formInputs } from '../../../content';
+import { authFormInputs } from '../../../content';
 import { useEffect, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
@@ -11,15 +11,15 @@ import {
   selectUser,
 } from '../../../store/features/auth/selectors';
 import { useRouter } from 'next/router';
-
-import Button from '../Button/Button';
-import Input from '../Input/Input';
-import Label from '../Label/Label';
-
-import s from './Form.module.scss';
 import useLocalStorage from '@/hooks/useLocalStorage';
 
-const Form = ({ mode, className = '' }) => {
+import Button from '../Button/Button';
+import AuthInput from '../AuthInput/AuthInput';
+import Label from '../Label/Label';
+
+import s from './AuthForm.module.scss';
+
+const AuthForm = ({ mode, className = '' }) => {
   const [user, setUser] = useLocalStorage('user');
   const [isAdmin, setIsAdmin] = useState(false);
   const serverError = useSelector(selectError);
@@ -39,14 +39,16 @@ const Form = ({ mode, className = '' }) => {
   useEffect(() => {
     methods.clearErrors();
     methods.reset();
-  }, [mode]);
+  }, [mode, methods]);
 
   useEffect(() => {
     if (currentUser !== null) {
       setUser(currentUser);
-      router.push('/test');
+      if (currentUser.is_admin) router.push('/test');
+      else router.push('/tests');
+      
     }
-  }, [currentUser]);
+  }, [currentUser, router, setUser, methods]);
 
   const handleSubmit = methods.handleSubmit((data) => {
     const signInData = { username: data.username, password: data.password };
@@ -78,11 +80,11 @@ const Form = ({ mode, className = '' }) => {
     <FormProvider {...methods}>
       <form className={cn(s.form, className)} onSubmit={handleSubmit}>
         <div className={s.inputs}>
-          {formInputs.map((input) => {
+          {authFormInputs.map((input) => {
             if (input.mode.includes(mode)) {
               return (
                 <Label key={input.fieldName} title={input.title}>
-                  <Input
+                  <AuthInput
                     className={s.input}
                     placeholder={input.placeholder}
                     type={input.type}
@@ -96,7 +98,7 @@ const Form = ({ mode, className = '' }) => {
 
         {mode === 'signUp' && (
           <Label title='Администратор' className={s.admin} reversed>
-            <Input
+            <AuthInput
               type='checkbox'
               checkboxValue={isAdmin}
               handleCheckboxChange={onCheckboxChange}
@@ -118,9 +120,9 @@ const Form = ({ mode, className = '' }) => {
   );
 };
 
-export default Form;
+export default AuthForm;
 
-Form.propTypes = {
+AuthForm.propTypes = {
   mode: PropTypes.string,
   classNames: PropTypes.string,
 };

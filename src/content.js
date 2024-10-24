@@ -11,7 +11,7 @@ export const authTabs = [
   },
 ];
 
-export const formInputs = [
+export const authFormInputs = [
   {
     title: 'Логин',
     fieldName: 'username',
@@ -33,4 +33,10 @@ export const formInputs = [
     type: 'password',
     mode: ['signUp'],
   },
+];
+
+export const questionTypes = [
+  { id: "1", value: 'single', text: 'Один из списка' },
+  { id: "2", value: 'multiple', text: 'Несколько из списка' },
+  { id: "3", value: 'number', text: 'Численный ответ' },
 ];

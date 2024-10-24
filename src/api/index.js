@@ -25,3 +25,12 @@ export const getCurrentTestReq = async (id) => {
 
   return data;
 };
+
+export const createTestReq = async (title) => {
+  const { data } = await instance.post('/tests', title);
+
+  console.log('data', data);
+  
+
+  return data;
+};
