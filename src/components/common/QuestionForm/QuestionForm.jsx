@@ -10,7 +10,7 @@ import Icon from '../Icon/Icon';
 
 import s from './QuestionForm.module.scss';
 
-const QuestionForm = ({ questionType = 'multiple' }) => {
+const QuestionForm = ({ questionType = 'single' }) => {
   const [correctAnswer, setCorrectAnswer] = useState(null);
 
   const methods = useForm({
@@ -36,11 +36,14 @@ const QuestionForm = ({ questionType = 'multiple' }) => {
       const answers = data.answers.map((answer, idx) => {
         return {
           text: answer.text,
-          is_right: correctAnswer === idx,
+          is_right: correctAnswer === fields[idx].id,
         };
       });
-      console.log({ title, answers });
+      console.log({ title, answers }); // TODO: add question with type "single"
     }
+    if (questionType === 'multiple') console.log(data); // TODO: add question with type "multiple"
+
+    if (questionType === 'number') console.log(data); // TODO: add question with type "number"
   });
 
   const handleChangeCorrectAnswer = (id) => {
@@ -49,6 +52,12 @@ const QuestionForm = ({ questionType = 'multiple' }) => {
 
   const handleDeleteAnswer = (id) => {
     remove(id);
+  };
+
+  const handleAddAnswer = () => {
+    if (questionType !== 'number' || fields.length < 1) {
+      append({ text: '', is_right: false });
+    }
   };
 
   return (
@@ -62,7 +71,7 @@ const QuestionForm = ({ questionType = 'multiple' }) => {
         />
 
         <div className={s.answers}>
-          {/* {questionType === 'multiple' &&
+          {questionType === 'multiple' &&
             fields.map((field, index) => {
               return (
                 <div className={s.answer} key={field.id}>
@@ -75,12 +84,16 @@ const QuestionForm = ({ questionType = 'multiple' }) => {
                   <Input
                     className={s.checkbox}
                     type='checkbox'
-                    fieldName={`answers.${index}.is_right`}
+                    fieldName={`answers[${index}].is_right`}
+                    defaultChecked={field.is_right}
                   />
-                  <Icon
+                  <div onClick={() => handleDeleteAnswer(index)}>
+                    <Icon name='delete' className={s.delete} />
+                  </div>
                 </div>
               );
-            })} */}
+            })}
+
           {questionType === 'single' &&
             fields.map((field, index) => {
               return (
@@ -98,19 +111,28 @@ const QuestionForm = ({ questionType = 'multiple' }) => {
                     checked={correctAnswer === field.id}
                     onChange={() => handleChangeCorrectAnswer(field.id)}
                   />
-                  <div onClick={() => handleDeleteAnswer(field.id)}>
+                  <div onClick={() => handleDeleteAnswer(index)}>
                     <Icon name='delete' className={s.delete} />
                   </div>
                 </div>
               );
             })}
-          <Button
-            className={s.button}
-            type='button'
-            onClick={() =>
-              append({ text: 'Новый вариант ответа', is_right: false })
-            }
-          >
+
+          {questionType === 'number' &&
+            fields.map((field, index) => {
+              return (
+                <div className={s.answer} key={field.id}>
+                  <Input
+                    className={s.input}
+                    type='number'
+                    fieldName={`answers.${index}.text`}
+                    placeholder='Введите вариант ответа'
+                  />
+                </div>
+              );
+            })}
+
+          <Button className={s.button} type='button' onClick={handleAddAnswer}>
             {/* TODO: dispatch action to add new answer */}
             Добавить вариант ответа
           </Button>
