@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import cn from 'classnames';
 
 import { useFormContext } from 'react-hook-form';
@@ -38,3 +39,10 @@ const Input = ({
 };
 
 export default Input;
+
+Input.propTypes = {
+  type: PropTypes.string,
+  className: PropTypes.string,
+  placeholder: PropTypes.string,
+  fieldName: PropTypes.string,
+};

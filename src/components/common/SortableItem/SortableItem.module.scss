@@ -1,0 +1,27 @@
+.handle {
+  width: 30px;
+  height: 30px;
+  color: $color-black;
+
+  &Wrapper {
+    margin-right: 0.5rem;
+    background-color: transparent;
+    border-radius: 10px;
+    transition: background-color 0.3s ease;
+
+    @include hover {
+      background-color: $color-light-gray;
+    }
+
+    &:active {
+      background-color: $color-light-gray;
+    }
+  }
+}
+
+.item {
+  margin-top: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}

@@ -1,8 +1,6 @@
 import cn from 'classnames';
 import PropTypes from 'prop-types';
 
-import { useFormContext } from 'react-hook-form';
-
 import s from './Label.module.scss';
 
 const Label = ({ children, reversed = false, title = '', className = '' }) => {

@@ -1,6 +1,8 @@
 import cn from 'classnames';
 
 import { useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { createTestAction } from '@/store/features/test';
 
 import { questionTypes } from '@/content';
 import Container from '../../common/Container/Container';
@@ -10,8 +12,6 @@ import QuestionForm from '@/components/common/QuestionForm/QuestionForm';
 import Dropdown from '@/components/common/Dropdown/Dropdown';
 
 import s from './Test.module.scss';
-import { useDispatch } from 'react-redux';
-import { createTestAction } from '@/store/features/test';
 
 const Test = () => {
   const [title, setTitle] = useState('');

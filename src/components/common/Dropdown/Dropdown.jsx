@@ -55,4 +55,5 @@ Dropdown.propTypes = {
       value: PropTypes.string,
     })
   ),
+  onSelectQuestionType: PropTypes.func,
 };

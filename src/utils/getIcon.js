@@ -4,6 +4,7 @@ import Submit from '../components/icons/Submit';
 import Create from '../components/icons/Tabs/Create';
 import User from '../components/icons/Tabs/User';
 import Username from '../components/icons/Username';
+import DragHandle from '@/components/icons/DragHandle';
 
 export const getIcon = (iconName) => {
   switch (iconName) {
@@ -19,6 +20,8 @@ export const getIcon = (iconName) => {
       return Submit;
     case 'delete':
       return Delete;
+    case 'drag-handle':
+      return DragHandle;
     default:
       break;
   }

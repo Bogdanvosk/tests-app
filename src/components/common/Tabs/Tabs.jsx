@@ -29,3 +29,14 @@ const Tabs = ({ activeTab, tabs, onSetFormMode }) => {
 };
 
 export default Tabs;
+
+Tabs.propTypes = {
+  activeTab: PropTypes.string,
+  tabs: PropTypes.arrayOf(
+    PropTypes.shape({
+      title: PropTypes.string,
+      mode: PropTypes.string,
+      name: PropTypes.string,
+  })),
+  onSetFormMode: PropTypes.func,
+};

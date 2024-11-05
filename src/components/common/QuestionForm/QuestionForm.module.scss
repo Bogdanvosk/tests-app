@@ -35,8 +35,8 @@
 .answer {
   display: flex;
   align-items: center;
+  flex-grow: 1;
   gap: 1rem;
-  margin-top: 1rem;
 }
 
 .delete {
@@ -49,4 +49,8 @@
     color: $color-red;
     transform: translateY(-2px);
   }
+}
+
+.number {
+  margin-top: 1rem;
 }

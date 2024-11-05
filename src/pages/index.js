@@ -1,7 +1,6 @@
 import { useRouter } from 'next/router';
 import { useEffect } from 'react';
 
-import HeadLayout from '@/components/common/HeadLayout/HeadLayout';
 import useLocalStorage from '@/hooks/useLocalStorage';
 
 export default function Home() {
@@ -14,9 +13,6 @@ export default function Home() {
       else router.push('/tests');
     } else router.push('/sign-in');
   }, [router, user]);
-  return (
-    <>
-      <HeadLayout favicon='/favicon.png' title='Tests app' />
-    </>
-  );
+  
+  return null;
 }
