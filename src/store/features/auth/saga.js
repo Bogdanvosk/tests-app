@@ -22,9 +22,11 @@ function* signInWorker({ payload }) {
 
     yield put(signInSuccess(data));
   } catch (error) {
-    const errText = error.response.data || 'Server error';
+    console.log('error', error);
 
-    yield put(signInError(errText));
+    // const errText = error.response.data || 'Server error';
+
+    // yield put(signInError(errText));
   }
 }
 
@@ -34,9 +36,10 @@ function* signUpWorker({ payload }) {
 
     yield put(signUpSuccess(data));
   } catch (error) {
-    const errText = error.response.data || 'Server error';
+    console.log('error', error);
+    // const errText = error.response.data || 'Server error';
 
-    yield put(signUpError(errText));
+    // yield put(signUpError(errText));
   }
 }
 
@@ -46,8 +49,9 @@ function* getUserWorker() {
 
     yield put(getUserSuccess(data));
   } catch (error) {
-    const errText = error.response.data || 'Server error';
+    console.log('error', error);
+    // const errText = error.response.data || 'Server error';
 
-    yield put(getUserError(errText));
+    // yield put(getUserError(errText));
   }
 }

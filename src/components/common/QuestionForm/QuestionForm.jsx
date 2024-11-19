@@ -10,6 +10,7 @@ import {
   useFormContext,
 } from 'react-hook-form';
 import { useEffect, useState } from 'react';
+import { getUserAction } from '@/store/features/auth';
 
 import Input from '../Input/Input';
 import Button from '../Button/Button';
@@ -17,9 +18,16 @@ import Icon from '../Icon/Icon';
 import SortableItem from '../SortableItem/SortableItem';
 
 import s from './QuestionForm.module.scss';
+import { useDispatch, useSelector } from 'react-redux';
+import { selectCurrentTest } from '@/store/features/test/selectors';
 
 const QuestionForm = ({ questionType }) => {
   const [correctAnswer, setCorrectAnswer] = useState(null);
+  
+  const dispatch = useDispatch()
+
+  
+  
 
   const methods = useForm({
     defaultValues: {
@@ -38,16 +46,11 @@ const QuestionForm = ({ questionType }) => {
     name: 'answers',
   });
 
-  console.log(fields.length);
-
   const handleSubmit = methods.handleSubmit((data) => {
-    // methods.clearErrors('answers');
-
     if (
       (questionType === 'single' || questionType === 'multiple') &&
       fields.length < 2
     ) {
-      console.log('sadasdsad');
 
       methods.setError('answers', {
         type: 'min',
@@ -98,7 +101,7 @@ const QuestionForm = ({ questionType }) => {
     }
   };
 
-  console.log(methods.formState.errors);
+  // console.log(methods.formState.errors);
 
   return (
     <DndContext onDragEnd={handleDragEnd}>
@@ -187,7 +190,8 @@ const QuestionForm = ({ questionType }) => {
             <Button className={s.button} type='submit'>
               Сохранить вопрос
             </Button>
-            {methods.formState.errors && <p>Error</p>}
+            {/* {methods.formState.errors && <p>Error</p>} */}
+            <Button className={s.button} onClick={() => dispatch(getUserAction())}>Get user</Button>
           </div>
         </form>
       </FormProvider>

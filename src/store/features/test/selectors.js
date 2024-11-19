@@ -1,0 +1,1 @@
+export const selectCurrentTest = (state) => state.test.currentTest;
