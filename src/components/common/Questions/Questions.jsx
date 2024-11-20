@@ -2,17 +2,42 @@ import PropTypes from 'prop-types';
 
 import Question from '../Question/Question';
 
-const Questions = ({ questions = [] }) => {
-  {
-    questions.map((question) => (
-      <Question key={question.id} question={question} />
-    )) || <></>;
-  }
+import s from './Questions.module.scss';
+import Icon from '../Icon/Icon';
+
+const Questions = ({ questions = [], onDeleteQuestion, onSelectQuestion }) => {
+  return (
+    <ul className={s.questions}>
+      {questions.map((question) => {
+        return (
+          <li
+            className={s.question}
+            key={question.id}
+            onClick={() => onSelectQuestion(question)}
+          >
+            <Question question={question} />
+            <div onClick={() => onDeleteQuestion(question.id)}>
+              <Icon name='delete' className={s.delete} />
+            </div>
+          </li>
+        );
+      })}
+    </ul>
+  );
 };
 
 export default Questions;
 
-// TODO: change type for props
 Questions.propTypes = {
-  questions: PropTypes.array,
+  questions: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.number,
+      title: PropTypes.string,
+      question_type: PropTypes.string,
+      answer: PropTypes.number,
+      answers: PropTypes.arrayOf(PropTypes.object),
+    })
+  ),
+  onDeleteQuestion: PropTypes.func,
+  onSelectQuestion: PropTypes.func,
 };

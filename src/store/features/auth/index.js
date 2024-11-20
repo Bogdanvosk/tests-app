@@ -44,6 +44,17 @@ export const authSlice = createSlice({
     getUserError: (state) => {
       state.isLoading = false;
     },
+    logoutAction: (state) => {
+      state.isLoading = true;
+    },
+    logoutSuccess: (state) => {
+      state.isLoading = false;
+      state.user = null;
+    },
+    logoutError: (state, action) => {
+      state.isLoading = false;
+      state.error = action.payload;
+    },
   },
 });
 
@@ -59,4 +70,7 @@ export const {
   getUserAction,
   getUserSuccess,
   getUserError,
+  logoutAction,
+  logoutSuccess,
+  logoutError,
 } = authSlice.actions;

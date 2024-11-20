@@ -24,6 +24,7 @@
 }
 
 .button {
+  display: block;
   margin-bottom: 0.5rem;
   padding: 1rem 2rem;
   font-weight: 700;
@@ -36,6 +37,14 @@
   &:active {
     background-color: color.adjust($color-mindaro, $lightness: -10%);
   }
+}
+
+.show {
+  display: none;
+}
+
+.addQuestion {
+  width: 100%;
 }
 
 .delete {

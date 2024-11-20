@@ -3,14 +3,11 @@ import cn from 'classnames';
 import { DndContext } from '@dnd-kit/core';
 import { SortableContext } from '@dnd-kit/sortable';
 
-import {
-  FormProvider,
-  useFieldArray,
-  useForm,
-  useFormContext,
-} from 'react-hook-form';
+import { FormProvider, useFieldArray, useForm } from 'react-hook-form';
 import { useEffect, useState } from 'react';
-import { getUserAction } from '@/store/features/auth';
+import { useDispatch, useSelector } from 'react-redux';
+import { selectCurrentTest } from '@/store/features/test/selectors';
+import { addNewQuestionAction } from '@/store/features/test';
 
 import Input from '../Input/Input';
 import Button from '../Button/Button';
@@ -18,16 +15,11 @@ import Icon from '../Icon/Icon';
 import SortableItem from '../SortableItem/SortableItem';
 
 import s from './QuestionForm.module.scss';
-import { useDispatch, useSelector } from 'react-redux';
-import { selectCurrentTest } from '@/store/features/test/selectors';
 
-const QuestionForm = ({ questionType }) => {
+const QuestionForm = ({ questionType, selectedQuestion, onUpdateQuestion }) => {
   const [correctAnswer, setCorrectAnswer] = useState(null);
-  
-  const dispatch = useDispatch()
-
-  
-  
+  const test = useSelector(selectCurrentTest);
+  const dispatch = useDispatch();
 
   const methods = useForm({
     defaultValues: {
@@ -41,24 +33,29 @@ const QuestionForm = ({ questionType }) => {
     setCorrectAnswer(null);
   }, [questionType]);
 
-  const { fields, append, remove, move } = useFieldArray({
+  const { fields, append, remove, move, update } = useFieldArray({
     control: methods.control,
     name: 'answers',
   });
 
-  const handleSubmit = methods.handleSubmit((data) => {
-    if (
-      (questionType === 'single' || questionType === 'multiple') &&
-      fields.length < 2
-    ) {
+  useEffect(() => {
+    if (selectedQuestion) {
+      methods.setValue('title', selectedQuestion.title);
+      methods.setValue('answers', selectedQuestion.answers);
+      update('answers', selectedQuestion.answers);
+    }
+  }, [selectedQuestion]);
 
-      methods.setError('answers', {
-        type: 'min',
-        message: 'Required at least 2 answers',
+  const handleSubmit = methods.handleSubmit((data) => {
+    if (selectedQuestion) {
+      return onUpdateQuestion({
+        question_type: questionType,
+        questionId: selectedQuestion.id,
+        title: data.title,
       });
-      return;
     }
 
+    // TODO: Validation
     if (questionType === 'single') {
       const title = data.title;
       const answers = data.answers.map((answer, idx) => {
@@ -67,7 +64,16 @@ const QuestionForm = ({ questionType }) => {
           is_right: correctAnswer === fields[idx].id,
         };
       });
-      // console.log({ title, answers }); // TODO: add question with type "single" (api call)
+
+      dispatch(
+        addNewQuestionAction({
+          title,
+          question_type: questionType,
+          answer: 1,
+          answers,
+          testId: test.id,
+        })
+      );
     }
     if (questionType === 'multiple') console.log(data); // TODO: add question with type "multiple" (api call)
 
@@ -100,8 +106,6 @@ const QuestionForm = ({ questionType }) => {
       move(oldIndex, newIndex);
     }
   };
-
-  // console.log(methods.formState.errors);
 
   return (
     <DndContext onDragEnd={handleDragEnd}>
@@ -183,7 +187,6 @@ const QuestionForm = ({ questionType }) => {
               })}
           </div>
           <Button className={s.button} type='button' onClick={handleAddAnswer}>
-            {/* TODO: dispatch action to add new answer */}
             Добавить вариант ответа
           </Button>
           <div>
@@ -191,7 +194,6 @@ const QuestionForm = ({ questionType }) => {
               Сохранить вопрос
             </Button>
             {/* {methods.formState.errors && <p>Error</p>} */}
-            <Button className={s.button} onClick={() => dispatch(getUserAction())}>Get user</Button>
           </div>
         </form>
       </FormProvider>
@@ -203,4 +205,12 @@ export default QuestionForm;
 
 QuestionForm.propTypes = {
   questionType: PropTypes.oneOf(['single', 'multiple', 'number']),
+  selectedQuestion: PropTypes.shape({
+    id: PropTypes.number,
+    title: PropTypes.string,
+    question_type: PropTypes.string,
+    answer: PropTypes.number,
+    answers: PropTypes.arrayOf(PropTypes.object),
+  }),
+  onUpdateQuestion: PropTypes.func,
 };

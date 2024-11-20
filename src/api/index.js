@@ -12,10 +12,14 @@ export const signInReq = async (user) => {
   return data;
 };
 
+export const logoutReq = async () => {
+  const { data } = await instance.delete('/logout');
+
+  return data;
+};
+
 export const getUserReq = async () => {
   const { data } = await instance.get('/users/current');
-
-  console.log('data', data);
 
   return data;
 };
@@ -34,6 +38,53 @@ export const createTestReq = async (title) => {
 
 export const getAllTestsReq = async () => {
   const { data } = await instance.get('/tests');
-  
+
+  return data;
+};
+
+export const addQuestionReq = async ({
+  testId,
+  title,
+  question_type,
+  answer,
+}) => {
+  const { data } = await instance.post(`/tests/${testId}/questions`, {
+    title,
+    question_type,
+    answer,
+  });
+
+  return data;
+};
+
+export const addAnswersReq = async (questionId, answers) => {
+  const answersData = [];
+
+  answers.forEach(async (answer) => {
+    const { data } = await instance.post(
+      `/questions/${questionId}/answers`,
+      answer
+    );
+    answersData.push(data);
+  });
+
+  return answersData;
+};
+
+export const deleteQuestionReq = async (questionId) => {
+  const { data } = await instance.delete(`/questions/${questionId}`);
+
+  return data;
+};
+
+export const updateTestReq = async ({ testId, title }) => {
+  const { data } = await instance.patch(`/tests/${testId}`, { title });
+
+  return data;
+};
+
+export const updateQuestionReq = async ({ questionId, title, question_type }) => {
+  const { data } = await instance.patch(`/questions/${questionId}`, { title, question_type });
+
   return data;
 };

@@ -1,14 +1,19 @@
-import PropTypes from 'prop-types'
+import PropTypes from 'prop-types';
+
+import s from './Question.module.scss';
 
 const Question = ({ question }) => {
-	return (
-		<div>Question</div>
-	)
-}
+  return <div className={s.question}>{question.title}</div>;
+};
 
-export default Question
+export default Question;
 
-// TODO: change type for props
 Question.propTypes = {
-	question: PropTypes.object
-}
+  question: PropTypes.shape({
+    id: PropTypes.number,
+    title: PropTypes.string,
+    question_type: PropTypes.string,
+    answer: PropTypes.number,
+    answers: PropTypes.arrayOf(PropTypes.object),
+  }),
+};
