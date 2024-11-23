@@ -1,6 +1,7 @@
 import {
   addNewQuestionAction,
   createTestAction,
+  deleteAnswerAction,
   deleteQuestionAction,
   getAllTestsAction,
   getCurrentTestAction,
@@ -15,3 +16,4 @@ export const ADD_QUESTION_TYPE = addNewQuestionAction.type;
 export const DELETE_QUESTION_TYPE = deleteQuestionAction.type;
 export const UPDATE_TEST = updateTestAction.type;
 export const UPDATE_QUESTION = updateQuestionAction.type;
+export const DELETE_ANSWER = deleteAnswerAction.type;

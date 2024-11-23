@@ -2,8 +2,8 @@ import PropTypes from 'prop-types';
 
 import s from './Question.module.scss';
 
-const Question = ({ question }) => {
-  return <div className={s.question}>{question.title}</div>;
+const Question = ({ question, handleSelectQuestion }) => {
+  return <div onClick={() => handleSelectQuestion(question)} className={s.question}>{question.title}</div>;
 };
 
 export default Question;

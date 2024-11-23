@@ -10,12 +10,11 @@ const Questions = ({ questions = [], onDeleteQuestion, onSelectQuestion }) => {
     <ul className={s.questions}>
       {questions.map((question) => {
         return (
-          <li
-            className={s.question}
-            key={question.id}
-            onClick={() => onSelectQuestion(question)}
-          >
-            <Question question={question} />
+          <li className={s.question} key={question.id}>
+            <Question
+              question={question}
+              handleSelectQuestion={onSelectQuestion}
+            />
             <div onClick={() => onDeleteQuestion(question.id)}>
               <Icon name='delete' className={s.delete} />
             </div>

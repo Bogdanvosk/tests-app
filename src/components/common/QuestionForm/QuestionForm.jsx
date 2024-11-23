@@ -7,7 +7,10 @@ import { FormProvider, useFieldArray, useForm } from 'react-hook-form';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectCurrentTest } from '@/store/features/test/selectors';
-import { addNewQuestionAction } from '@/store/features/test';
+import {
+  addNewQuestionAction,
+  deleteAnswerAction,
+} from '@/store/features/test';
 
 import Input from '../Input/Input';
 import Button from '../Button/Button';
@@ -28,15 +31,15 @@ const QuestionForm = ({ questionType, selectedQuestion, onUpdateQuestion }) => {
     },
   });
 
-  useEffect(() => {
-    methods.reset();
-    setCorrectAnswer(null);
-  }, [questionType]);
-
   const { fields, append, remove, move, update } = useFieldArray({
     control: methods.control,
     name: 'answers',
   });
+
+  useEffect(() => {
+    methods.reset();
+    setCorrectAnswer(null);
+  }, [questionType]);
 
   useEffect(() => {
     if (selectedQuestion) {
@@ -52,6 +55,7 @@ const QuestionForm = ({ questionType, selectedQuestion, onUpdateQuestion }) => {
         question_type: questionType,
         questionId: selectedQuestion.id,
         title: data.title,
+        answers: data.answers,
       });
     }
 
@@ -75,6 +79,7 @@ const QuestionForm = ({ questionType, selectedQuestion, onUpdateQuestion }) => {
         })
       );
     }
+
     if (questionType === 'multiple') console.log(data); // TODO: add question with type "multiple" (api call)
 
     if (questionType === 'number') console.log(data); // TODO: add question with type "number" (api call)
@@ -86,6 +91,14 @@ const QuestionForm = ({ questionType, selectedQuestion, onUpdateQuestion }) => {
 
   const handleDeleteAnswer = (id) => {
     remove(id);
+    const answerId = selectedQuestion.answers[id].id;
+
+    dispatch(
+      deleteAnswerAction({
+        questionId: selectedQuestion.id,
+        answerId,
+      })
+    );
   };
 
   const handleAddAnswer = () => {

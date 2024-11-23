@@ -127,6 +127,28 @@ export const testSlice = createSlice({
       state.isLoading = false;
       state.error = action.payload;
     },
+    deleteAnswerAction: (state) => {
+      state.isLoading = true;
+    },
+    deleteAnswerSuccess: (state, action) => {
+      state.isLoading = false;
+      state.currentTest = {
+        ...state.currentTest,
+        questions: state.currentTest.questions.map((q) => {
+          if (q.id === action.payload.questionId) {
+            q.answers = q.answers.filter(
+              (a) => a.id !== action.payload.answerId
+            );
+          }
+          return q;
+        }),
+      };
+      state.error = null;
+    },
+    deleteAnswerError: (state, action) => {
+      state.isLoading = false;
+      state.error = action.payload;
+    },
   },
 });
 
@@ -157,4 +179,7 @@ export const {
   updateQuestionAction,
   updateQuestionSuccess,
   updateQuestionError,
+  deleteAnswerAction,
+  deleteAnswerSuccess,
+  deleteAnswerError,
 } = testSlice.actions;

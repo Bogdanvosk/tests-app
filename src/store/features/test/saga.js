@@ -19,6 +19,7 @@ import {
   addAnswersReq,
   addQuestionReq,
   createTestReq,
+  deleteAnswerReq,
   deleteQuestionReq,
   getAllTestsReq,
   getCurrentTestReq,
@@ -33,6 +34,7 @@ import {
   DELETE_QUESTION_TYPE,
   UPDATE_TEST,
   UPDATE_QUESTION,
+  DELETE_ANSWER
 } from './constants';
 
 export function* testSagaWatcher() {
@@ -43,6 +45,7 @@ export function* testSagaWatcher() {
   yield takeLatest(DELETE_QUESTION_TYPE, deleteQuestionWorker);
   yield takeLatest(UPDATE_TEST, updateTestWorker);
   yield takeLatest(UPDATE_QUESTION, updateQuestionWorker);
+  yield takeLatest(DELETE_ANSWER, deleteAnswerWorker);
 }
 
 function* getCurrentTestWorker({ payload }) {
@@ -116,5 +119,15 @@ function* updateQuestionWorker({ payload }) {
   } catch (error) {
     const errText = error.response.data || 'Server error';
     yield put(updateQuestionError(errText));
+  }
+}
+
+function* deleteAnswerWorker({ payload }) {
+  try {
+    const data = yield call(deleteAnswerReq, payload);
+    yield put(deleteAnswerSuccess(data));
+  } catch (error) {
+    const errText = 'Server error';
+    yield put(updateTestError(errText));
   }
 }

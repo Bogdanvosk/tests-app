@@ -65,7 +65,7 @@ const Test = () => {
     );
   }, [debouncedValue]);
 
-  const onChangeTitle = (e) => {
+  const handleChangeTitle = (e) => {
     setTitle(e.target.value);
   };
 
@@ -117,7 +117,7 @@ const Test = () => {
               type='text'
               className={s.input}
               value={title}
-              onChange={(e) => onChangeTitle(e)}
+              onChange={(e) => handleChangeTitle(e)}
               placeholder='Введите название теста'
             />
             <div className={s.buttons}>
@@ -171,6 +171,7 @@ const Test = () => {
                 questionType={questionType}
                 selectedQuestion={selectedQuestion}
                 onUpdateQuestion={handleUpdateQuestion}
+                // isQuestionFormClear={isQuestionFormClear}
               />
             )}
           </div>

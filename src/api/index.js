@@ -83,8 +83,22 @@ export const updateTestReq = async ({ testId, title }) => {
   return data;
 };
 
-export const updateQuestionReq = async ({ questionId, title, question_type }) => {
-  const { data } = await instance.patch(`/questions/${questionId}`, { title, question_type });
+export const updateQuestionReq = async ({ questionId, ...newData }) => {
+  const { data } = await instance.patch(`/questions/${questionId}`, newData);
 
   return data;
 };
+
+export const deleteAnswerReq = async ({ answerId, questionId }) => {
+  const { data } = await instance.delete(`/answers/${answerId}`);
+
+  return data;
+};
+
+// export const addAnswerReq = async ({ answer, questionId }) => {
+//   const { data } = await instance.post(`/questions/${questionId}/answers`, {
+//     answer,
+//   });
+
+//   return data;
+// };
