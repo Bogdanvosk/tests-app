@@ -3,13 +3,15 @@ import cn from 'classnames';
 import { DndContext } from '@dnd-kit/core';
 import { SortableContext } from '@dnd-kit/sortable';
 
-import { FormProvider, useFieldArray, useForm } from 'react-hook-form';
+import { FormProvider, set, useFieldArray, useForm } from 'react-hook-form';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectCurrentTest } from '@/store/features/test/selectors';
 import {
+  addAnswerAction,
   addNewQuestionAction,
   deleteAnswerAction,
+  updateQuestionAction,
 } from '@/store/features/test';
 
 import Input from '../Input/Input';
@@ -19,7 +21,9 @@ import SortableItem from '../SortableItem/SortableItem';
 
 import s from './QuestionForm.module.scss';
 
-const QuestionForm = ({ questionType, selectedQuestion, onUpdateQuestion }) => {
+const QuestionForm = ({ questionType, selectedQuestion, onCloseForm }) => {
+  const [questionStep, setQuestionStep] = useState(1);
+  const [isAnswerEditing, setIsAnswerEditing] = useState(false);
   const [correctAnswer, setCorrectAnswer] = useState(null);
   const test = useSelector(selectCurrentTest);
   const dispatch = useDispatch();
@@ -51,12 +55,14 @@ const QuestionForm = ({ questionType, selectedQuestion, onUpdateQuestion }) => {
 
   const handleSubmit = methods.handleSubmit((data) => {
     if (selectedQuestion) {
-      return onUpdateQuestion({
-        question_type: questionType,
-        questionId: selectedQuestion.id,
-        title: data.title,
-        answers: data.answers,
-      });
+      dispatch(
+        updateQuestionAction({
+          questionId: selectedQuestion.id,
+          title: data.title,
+          question_type: selectedQuestion.question_type,
+        })
+      );
+      return;
     }
 
     // TODO: Validation
@@ -78,6 +84,8 @@ const QuestionForm = ({ questionType, selectedQuestion, onUpdateQuestion }) => {
           testId: test.id,
         })
       );
+
+      setQuestionStep(2);
     }
 
     if (questionType === 'multiple') console.log(data); // TODO: add question with type "multiple" (api call)
@@ -87,6 +95,27 @@ const QuestionForm = ({ questionType, selectedQuestion, onUpdateQuestion }) => {
 
   const handleChangeCorrectAnswer = (id) => {
     setCorrectAnswer(id);
+  };
+
+  const handleAddAnswer = () => {
+    if (questionType !== 'number' || fields.length < 1) {
+      append({ text: '', is_right: false });
+    }
+    setIsAnswerEditing(true);
+  };
+
+  const handleCreateAnswer = () => {
+    const questionId = test.questions[test.questions.length - 1].id;
+    const allAnswers = methods.getValues().answers;
+    const newAnswer = allAnswers[allAnswers.length - 1];
+
+    dispatch(
+      addAnswerAction({
+        questionId,
+        answer: newAnswer,
+      })
+    );
+    setIsAnswerEditing(false);
   };
 
   const handleDeleteAnswer = (id) => {
@@ -100,13 +129,6 @@ const QuestionForm = ({ questionType, selectedQuestion, onUpdateQuestion }) => {
       })
     );
   };
-
-  const handleAddAnswer = () => {
-    if (questionType !== 'number' || fields.length < 1) {
-      append({ text: '', is_right: false });
-    }
-  };
-
   // TODO: add changing position field of answer in API
   const handleDragEnd = (event) => {
     const { active, over } = event;
@@ -118,6 +140,13 @@ const QuestionForm = ({ questionType, selectedQuestion, onUpdateQuestion }) => {
       const newIndex = fields.findIndex((field) => field.id === over.id);
       move(oldIndex, newIndex);
     }
+  };
+
+  const handleCloseForm = () => {
+    setQuestionStep(1);
+    setCorrectAnswer(null);
+    methods.reset();
+    onCloseForm();
   };
 
   return (
@@ -147,7 +176,7 @@ const QuestionForm = ({ questionType, selectedQuestion, onUpdateQuestion }) => {
                         <Input
                           className={s.checkbox}
                           type='checkbox'
-                          fieldName={`answers[${index}].is_right`}
+                          fieldName={`answers.${index}.is_right`}
                           defaultChecked={field.is_right}
                         />
                         <div onClick={() => handleDeleteAnswer(index)}>
@@ -172,9 +201,9 @@ const QuestionForm = ({ questionType, selectedQuestion, onUpdateQuestion }) => {
                         <Input
                           className={s.checkbox}
                           type='checkbox'
-                          fieldName={`answers[${index}].is_right`}
+                          fieldName={`answers.${index}.is_right`}
                           checked={correctAnswer === field.id}
-                          onChange={() => handleChangeCorrectAnswer(field.id)}
+                          onClick={() => handleChangeCorrectAnswer(field.id)}
                         />
                         <div onClick={() => handleDeleteAnswer(index)}>
                           <Icon name='delete' className={s.delete} />
@@ -199,15 +228,27 @@ const QuestionForm = ({ questionType, selectedQuestion, onUpdateQuestion }) => {
                 );
               })}
           </div>
-          <Button className={s.button} type='button' onClick={handleAddAnswer}>
-            Добавить вариант ответа
-          </Button>
-          <div>
-            <Button className={s.button} type='submit'>
-              Сохранить вопрос
+
+          {questionStep === 1 && (
+            <div>
+              <Button className={s.button} type='submit'>
+                {selectedQuestion ? 'Сохранить вопрос' : 'Создать вопрос'}
+              </Button>
+              {/* {methods.formState.errors && <p>Error</p>} */}
+            </div>
+          )}
+          {questionStep === 2 && (
+            <Button
+              className={s.button}
+              type='button'
+              onClick={isAnswerEditing ? handleCreateAnswer : handleAddAnswer}
+            >
+              {isAnswerEditing ? 'Создать ответ' : 'Добавить вариант ответа'}
             </Button>
-            {/* {methods.formState.errors && <p>Error</p>} */}
-          </div>
+          )}
+          <Button className={cn(s.button, s.cancel)} onClick={handleCloseForm}>
+            Отмена
+          </Button>
         </form>
       </FormProvider>
     </DndContext>

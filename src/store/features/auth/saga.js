@@ -3,6 +3,7 @@ import { getUserReq, logoutReq, signInReq, signUpReq } from '../../../api';
 import {
   getUserError,
   getUserSuccess,
+  logoutError,
   logoutSuccess,
   signInError,
   signInSuccess,
@@ -53,7 +54,7 @@ function* logoutWorker() {
     const data = yield call(logoutReq);
     yield put(logoutSuccess(data));
   } catch (error) {
-    console.log('error', error);
-    
+    const errText = error.response.data || 'Server error';
+    yield put(logoutError(errText));
   }
 }

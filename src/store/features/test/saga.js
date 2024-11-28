@@ -1,9 +1,13 @@
 import { call, put, takeLatest } from 'redux-saga/effects';
 import {
+  addAnswerError,
+  addAnswerSuccess,
   addNewQuestionError,
   addNewQuestionSuccess,
   createTestError,
   createTestSuccess,
+  deleteAnswerError,
+  deleteAnswerSuccess,
   deleteQuestionError,
   deleteQuestionSuccess,
   getAllTestsError,
@@ -16,6 +20,7 @@ import {
   updateTestSuccess,
 } from '.';
 import {
+  addAnswerReq,
   addAnswersReq,
   addQuestionReq,
   createTestReq,
@@ -30,21 +35,25 @@ import {
   CREATE_TEST,
   GET_ALL_TESTS,
   GET_CURRENT_TEST,
-  ADD_QUESTION_TYPE,
-  DELETE_QUESTION_TYPE,
+  ADD_QUESTION,
+  DELETE_QUESTION,
   UPDATE_TEST,
   UPDATE_QUESTION,
-  DELETE_ANSWER
+  DELETE_ANSWER,
+  ADD_ANSWER,
 } from './constants';
 
 export function* testSagaWatcher() {
   yield takeLatest(GET_CURRENT_TEST, getCurrentTestWorker);
   yield takeLatest(CREATE_TEST, createTestWorker);
   yield takeLatest(GET_ALL_TESTS, getAllTestsWorker);
-  yield takeLatest(ADD_QUESTION_TYPE, addQuestionWorker);
-  yield takeLatest(DELETE_QUESTION_TYPE, deleteQuestionWorker);
   yield takeLatest(UPDATE_TEST, updateTestWorker);
+
+  yield takeLatest(ADD_QUESTION, addQuestionWorker);
+  yield takeLatest(DELETE_QUESTION, deleteQuestionWorker);
   yield takeLatest(UPDATE_QUESTION, updateQuestionWorker);
+
+  yield takeLatest(ADD_ANSWER, addAnswerWorker);
   yield takeLatest(DELETE_ANSWER, deleteAnswerWorker);
 }
 
@@ -80,12 +89,8 @@ function* getAllTestsWorker() {
 
 function* addQuestionWorker({ payload }) {
   try {
-    const { answers } = payload;
     const question = yield call(addQuestionReq, payload);
     yield put(addNewQuestionSuccess(question));
-
-    const answersData = yield call(addAnswersReq, question.id, answers);
-    yield put(addAnswersSuccess(answersData));
   } catch (error) {
     const errText = 'Server error';
     yield put(addNewQuestionError(errText));
@@ -122,12 +127,22 @@ function* updateQuestionWorker({ payload }) {
   }
 }
 
+function* addAnswerWorker({ payload }) {
+  try {
+    const data = yield call(addAnswerReq, payload);
+    yield put(addAnswerSuccess(data));
+  } catch (error) {
+    const errText = error;
+    yield put(addAnswerError(errText));
+  }
+}
+
 function* deleteAnswerWorker({ payload }) {
   try {
     const data = yield call(deleteAnswerReq, payload);
     yield put(deleteAnswerSuccess(data));
   } catch (error) {
     const errText = 'Server error';
-    yield put(updateTestError(errText));
+    yield put(deleteAnswerError(errText));
   }
 }

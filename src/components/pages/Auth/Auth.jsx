@@ -4,9 +4,6 @@ import { authTabs } from '@/content';
 import { useRouter } from 'next/router';
 import useLocalStorage from '@/hooks/useLocalStorage';
 
-import authImg from '@/assets/auth.png';
-import logoImg from '@/assets/logo.png';
-
 import Container from '../../common/Container/Container';
 import Logo from '../../common/Logo/Logo';
 import Tabs from '../../common/Tabs/Tabs';
@@ -30,7 +27,7 @@ const Auth = () => {
       <Container>
         <div className={s.wrapper}>
           <div className={s.content}>
-            <Logo imageSrc={logoImg} />
+            <Logo imageSrc={'/logo.png'} />
             <h1 className={s.title}>Продолжайте обучение с QuizWiz!</h1>
             <Tabs
               activeTab={mode}
@@ -40,7 +37,7 @@ const Auth = () => {
             <AuthForm mode={mode} className={s.form} />
           </div>
           <div className={s.image}>
-            <Image width={450} src={authImg} alt='Auth' />
+            <Image width={450} height={450} src={'/auth.png'} alt='Auth' />
           </div>
         </div>
       </Container>

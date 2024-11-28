@@ -4,7 +4,13 @@ import PropTypes from 'prop-types';
 const Logo = ({ imageSrc, className = '' }) => {
   return (
     <div>
-      <Image width={200} className={className} src={imageSrc} alt='Logo' />
+      <Image
+        width={200}
+        height={45}
+        className={className}
+        src={imageSrc}
+        alt='Logo'
+      />
     </div>
   );
 };

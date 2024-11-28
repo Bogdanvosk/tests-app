@@ -5,9 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import {
   createTestAction,
   deleteQuestionAction,
-  getAllTestsAction,
   getCurrentTestAction,
-  updateQuestionAction,
   updateTestAction,
 } from '@/store/features/test';
 import {
@@ -99,8 +97,9 @@ const Test = () => {
     setIsQuestionFormOpen(true);
   };
 
-  const handleUpdateQuestion = (data) => {
-    dispatch(updateQuestionAction(data));
+  const handleCloseQuestionForm = () => {
+    setIsQuestionFormOpen(false);
+    setSelectedQuestion(null);
   };
 
   return (
@@ -129,14 +128,6 @@ const Test = () => {
                 {/* // TODO: conditional button (create && "Создать" | edit && "Сохранить") */}
                 Создать
               </Button>
-
-              {/* <Button
-                className={s.button}
-                type='button'
-                onClick={() => dispatch(getAllTestsAction())}
-              >
-                Все тесты
-              </Button> */}
               <Button className={cn(s.button, s.delete)} type='button'>
                 Удалить
               </Button>
@@ -170,8 +161,7 @@ const Test = () => {
               <QuestionForm
                 questionType={questionType}
                 selectedQuestion={selectedQuestion}
-                onUpdateQuestion={handleUpdateQuestion}
-                // isQuestionFormClear={isQuestionFormClear}
+                onCloseForm={handleCloseQuestionForm}
               />
             )}
           </div>

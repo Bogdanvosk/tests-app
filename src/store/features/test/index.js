@@ -63,18 +63,23 @@ export const testSlice = createSlice({
       state.isLoading = false;
       state.error = action.payload;
     },
-    addAnswersAction: (state) => {
+    addAnswerAction: (state) => {
       state.isLoading = true;
     },
-    addAnswersSuccess: (state, action) => {
+    addAnswerSuccess: (state, action) => {
       state.isLoading = false;
       state.currentTest = {
         ...state.currentTest,
-        answers: action.payload,
+        questions: state.currentTest.questions.map((q) => {
+          if (q.id === action.payload.questionId) {
+            q.answers = [...q.answers, action.payload.data];
+          }
+          return q;
+        }),
       };
       state.error = null;
     },
-    addAnswersError: (state, action) => {
+    addAnswerError: (state, action) => {
       state.isLoading = false;
       state.error = action.payload;
     },
@@ -167,9 +172,9 @@ export const {
   addNewQuestionAction,
   addNewQuestionSuccess,
   addNewQuestionError,
-  addAnswersAction,
-  addAnswersSuccess,
-  addAnswersError,
+  addAnswerAction,
+  addAnswerSuccess,
+  addAnswerError,
   deleteQuestionAction,
   deleteQuestionSuccess,
   deleteQuestionError,

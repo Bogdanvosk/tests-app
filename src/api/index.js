@@ -57,18 +57,13 @@ export const addQuestionReq = async ({
   return data;
 };
 
-export const addAnswersReq = async (questionId, answers) => {
-  const answersData = [];
+export const addAnswerReq = async ({ questionId, answer }) => {
+  const { data } = await instance.post(
+    `/questions/${questionId}/answers`,
+    answer
+  );
 
-  answers.forEach(async (answer) => {
-    const { data } = await instance.post(
-      `/questions/${questionId}/answers`,
-      answer
-    );
-    answersData.push(data);
-  });
-
-  return answersData;
+  return { questionId, data };
 };
 
 export const deleteQuestionReq = async (questionId) => {
@@ -94,11 +89,3 @@ export const deleteAnswerReq = async ({ answerId, questionId }) => {
 
   return data;
 };
-
-// export const addAnswerReq = async ({ answer, questionId }) => {
-//   const { data } = await instance.post(`/questions/${questionId}/answers`, {
-//     answer,
-//   });
-
-//   return data;
-// };
