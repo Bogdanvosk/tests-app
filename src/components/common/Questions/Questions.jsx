@@ -11,6 +11,7 @@ const Questions = ({ questions = [], onDeleteQuestion, onSelectQuestion }) => {
       {questions.map((question) => {
         return (
           <li className={s.question} key={question.id}>
+            {/* TODO: Стилизовать (подсвечивать) выбранный вопрос selectedQuestion */}
             <Question
               question={question}
               handleSelectQuestion={onSelectQuestion}

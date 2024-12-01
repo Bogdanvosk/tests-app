@@ -87,19 +87,19 @@ const Test = () => {
     dispatch(logoutAction());
   };
 
+  const handleCloseQuestionForm = () => {
+    setIsQuestionFormOpen(false);
+    setSelectedQuestion(null);
+  };
+
   const handleDeleteQuestion = (id) => {
     dispatch(deleteQuestionAction(id));
-    setIsQuestionFormOpen(false);
+    handleCloseQuestionForm();
   };
 
   const handleSelectQuestion = (question) => {
     setSelectedQuestion(question);
     setIsQuestionFormOpen(true);
-  };
-
-  const handleCloseQuestionForm = () => {
-    setIsQuestionFormOpen(false);
-    setSelectedQuestion(null);
   };
 
   return (

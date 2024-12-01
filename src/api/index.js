@@ -1,5 +1,6 @@
 import { instance } from './instance';
 
+// AUTH
 export const signUpReq = async (user) => {
   const { data } = await instance.post('/signup', user);
 
@@ -24,6 +25,7 @@ export const getUserReq = async () => {
   return data;
 };
 
+// TEST
 export const getCurrentTestReq = async (id) => {
   const { data } = await instance.get(`/tests/${id}`);
 
@@ -42,6 +44,13 @@ export const getAllTestsReq = async () => {
   return data;
 };
 
+export const updateTestReq = async ({ testId, title }) => {
+  const { data } = await instance.patch(`/tests/${testId}`, { title });
+
+  return data;
+};
+
+// QUESTION
 export const addQuestionReq = async ({
   testId,
   title,
@@ -57,6 +66,19 @@ export const addQuestionReq = async ({
   return data;
 };
 
+export const updateQuestionReq = async ({ questionId, ...newData }) => {
+  const { data } = await instance.patch(`/questions/${questionId}`, newData);
+
+  return data;
+};
+
+export const deleteQuestionReq = async (questionId) => {
+  const { data } = await instance.delete(`/questions/${questionId}`);
+
+  return data;
+};
+
+// ANSWER
 export const addAnswerReq = async ({ questionId, answer }) => {
   const { data } = await instance.post(
     `/questions/${questionId}/answers`,
@@ -66,25 +88,13 @@ export const addAnswerReq = async ({ questionId, answer }) => {
   return { questionId, data };
 };
 
-export const deleteQuestionReq = async (questionId) => {
-  const { data } = await instance.delete(`/questions/${questionId}`);
+export const updateAnswerReq = async ({ answerId, newData }) => {
+  const { data } = await instance.patch(`/answers/${answerId}`, newData);
 
   return data;
 };
 
-export const updateTestReq = async ({ testId, title }) => {
-  const { data } = await instance.patch(`/tests/${testId}`, { title });
-
-  return data;
-};
-
-export const updateQuestionReq = async ({ questionId, ...newData }) => {
-  const { data } = await instance.patch(`/questions/${questionId}`, newData);
-
-  return data;
-};
-
-export const deleteAnswerReq = async ({ answerId, questionId }) => {
+export const deleteAnswerReq = async ({ answerId }) => {
   const { data } = await instance.delete(`/answers/${answerId}`);
 
   return data;

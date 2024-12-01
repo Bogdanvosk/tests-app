@@ -1,4 +1,4 @@
-import { call, put, takeLatest } from 'redux-saga/effects';
+import { call, put, takeEvery, takeLatest } from 'redux-saga/effects';
 import {
   addAnswerError,
   addAnswerSuccess,
@@ -14,6 +14,8 @@ import {
   getAllTestsSuccess,
   getCurrentTestError,
   getCurrentTestSuccess,
+  updateAnswerError,
+  updateAnswerSuccess,
   updateQuestionError,
   updateQuestionSuccess,
   updateTestError,
@@ -21,13 +23,13 @@ import {
 } from '.';
 import {
   addAnswerReq,
-  addAnswersReq,
   addQuestionReq,
   createTestReq,
   deleteAnswerReq,
   deleteQuestionReq,
   getAllTestsReq,
   getCurrentTestReq,
+  updateAnswerReq,
   updateQuestionReq,
   updateTestReq,
 } from '../../../api';
@@ -41,19 +43,21 @@ import {
   UPDATE_QUESTION,
   DELETE_ANSWER,
   ADD_ANSWER,
+  UPDATE_ANSWER,
 } from './constants';
 
 export function* testSagaWatcher() {
   yield takeLatest(GET_CURRENT_TEST, getCurrentTestWorker);
   yield takeLatest(CREATE_TEST, createTestWorker);
-  yield takeLatest(GET_ALL_TESTS, getAllTestsWorker);
   yield takeLatest(UPDATE_TEST, updateTestWorker);
+  yield takeLatest(GET_ALL_TESTS, getAllTestsWorker);
 
   yield takeLatest(ADD_QUESTION, addQuestionWorker);
-  yield takeLatest(DELETE_QUESTION, deleteQuestionWorker);
   yield takeLatest(UPDATE_QUESTION, updateQuestionWorker);
+  yield takeLatest(DELETE_QUESTION, deleteQuestionWorker);
 
   yield takeLatest(ADD_ANSWER, addAnswerWorker);
+  yield takeEvery(UPDATE_ANSWER, updateAnswerWorker);
   yield takeLatest(DELETE_ANSWER, deleteAnswerWorker);
 }
 
@@ -137,10 +141,20 @@ function* addAnswerWorker({ payload }) {
   }
 }
 
+function* updateAnswerWorker({ payload }) {
+  try {
+    yield call(updateAnswerReq, payload);
+    yield put(updateAnswerSuccess(payload));
+  } catch (error) {
+    const errText = error;
+    yield put(updateAnswerError(errText));
+  }
+}
+
 function* deleteAnswerWorker({ payload }) {
   try {
-    const data = yield call(deleteAnswerReq, payload);
-    yield put(deleteAnswerSuccess(data));
+    yield call(deleteAnswerReq, payload);
+    yield put(deleteAnswerSuccess(payload));
   } catch (error) {
     const errText = 'Server error';
     yield put(deleteAnswerError(errText));

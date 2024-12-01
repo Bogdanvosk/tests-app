@@ -36,6 +36,21 @@ export const testSlice = createSlice({
       state.isLoading = false;
       state.error = action.payload;
     },
+    updateTestAction: (state) => {
+      state.isLoading = true;
+    },
+    updateTestSuccess: (state, action) => {
+      state.isLoading = false;
+      state.currentTest = {
+        ...state.currentTest,
+        title: action.payload.title,
+      };
+      state.error = null;
+    },
+    updateTestError: (state, action) => {
+      state.isLoading = false;
+      state.error = action.payload;
+    },
     getAllTestsAction: (state) => {
       state.isLoading = true;
     },
@@ -63,23 +78,20 @@ export const testSlice = createSlice({
       state.isLoading = false;
       state.error = action.payload;
     },
-    addAnswerAction: (state) => {
+    updateQuestionAction: (state) => {
       state.isLoading = true;
     },
-    addAnswerSuccess: (state, action) => {
+    updateQuestionSuccess: (state, action) => {
       state.isLoading = false;
       state.currentTest = {
         ...state.currentTest,
-        questions: state.currentTest.questions.map((q) => {
-          if (q.id === action.payload.questionId) {
-            q.answers = [...q.answers, action.payload.data];
-          }
-          return q;
-        }),
+        questions: state.currentTest.questions.map((q) =>
+          q.id === action.payload.id ? action.payload : q
+        ),
       };
       state.error = null;
     },
-    addAnswerError: (state, action) => {
+    updateQuestionError: (state, action) => {
       state.isLoading = false;
       state.error = action.payload;
     },
@@ -100,35 +112,48 @@ export const testSlice = createSlice({
       state.isLoading = false;
       state.error = action.payload;
     },
-    updateTestAction: (state) => {
+    addAnswerAction: (state) => {
       state.isLoading = true;
     },
-    updateTestSuccess: (state, action) => {
+    addAnswerSuccess: (state, action) => {
       state.isLoading = false;
       state.currentTest = {
         ...state.currentTest,
-        title: action.payload.title,
+        questions: state.currentTest.questions.map((q) => {
+          if (q.id === action.payload.questionId) {
+            q.answers = [...q.answers, action.payload.data];
+          }
+          return q;
+        }),
       };
       state.error = null;
     },
-    updateTestError: (state, action) => {
+    addAnswerError: (state, action) => {
       state.isLoading = false;
       state.error = action.payload;
     },
-    updateQuestionAction: (state) => {
+    updateAnswerAction: (state) => {
       state.isLoading = true;
     },
-    updateQuestionSuccess: (state, action) => {
+    updateAnswerSuccess: (state, action) => {
       state.isLoading = false;
       state.currentTest = {
         ...state.currentTest,
-        questions: state.currentTest.questions.map((q) =>
-          q.id === action.payload.id ? action.payload : q
-        ),
+        questions: state.currentTest.questions.map((q) => {
+          if (q.id === action.payload.questionId) {
+            q.answers = q.answers.map((a) => {
+              if (a.id === action.payload.answerId) {
+                return action.payload.newData;
+              }
+              return a;
+            });
+          }
+          return q;
+        }),
       };
       state.error = null;
     },
-    updateQuestionError: (state, action) => {
+    updateAnswerError: (state, action) => {
       state.isLoading = false;
       state.error = action.payload;
     },
@@ -166,24 +191,27 @@ export const {
   createTestAction,
   createTestSuccess,
   createTestError,
+  updateTestAction,
+  updateTestSuccess,
+  updateTestError,
   getAllTestsAction,
   getAllTestsSuccess,
   getAllTestsError,
   addNewQuestionAction,
   addNewQuestionSuccess,
   addNewQuestionError,
-  addAnswerAction,
-  addAnswerSuccess,
-  addAnswerError,
-  deleteQuestionAction,
-  deleteQuestionSuccess,
-  deleteQuestionError,
-  updateTestAction,
-  updateTestSuccess,
-  updateTestError,
   updateQuestionAction,
   updateQuestionSuccess,
   updateQuestionError,
+  deleteQuestionAction,
+  deleteQuestionSuccess,
+  deleteQuestionError,
+  addAnswerAction,
+  addAnswerSuccess,
+  addAnswerError,
+  updateAnswerAction,
+  updateAnswerSuccess,
+  updateAnswerError,
   deleteAnswerAction,
   deleteAnswerSuccess,
   deleteAnswerError,
