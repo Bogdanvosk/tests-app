@@ -12,6 +12,7 @@ import {
   addNewQuestionAction,
   deleteAnswerAction,
   updateAnswerAction,
+  updatePositionAction,
   updateQuestionAction,
 } from '@/store/features/test';
 
@@ -28,6 +29,8 @@ const QuestionForm = ({ questionType, selectedQuestion, onCloseForm }) => {
   const [questionStep, setQuestionStep] = useState(1);
   const [isAnswerEditing, setIsAnswerEditing] = useState(false);
   const [correctAnswer, setCorrectAnswer] = useState(null);
+  const [isPositionChanged, setIsPositionChanged] = useState(false);
+
   const test = useSelector(selectCurrentTest);
   const dispatch = useDispatch();
 
@@ -64,10 +67,12 @@ const QuestionForm = ({ questionType, selectedQuestion, onCloseForm }) => {
   const handleSubmit = methods.handleSubmit((data) => {
     if (selectedQuestion) {
       const oldTitle = selectedQuestion.title;
-      const oldAnswers = selectedQuestion.answers;
+      const oldAnswersSet = new Set(selectedQuestion.answers);
+      const newAnswersSet = new Set(data.answers);
 
       const isAnswersChanged =
-        JSON.stringify(oldAnswers) !== JSON.stringify(data.answers);
+        JSON.stringify(selectedQuestion.answers) !==
+        JSON.stringify(data.answers);
 
       if (oldTitle !== data.title) {
         dispatch(
@@ -80,10 +85,19 @@ const QuestionForm = ({ questionType, selectedQuestion, onCloseForm }) => {
       }
 
       // Определяю, есть ли изменения в ответах и патчу ответы
-      if (isAnswersChanged) {
+      if (
+        isAnswersChanged &&
+        data.answers.length === selectedQuestion.answers.length
+      ) {
+        if (oldAnswersSet.size === newAnswersSet.size && isPositionChanged) {
+          resetForm();
+          return;
+        }
+
         data.answers.forEach((_, index) => {
           const newAnswer = data.answers[index];
-          const oldAnswer = oldAnswers[index];
+          const oldAnswer = selectedQuestion.answers[index];
+
           if (
             oldAnswer.text !== newAnswer.text ||
             oldAnswer.is_right !== newAnswer.is_right
@@ -98,28 +112,34 @@ const QuestionForm = ({ questionType, selectedQuestion, onCloseForm }) => {
           }
         });
       }
+
+      // ? Нужно ли закрывать форму
+      resetForm();
       return;
     }
 
-    if (questionType === 'single' || questionType === 'multiple') {
-      const title = data.title;
-
-      dispatch(
-        addNewQuestionAction({
-          title,
-          question_type: questionType,
-          answer: 1,
-          testId: test.id,
-        })
-      );
-
-      setQuestionStep(2);
-    }
+    if (questionStep === 1 && questionType !== 'number')
+      handleCreateQuestion(data);
 
     if (questionType === 'number') console.log(data); // TODO: add question with type "number" (api call)
   });
 
-  const handleAddAnswer = () => {
+  const handleCreateQuestion = (data) => {
+    const title = data.title;
+
+    dispatch(
+      addNewQuestionAction({
+        title,
+        question_type: questionType,
+        answer: 1,
+        testId: test.id,
+      })
+    );
+
+    setQuestionStep(2);
+  };
+
+  const handleAppendAnswer = () => {
     if (questionType !== 'number') {
       append({ text: '', is_right: false });
     }
@@ -128,7 +148,9 @@ const QuestionForm = ({ questionType, selectedQuestion, onCloseForm }) => {
   };
 
   const handleCreateAnswer = () => {
-    const questionId = test.questions[test.questions.length - 1].id;
+    const questionId = !selectedQuestion
+      ? test.questions[test.questions.length - 1].id
+      : selectedQuestion.id;
     const allAnswers = methods.getValues().answers;
     const newAnswer = allAnswers[allAnswers.length - 1];
 
@@ -153,7 +175,12 @@ const QuestionForm = ({ questionType, selectedQuestion, onCloseForm }) => {
       );
       return;
     }
+
+    const index = fields.findIndex((f, idx) => idx === id);
     remove(id);
+    if (index === correctAnswer) setCorrectAnswer(null);
+
+    if (index < correctAnswer) setCorrectAnswer(correctAnswer - 1);
 
     if (selectedQuestion) {
       const answerId = selectedQuestion.answers[id].id;
@@ -166,21 +193,49 @@ const QuestionForm = ({ questionType, selectedQuestion, onCloseForm }) => {
       );
     }
   };
-  // TODO: add changing position field of answer in API
+
   const handleDragEnd = (event) => {
     const { active, over } = event;
+
+    const field = fields.find((f) => f.id === active.id);
+
+    const answerId = selectedQuestion.answers.find(
+      (a) => a.text === field.text
+    ).id;
+
     if (over == null) {
       return;
     }
     if (active.id !== over.id) {
       const oldIndex = fields.findIndex((field) => field.id === active.id);
       const newIndex = fields.findIndex((field) => field.id === over.id);
+
+      dispatch(
+        updatePositionAction({
+          questionId: selectedQuestion.id,
+          position: newIndex,
+          answerId,
+        })
+      );
       move(oldIndex, newIndex);
+
+      // Присваиваю корректный индекс правильного ответа
+      if (correctAnswer === oldIndex) setCorrectAnswer(newIndex);
+      if (correctAnswer === newIndex) setCorrectAnswer(oldIndex);
+
+      if (correctAnswer >= newIndex && correctAnswer < oldIndex) {
+        setCorrectAnswer(correctAnswer + 1);
+      } else if (correctAnswer <= newIndex && correctAnswer > oldIndex) {
+        setCorrectAnswer(correctAnswer - 1);
+      }
+
+      setIsPositionChanged(true);
     }
   };
 
+  // TODO: style validation
   const handleValidate = () => {
-    if (questionStep === 1) {
+    if (questionStep === 1 && !selectedQuestion) {
       return true;
     }
 
@@ -197,15 +252,26 @@ const QuestionForm = ({ questionType, selectedQuestion, onCloseForm }) => {
 
       return true;
     }
-    // TODO: add validation for "number"
+
+    if (questionType === 'number') {
+      // TODO: add validation for "number"
+    }
+  };
+
+  const resetForm = () => {
+    setQuestionStep(1);
+    setCorrectAnswer(null);
+    methods.reset();
+    onCloseForm();
   };
 
   const handleCloseForm = () => {
     if (handleValidate()) {
-      setQuestionStep(1);
-      setCorrectAnswer(null);
-      methods.reset();
-      onCloseForm();
+      if (!selectedQuestion) {
+        resetForm();
+      } else {
+        handleSubmit();
+      }
     }
   };
 
@@ -303,25 +369,31 @@ const QuestionForm = ({ questionType, selectedQuestion, onCloseForm }) => {
               })}
           </div>
 
-          {questionStep === 1 && (
-            <div>
-              <Button className={s.button} type='submit'>
-                {selectedQuestion ? 'Сохранить вопрос' : 'Создать вопрос'}
-              </Button>
-              {/* {methods.formState.errors && <p>Error</p>} */}
-            </div>
+          {questionStep === 1 && !selectedQuestion && (
+            <Button className={s.button} type='submit'>
+              {selectedQuestion ? 'Сохранить вопрос' : 'Создать вопрос'}
+            </Button>
           )}
-          {questionStep === 2 && (
+
+          {(questionStep === 2 || selectedQuestion) && (
             <Button
               className={s.button}
               type='button'
-              onClick={isAnswerEditing ? handleCreateAnswer : handleAddAnswer}
+              onClick={
+                isAnswerEditing ? handleCreateAnswer : handleAppendAnswer
+              }
             >
               {isAnswerEditing ? 'Создать ответ' : 'Добавить вариант ответа'}
             </Button>
           )}
-          <Button className={cn(s.button, s.cancel)} onClick={handleCloseForm}>
-            Отмена
+
+          <Button
+            className={cn(s.button, {
+              [s.cancel]: questionStep === 1 && !selectedQuestion,
+            })}
+            onClick={handleCloseForm}
+          >
+            {questionStep === 1 && !selectedQuestion ? 'Отмена' : 'Готово'}
           </Button>
         </form>
       </FormProvider>

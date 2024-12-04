@@ -1,9 +1,9 @@
 import PropTypes from 'prop-types';
 
 import Question from '../Question/Question';
+import Icon from '../Icon/Icon';
 
 import s from './Questions.module.scss';
-import Icon from '../Icon/Icon';
 
 const Questions = ({ questions = [], onDeleteQuestion, onSelectQuestion }) => {
   return (
@@ -11,7 +11,6 @@ const Questions = ({ questions = [], onDeleteQuestion, onSelectQuestion }) => {
       {questions.map((question) => {
         return (
           <li className={s.question} key={question.id}>
-            {/* TODO: Стилизовать (подсвечивать) выбранный вопрос selectedQuestion */}
             <Question
               question={question}
               handleSelectQuestion={onSelectQuestion}

@@ -99,3 +99,11 @@ export const deleteAnswerReq = async ({ answerId }) => {
 
   return data;
 };
+
+export const updatePositionReq = async ({ answerId, position }) => {
+  const { data } = await instance.patch(
+    `/answers/${answerId}/insert_at/${position}`
+  );
+
+  return data;
+};

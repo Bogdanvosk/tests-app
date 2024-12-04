@@ -1,9 +1,24 @@
 import PropTypes from 'prop-types';
+import cn from 'classnames';
+import { useContext } from 'react';
+
+import { isOpenFormContext } from '@/components/pages/Test/Test';
 
 import s from './Question.module.scss';
 
 const Question = ({ question, handleSelectQuestion }) => {
-  return <div onClick={() => handleSelectQuestion(question)} className={s.question}>{question.title}</div>;
+  const { open: isFormOpen, id } = useContext(isOpenFormContext);
+
+  return (
+    <div
+      onClick={() => handleSelectQuestion(question.id)}
+      className={cn(s.question, {
+        [s.selected]: isFormOpen && question.id === id,
+      })}
+    >
+      {question.title}
+    </div>
+  );
 };
 
 export default Question;

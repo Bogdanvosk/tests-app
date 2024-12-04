@@ -1,6 +1,6 @@
 import cn from 'classnames';
 
-import { useEffect, useState } from 'react';
+import { createContext, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   createTestAction,
@@ -25,6 +25,8 @@ import QuestionForm from '@/components/common/QuestionForm/QuestionForm';
 import Dropdown from '@/components/common/Dropdown/Dropdown';
 
 import s from './Test.module.scss';
+
+export const isOpenFormContext = createContext({ open: false, id: null });
 
 const Test = () => {
   const router = useRouter();
@@ -97,9 +99,14 @@ const Test = () => {
     handleCloseQuestionForm();
   };
 
-  const handleSelectQuestion = (question) => {
-    setSelectedQuestion(question);
-    setIsQuestionFormOpen(true);
+  const handleSelectQuestion = (id) => {
+    const question = getSelectedQuestion(id);
+    question && setSelectedQuestion(question);
+    setTimeout(() => setIsQuestionFormOpen(true), 100);
+  };
+
+  const getSelectedQuestion = (id) => {
+    return currentQuestions.find((q) => q.id === id);
   };
 
   return (
@@ -139,11 +146,15 @@ const Test = () => {
         <Container>
           <div className={s.content}>
             <div className={s.questions}>
-              <Questions
-                questions={questions}
-                onDeleteQuestion={handleDeleteQuestion}
-                onSelectQuestion={handleSelectQuestion}
-              />
+              <isOpenFormContext.Provider
+                value={{ open: isQuestionFormOpen, id: selectedQuestion?.id }}
+              >
+                <Questions
+                  questions={questions}
+                  onDeleteQuestion={handleDeleteQuestion}
+                  onSelectQuestion={handleSelectQuestion}
+                />
+              </isOpenFormContext.Provider>
 
               <Button
                 className={cn(s.button, s.addQuestion)}

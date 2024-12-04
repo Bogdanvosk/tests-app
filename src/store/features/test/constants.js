@@ -7,6 +7,7 @@ import {
   getAllTestsAction,
   getCurrentTestAction,
   updateAnswerAction,
+  updatePositionAction,
   updateQuestionAction,
   updateTestAction,
 } from '.';
@@ -23,3 +24,4 @@ export const DELETE_QUESTION = deleteQuestionAction.type;
 export const ADD_ANSWER = addAnswerAction.type;
 export const UPDATE_ANSWER = updateAnswerAction.type;
 export const DELETE_ANSWER = deleteAnswerAction.type;
+export const UPDATE_POSITION = updatePositionAction.type;

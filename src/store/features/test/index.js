@@ -179,6 +179,33 @@ export const testSlice = createSlice({
       state.isLoading = false;
       state.error = action.payload;
     },
+    updatePositionAction: (state) => {
+      state.isLoading = true;
+    },
+    updatePositionSuccess: (state, action) => {
+      state.currentTest = {
+        ...state.currentTest,
+        questions: state.currentTest.questions.map((q) => {
+          if (q.id === action.payload.questionId) {
+            const currAnswer = q.answers.find(
+              (a) => a.id === action.payload.answerId
+            );
+
+            const newAnswers = q.answers.filter(
+              (a) => a.id !== action.payload.answerId
+            );
+
+            q.answers = [...newAnswers];
+            q.answers.splice(action.payload.position, 0, currAnswer);
+          }
+          return q;
+        }),
+      };
+    },
+    updatePositionError: (state, action) => {
+      state.isLoading = false;
+      state.error = action.payload;
+    },
   },
 });
 
@@ -215,4 +242,7 @@ export const {
   deleteAnswerAction,
   deleteAnswerSuccess,
   deleteAnswerError,
+  updatePositionAction,
+  updatePositionSuccess,
+  updatePositionError,
 } = testSlice.actions;

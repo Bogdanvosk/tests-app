@@ -16,6 +16,8 @@ import {
   getCurrentTestSuccess,
   updateAnswerError,
   updateAnswerSuccess,
+  updatePositionError,
+  updatePositionSuccess,
   updateQuestionError,
   updateQuestionSuccess,
   updateTestError,
@@ -30,6 +32,7 @@ import {
   getAllTestsReq,
   getCurrentTestReq,
   updateAnswerReq,
+  updatePositionReq,
   updateQuestionReq,
   updateTestReq,
 } from '../../../api';
@@ -44,6 +47,7 @@ import {
   DELETE_ANSWER,
   ADD_ANSWER,
   UPDATE_ANSWER,
+  UPDATE_POSITION,
 } from './constants';
 
 export function* testSagaWatcher() {
@@ -59,6 +63,7 @@ export function* testSagaWatcher() {
   yield takeLatest(ADD_ANSWER, addAnswerWorker);
   yield takeEvery(UPDATE_ANSWER, updateAnswerWorker);
   yield takeLatest(DELETE_ANSWER, deleteAnswerWorker);
+  yield takeLatest(UPDATE_POSITION, updatePositionWorker);
 }
 
 function* getCurrentTestWorker({ payload }) {
@@ -66,8 +71,7 @@ function* getCurrentTestWorker({ payload }) {
     const data = yield call(getCurrentTestReq, payload);
     yield put(getCurrentTestSuccess(data));
   } catch (error) {
-    const errText = error.response.data || 'Server error';
-    yield put(getCurrentTestError(errText));
+    yield put(getCurrentTestError(error));
   }
 }
 
@@ -76,8 +80,7 @@ function* createTestWorker({ payload }) {
     const data = yield call(createTestReq, payload);
     yield put(createTestSuccess(data));
   } catch (error) {
-    const errText = error.response.data || 'Server error';
-    yield put(createTestError(errText));
+    yield put(createTestError(error));
   }
 }
 
@@ -86,8 +89,7 @@ function* getAllTestsWorker() {
     const data = yield call(getAllTestsReq);
     yield put(getAllTestsSuccess(data));
   } catch (error) {
-    const errText = error.response.data || 'Server error';
-    yield put(getAllTestsError(errText));
+    yield put(getAllTestsError(error));
   }
 }
 
@@ -96,8 +98,7 @@ function* addQuestionWorker({ payload }) {
     const question = yield call(addQuestionReq, payload);
     yield put(addNewQuestionSuccess(question));
   } catch (error) {
-    const errText = 'Server error';
-    yield put(addNewQuestionError(errText));
+    yield put(addNewQuestionError(error));
   }
 }
 
@@ -106,8 +107,7 @@ function* deleteQuestionWorker({ payload }) {
     yield call(deleteQuestionReq, payload);
     yield put(deleteQuestionSuccess(payload));
   } catch (error) {
-    const errText = 'Server error';
-    yield put(deleteQuestionError(errText));
+    yield put(deleteQuestionError(error));
   }
 }
 
@@ -116,8 +116,7 @@ function* updateTestWorker({ payload }) {
     const data = yield call(updateTestReq, payload);
     yield put(updateTestSuccess(data));
   } catch (error) {
-    const errText = 'Server error';
-    yield put(updateTestError(errText));
+    yield put(updateTestError(error));
   }
 }
 
@@ -126,8 +125,7 @@ function* updateQuestionWorker({ payload }) {
     const data = yield call(updateQuestionReq, payload);
     yield put(updateQuestionSuccess(data));
   } catch (error) {
-    const errText = error.response.data || 'Server error';
-    yield put(updateQuestionError(errText));
+    yield put(updateQuestionError(error));
   }
 }
 
@@ -136,8 +134,7 @@ function* addAnswerWorker({ payload }) {
     const data = yield call(addAnswerReq, payload);
     yield put(addAnswerSuccess(data));
   } catch (error) {
-    const errText = error;
-    yield put(addAnswerError(errText));
+    yield put(addAnswerError(error));
   }
 }
 
@@ -146,8 +143,7 @@ function* updateAnswerWorker({ payload }) {
     yield call(updateAnswerReq, payload);
     yield put(updateAnswerSuccess(payload));
   } catch (error) {
-    const errText = error;
-    yield put(updateAnswerError(errText));
+    yield put(updateAnswerError(error));
   }
 }
 
@@ -156,7 +152,15 @@ function* deleteAnswerWorker({ payload }) {
     yield call(deleteAnswerReq, payload);
     yield put(deleteAnswerSuccess(payload));
   } catch (error) {
-    const errText = 'Server error';
-    yield put(deleteAnswerError(errText));
+    yield put(deleteAnswerError(error));
+  }
+}
+
+function* updatePositionWorker({ payload }) {
+  try {
+    yield call(updatePositionReq, payload);
+    yield put(updatePositionSuccess(payload));
+  } catch (error) {
+    yield put(updatePositionError(error));
   }
 }
