@@ -26,17 +26,11 @@
 .button {
   display: block;
   margin-bottom: 0.5rem;
+
+  @include button();
+
   padding: 1rem 2rem;
   font-weight: 700;
-  background-color: $color-mindaro;
-
-  @include hover {
-    background-color: color.adjust($color-mindaro, $lightness: -20%);
-  }
-
-  &:active {
-    background-color: color.adjust($color-mindaro, $lightness: -10%);
-  }
 }
 
 .show {
@@ -48,15 +42,9 @@
 }
 
 .delete {
-  background-color: $color-red;
+  @include button(true);
 
-  @include hover {
-    background-color: color.adjust($color-red, $lightness: -20%);
-  }
-
-  &:active {
-    background-color: color.adjust($color-red, $lightness: -10%);
-  }
+  padding: 1rem 2rem;
 }
 
 .content {

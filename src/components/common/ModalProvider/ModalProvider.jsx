@@ -2,9 +2,9 @@ import { createContext, useContext, useEffect, useState } from 'react';
 
 import Modal from '../Modal/Modal';
 
-import { getModalContent } from '../../../hooks/getModalContent';
+import { getModalContent } from '@/utils/getModalContent';
 
-import s from './ModalPovider.module.scss';
+import s from './ModalProvider.module.scss';
 
 const initialStore = {
   modalType: null,
@@ -34,6 +34,7 @@ const ModalPovider = ({ children }) => {
     if (!modalType) return null;
 
     const ModalComponent = getModalContent(modalType);
+
     return (
       <Modal className={s[modalType]}>
         <ModalComponent {...modalProps} />

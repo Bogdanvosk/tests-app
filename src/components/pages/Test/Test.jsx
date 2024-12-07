@@ -46,6 +46,8 @@ const Test = () => {
   useEffect(() => {
     currentTest && setTitle(currentTest.title);
     currentQuestions && setQuestions(currentQuestions);
+
+    if (selectedQuestion) handleSelectQuestion(selectedQuestion?.id);
   }, [currentTest, currentQuestions]);
 
   useEffect(() => {
@@ -100,13 +102,9 @@ const Test = () => {
   };
 
   const handleSelectQuestion = (id) => {
-    const question = getSelectedQuestion(id);
+    const question = currentQuestions.find((q) => q.id === id);
     question && setSelectedQuestion(question);
-    setTimeout(() => setIsQuestionFormOpen(true), 100);
-  };
-
-  const getSelectedQuestion = (id) => {
-    return currentQuestions.find((q) => q.id === id);
+    setIsQuestionFormOpen(true);
   };
 
   return (

@@ -3,7 +3,8 @@ import cn from 'classnames';
 import { DndContext } from '@dnd-kit/core';
 import { SortableContext } from '@dnd-kit/sortable';
 
-import { FormProvider, set, useFieldArray, useForm } from 'react-hook-form';
+import { FormProvider, useFieldArray, useForm } from 'react-hook-form';
+import { useModalContext } from '../ModalProvider/ModalProvider';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectCurrentTest } from '@/store/features/test/selectors';
@@ -30,6 +31,8 @@ const QuestionForm = ({ questionType, selectedQuestion, onCloseForm }) => {
   const [isAnswerEditing, setIsAnswerEditing] = useState(false);
   const [correctAnswer, setCorrectAnswer] = useState(null);
   const [isPositionChanged, setIsPositionChanged] = useState(false);
+  const [acceptedAction, setAcceptedAction] = useState(null);
+  const { showModal } = useModalContext();
 
   const test = useSelector(selectCurrentTest);
   const dispatch = useDispatch();
@@ -63,6 +66,12 @@ const QuestionForm = ({ questionType, selectedQuestion, onCloseForm }) => {
       setCorrectAnswer(correctAnswer);
     }
   }, [selectedQuestion]);
+
+  useEffect(() => {
+    if (acceptedAction?.actionValue === 'delete') {
+      handleDeleteAnswer(acceptedAction.id);
+    }
+  }, [acceptedAction]);
 
   const handleSubmit = methods.handleSubmit((data) => {
     if (selectedQuestion) {
@@ -165,7 +174,21 @@ const QuestionForm = ({ questionType, selectedQuestion, onCloseForm }) => {
         answer: newAnswer,
       })
     );
+
     setIsAnswerEditing(false);
+  };
+
+  const acceptDeleteAnswer = (index) => {
+    if (methods.getValues().answers[index].is_right) {
+      alert('Нельзя удалить правильный ответ');
+      return;
+    }
+
+    showModal('accept', { handleIsAccepted, actionValue: 'delete', id: index });
+  };
+
+  const handleIsAccepted = (value) => {
+    setAcceptedAction(value);
   };
 
   const handleDeleteAnswer = (id) => {
@@ -176,6 +199,7 @@ const QuestionForm = ({ questionType, selectedQuestion, onCloseForm }) => {
       return;
     }
 
+    // TODO: проверять подтвердил ли пользователь действие
     const index = fields.findIndex((f, idx) => idx === id);
     remove(id);
     if (index === correctAnswer) setCorrectAnswer(null);
@@ -191,6 +215,7 @@ const QuestionForm = ({ questionType, selectedQuestion, onCloseForm }) => {
           answerId,
         })
       );
+      setAcceptedAction(null);
     }
   };
 
@@ -296,31 +321,6 @@ const QuestionForm = ({ questionType, selectedQuestion, onCloseForm }) => {
 
           <div className={s.answers}>
             <SortableContext items={fields}>
-              {questionType === 'multiple' &&
-                fields.map((field, index) => {
-                  return (
-                    <SortableItem field={field} key={field.id}>
-                      <div className={s.answer}>
-                        <Input
-                          className={s.input}
-                          type='text'
-                          fieldName={`answers.${index}.text`}
-                          placeholder='Введите вариант ответа'
-                        />
-                        <Input
-                          className={s.checkbox}
-                          type='checkbox'
-                          fieldName={`answers.${index}.is_right`}
-                          defaultChecked={field.is_right}
-                        />
-                        <div onClick={() => handleDeleteAnswer(index)}>
-                          <Icon name='delete' className={s.delete} />
-                        </div>
-                      </div>
-                    </SortableItem>
-                  );
-                })}
-
               {questionType === 'single' &&
                 fields.map((field, index) => {
                   return (
@@ -341,11 +341,36 @@ const QuestionForm = ({ questionType, selectedQuestion, onCloseForm }) => {
                             handleChangeCorrectAnswer(field, index)
                           }
                         />
-                        <div
-                          onClick={() => {
-                            handleDeleteAnswer(index);
-                          }}
-                        >
+                        <div onClick={() => acceptDeleteAnswer(index)}>
+                          <Icon
+                            id='delete'
+                            name='delete'
+                            className={s.delete}
+                          />
+                        </div>
+                      </div>
+                    </SortableItem>
+                  );
+                })}
+
+              {questionType === 'multiple' &&
+                fields.map((field, index) => {
+                  return (
+                    <SortableItem field={field} key={field.id}>
+                      <div className={s.answer}>
+                        <Input
+                          className={s.input}
+                          type='text'
+                          fieldName={`answers.${index}.text`}
+                          placeholder='Введите вариант ответа'
+                        />
+                        <Input
+                          className={s.checkbox}
+                          type='checkbox'
+                          fieldName={`answers.${index}.is_right`}
+                          defaultChecked={field.is_right}
+                        />
+                        <div onClick={() => acceptDeleteAnswer(index)}>
                           <Icon name='delete' className={s.delete} />
                         </div>
                       </div>

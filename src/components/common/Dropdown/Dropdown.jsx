@@ -1,8 +1,7 @@
 import PropTypes from 'prop-types';
 import cn from 'classnames';
 
-import { useRef, useState } from 'react';
-import useOutsideClick from '@/hooks/useOutsideClick';
+import { useState } from 'react';
 
 import s from './Dropdown.module.scss';
 
@@ -10,9 +9,6 @@ const Dropdown = ({ options, onSelectQuestionType }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [items, setItem] = useState(options);
   const [selectedItem, setSelectedItem] = useState(options[0].id);
-  const dropdownRef = useRef(null);
-
-  useOutsideClick(dropdownRef, () => setIsOpen(false));
 
   const toggleDropdown = () => setIsOpen(!isOpen);
 
@@ -25,7 +21,7 @@ const Dropdown = ({ options, onSelectQuestionType }) => {
   };
 
   return (
-    <div className={s.dropdown} ref={dropdownRef}>
+    <div className={s.dropdown}>
       <div className={s.header} onClick={toggleDropdown}>
         {items.find((item) => item.id === selectedItem).text}
       </div>

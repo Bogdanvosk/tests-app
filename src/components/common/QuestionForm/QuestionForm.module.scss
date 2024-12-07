@@ -20,16 +20,8 @@
 
 .button {
   margin-top: 1rem;
-  padding: 0.7rem;
-  background-color: $color-mindaro;
 
-  @include hover {
-    background-color: color.adjust($color-mindaro, $lightness: -20%);
-  }
-
-  &:active {
-    background-color: color.adjust($color-mindaro, $lightness: -10%);
-  }
+  @include button;
 }
 
 .answer {
@@ -56,13 +48,5 @@
 }
 
 .cancel {
-  background-color: $color-red;
-
-  @include hover {
-    background-color: color.adjust($color-red, $lightness: -20%);
-  }
-
-  &:active {
-    background-color: color.adjust($color-red, $lightness: -10%);
-  }
+  @include button(true);
 }
