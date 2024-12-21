@@ -43,3 +43,8 @@
     background-color: $color-mindaro;
   }
 }
+
+.disabled {
+  pointer-events: none;
+  opacity: 0.7;
+}

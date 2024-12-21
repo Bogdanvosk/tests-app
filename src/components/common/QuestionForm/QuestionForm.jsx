@@ -32,6 +32,8 @@ const QuestionForm = ({ questionType, selectedQuestion, onCloseForm }) => {
   const [correctAnswer, setCorrectAnswer] = useState(null);
   const [isPositionChanged, setIsPositionChanged] = useState(false);
   const [acceptedAction, setAcceptedAction] = useState(null);
+  const [isNumberAnswerAdded, setIsNumberAnswerAdded] = useState(false);
+
   const { showModal } = useModalContext();
 
   const test = useSelector(selectCurrentTest);
@@ -50,11 +52,6 @@ const QuestionForm = ({ questionType, selectedQuestion, onCloseForm }) => {
   });
 
   useEffect(() => {
-    methods.reset();
-    setCorrectAnswer(null);
-  }, [questionType]);
-
-  useEffect(() => {
     if (selectedQuestion) {
       methods.setValue('title', selectedQuestion.title);
       methods.setValue('answers', selectedQuestion.answers);
@@ -68,7 +65,7 @@ const QuestionForm = ({ questionType, selectedQuestion, onCloseForm }) => {
   }, [selectedQuestion]);
 
   useEffect(() => {
-    if (acceptedAction?.actionValue === 'delete') {
+    if (acceptedAction?.actionValue === 'delete-answer') {
       handleDeleteAnswer(acceptedAction.id);
     }
   }, [acceptedAction]);
@@ -121,16 +118,20 @@ const QuestionForm = ({ questionType, selectedQuestion, onCloseForm }) => {
           }
         });
       }
-
-      // ? Нужно ли закрывать форму
       resetForm();
-      return;
+      // ? Нужно ли закрывать форму
     }
 
-    if (questionStep === 1 && questionType !== 'number')
+    if (
+      questionStep === 1 &&
+      selectedQuestion.question_type !== 'number' &&
+      !selectedQuestion
+    )
       handleCreateQuestion(data);
 
-    if (questionType === 'number') console.log(data); // TODO: add question with type "number" (api call)
+    if (questionStep === 1 && selectedQuestion.question_type === 'number') {
+      handleCreateQuestion(data);
+    }
   });
 
   const handleCreateQuestion = (data) => {
@@ -139,7 +140,7 @@ const QuestionForm = ({ questionType, selectedQuestion, onCloseForm }) => {
     dispatch(
       addNewQuestionAction({
         title,
-        question_type: questionType,
+        question_type: selectedQuestion.question_type,
         answer: 1,
         testId: test.id,
       })
@@ -148,9 +149,13 @@ const QuestionForm = ({ questionType, selectedQuestion, onCloseForm }) => {
     setQuestionStep(2);
   };
 
+  // TODO: не добавлять ответ в вопросе с question_type == 'number'
   const handleAppendAnswer = () => {
-    if (questionType !== 'number') {
+    if (selectedQuestion.question_type !== 'number') {
       append({ text: '', is_right: false });
+    } else {
+      append({ text: '' });
+      isAnswerAppended = true;
     }
 
     setIsAnswerEditing(true);
@@ -179,12 +184,19 @@ const QuestionForm = ({ questionType, selectedQuestion, onCloseForm }) => {
   };
 
   const acceptDeleteAnswer = (index) => {
-    if (methods.getValues().answers[index].is_right) {
+    if (
+      methods.getValues().answers[index].is_right &&
+      selectedQuestion.question_type === 'single'
+    ) {
       alert('Нельзя удалить правильный ответ');
       return;
     }
 
-    showModal('accept', { handleIsAccepted, actionValue: 'delete', id: index });
+    showModal('accept', {
+      handleIsAccepted,
+      actionValue: 'delete-answer',
+      id: index,
+    });
   };
 
   const handleIsAccepted = (value) => {
@@ -199,7 +211,6 @@ const QuestionForm = ({ questionType, selectedQuestion, onCloseForm }) => {
       return;
     }
 
-    // TODO: проверять подтвердил ли пользователь действие
     const index = fields.findIndex((f, idx) => idx === id);
     remove(id);
     if (index === correctAnswer) setCorrectAnswer(null);
@@ -258,27 +269,32 @@ const QuestionForm = ({ questionType, selectedQuestion, onCloseForm }) => {
     }
   };
 
-  // TODO: style validation
   const handleValidate = () => {
     if (questionStep === 1 && !selectedQuestion) {
       return true;
     }
 
-    if (questionType === 'single' || questionType === 'multiple') {
+    if (
+      selectedQuestion.question_type === 'single' ||
+      selectedQuestion.question_type === 'multiple'
+    ) {
       if (fields.length < 2) {
         alert('Добавьте хотя бы два варианта ответа');
         return false;
       }
 
-      if (correctAnswer === null) {
-        alert('Выберите правильный ответ');
+      if (
+        selectedQuestion.question_type === 'single' &&
+        correctAnswer === null
+      ) {
+        alert('Выберите правильный ответ');
         return false;
       }
 
       return true;
     }
 
-    if (questionType === 'number') {
+    if (selectedQuestion.question_type === 'number') {
       // TODO: add validation for "number"
     }
   };
@@ -291,21 +307,26 @@ const QuestionForm = ({ questionType, selectedQuestion, onCloseForm }) => {
   };
 
   const handleCloseForm = () => {
-    if (handleValidate()) {
-      if (!selectedQuestion) {
-        resetForm();
-      } else {
-        handleSubmit();
-      }
+    if (handleValidate() && !selectedQuestion) {
+      resetForm();
+    } else {
+      handleSubmit();
     }
   };
 
-  const handleChangeCorrectAnswer = (field, index) => {
-    const oldCorrectAnswerIdx = fields.findIndex((f) => f.is_right === true);
+  const handleChangeCorrectAnswer = (index) => {
+    if (questionStep === 2 && correctAnswer !== null) {
+      alert('Нельзя изменить правильный ответ');
+      return;
+    }
 
-    setCorrectAnswer(index);
-    methods.setValue(`answers.${index}.is_right`, true);
-    methods.setValue(`answers.${oldCorrectAnswerIdx}.is_right`, false);
+    if (selectedQuestion.question_type === 'single') {
+      const oldCorrectAnswerIdx = fields.findIndex((f) => f.is_right === true);
+
+      setCorrectAnswer(index);
+      methods.setValue(`answers.${index}.is_right`, true);
+      methods.setValue(`answers.${oldCorrectAnswerIdx}.is_right`, false);
+    }
   };
 
   return (
@@ -337,17 +358,17 @@ const QuestionForm = ({ questionType, selectedQuestion, onCloseForm }) => {
                           type='checkbox'
                           fieldName={`answers.${index}.is_right`}
                           checked={correctAnswer === index}
-                          onClick={() =>
-                            handleChangeCorrectAnswer(field, index)
-                          }
+                          onClick={() => handleChangeCorrectAnswer(index)}
                         />
-                        <div onClick={() => acceptDeleteAnswer(index)}>
-                          <Icon
-                            id='delete'
-                            name='delete'
-                            className={s.delete}
-                          />
-                        </div>
+                        {questionStep !== 2 && (
+                          <div onClick={() => acceptDeleteAnswer(index)}>
+                            <Icon
+                              id='delete'
+                              name='delete'
+                              className={s.delete}
+                            />
+                          </div>
+                        )}
                       </div>
                     </SortableItem>
                   );
@@ -368,6 +389,7 @@ const QuestionForm = ({ questionType, selectedQuestion, onCloseForm }) => {
                           className={s.checkbox}
                           type='checkbox'
                           fieldName={`answers.${index}.is_right`}
+                          onClick={() => handleChangeCorrectAnswer(index)}
                           defaultChecked={field.is_right}
                         />
                         <div onClick={() => acceptDeleteAnswer(index)}>
@@ -379,19 +401,28 @@ const QuestionForm = ({ questionType, selectedQuestion, onCloseForm }) => {
                 })}
             </SortableContext>
 
-            {questionType === 'number' &&
-              fields.map((field, index) => {
-                return (
-                  <div className={cn(s.answer, s.number)} key={field.id}>
-                    <Input
-                      className={s.input}
-                      type='number'
-                      fieldName={`answers.${index}.text`}
-                      placeholder='Введите вариант ответа'
-                    />
-                  </div>
-                );
-              })}
+            {questionType === 'number' && (
+              // fields.map((field, index) => {
+              //   return (
+              //     <div className={cn(s.answer, s.number)} key={field.id}>
+              //       <Input
+              //         className={s.input}
+              //         type='number'
+              //         fieldName={`answers.${index}.text`}
+              //         placeholder='Введите вариант ответа'
+              //       />
+              //     </div>
+              //   );
+              // })
+              <div className={cn(s.answer, s.number)} key={fields[0].id}>
+                <Input
+                  className={s.input}
+                  type='number'
+                  fieldName={`answers.0.text`}
+                  placeholder='Введите вариант ответа'
+                />
+              </div>
+            )}
           </div>
 
           {questionStep === 1 && !selectedQuestion && (
@@ -433,7 +464,7 @@ QuestionForm.propTypes = {
   selectedQuestion: PropTypes.shape({
     id: PropTypes.number,
     title: PropTypes.string,
-    question_type: PropTypes.string,
+    question_type: PropTypes.oneOf(['single', 'multiple', 'number']),
     answer: PropTypes.number,
     answers: PropTypes.arrayOf(PropTypes.object),
   }),

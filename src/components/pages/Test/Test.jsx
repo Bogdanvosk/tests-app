@@ -16,6 +16,7 @@ import { useRouter } from 'next/router';
 import { logoutAction } from '@/store/features/auth';
 import useLocalStorage from '@/hooks/useLocalStorage';
 import useDebounce from '@/hooks/useDebounce';
+import { useModalContext } from '@/components/common/ModalProvider/ModalProvider';
 
 import { questionTypes } from '@/content';
 import Container from '../../common/Container/Container';
@@ -39,6 +40,8 @@ const Test = () => {
   const [questions, setQuestions] = useState([]);
   const [selectedQuestion, setSelectedQuestion] = useState(null);
   const [questionType, setQuestionType] = useState(questionTypes[0].value);
+  const [acceptedAction, setAcceptedAction] = useState(null);
+  const { showModal } = useModalContext();
 
   const currentTest = useSelector(selectCurrentTest);
   const currentQuestions = useSelector(selectCurrentQuestions);
@@ -49,6 +52,12 @@ const Test = () => {
 
     if (selectedQuestion) handleSelectQuestion(selectedQuestion?.id);
   }, [currentTest, currentQuestions]);
+
+  useEffect(() => {
+    if (acceptedAction?.actionValue === 'delete-question') {
+      handleDeleteQuestion(acceptedAction.id);
+    }
+  }, [acceptedAction]);
 
   useEffect(() => {
     // TODO: get testId from props if existed test, else null
@@ -66,6 +75,10 @@ const Test = () => {
       updateTestAction({ testId: currentTest.id, title: debouncedValue })
     );
   }, [debouncedValue]);
+
+  useEffect(() => {
+    !isQuestionFormOpen && setQuestionType(questionTypes[0].value);
+  }, [isQuestionFormOpen]);
 
   const handleChangeTitle = (e) => {
     setTitle(e.target.value);
@@ -94,6 +107,18 @@ const Test = () => {
   const handleCloseQuestionForm = () => {
     setIsQuestionFormOpen(false);
     setSelectedQuestion(null);
+  };
+
+  const acceptDeleteQuestion = (id) => {
+    showModal('accept', {
+      handleIsAccepted,
+      actionValue: 'delete-question',
+      id,
+    });
+  };
+
+  const handleIsAccepted = (value) => {
+    setAcceptedAction(value);
   };
 
   const handleDeleteQuestion = (id) => {
@@ -149,7 +174,7 @@ const Test = () => {
               >
                 <Questions
                   questions={questions}
-                  onDeleteQuestion={handleDeleteQuestion}
+                  onDeleteQuestion={acceptDeleteQuestion}
                   onSelectQuestion={handleSelectQuestion}
                 />
               </isOpenFormContext.Provider>
@@ -162,7 +187,9 @@ const Test = () => {
                 Добавить вопрос
               </Button>
               <Dropdown
+                disabled={selectedQuestion}
                 options={questionTypes}
+                selectedQuestion={selectedQuestion}
                 onSelectQuestionType={handleSelectQuestionType}
               />
             </div>
@@ -170,6 +197,7 @@ const Test = () => {
               <QuestionForm
                 questionType={questionType}
                 selectedQuestion={selectedQuestion}
+                onSelectQuestion={handleSelectQuestion}
                 onCloseForm={handleCloseQuestionForm}
               />
             )}
