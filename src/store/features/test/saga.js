@@ -35,7 +35,7 @@ import {
   updatePositionReq,
   updateQuestionReq,
   updateTestReq,
-} from '../../../api';
+} from '@/api';
 import {
   CREATE_TEST,
   GET_ALL_TESTS,

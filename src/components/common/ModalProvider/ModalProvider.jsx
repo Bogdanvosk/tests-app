@@ -2,7 +2,7 @@ import { createContext, useContext, useEffect, useState } from 'react';
 
 import Modal from '../Modal/Modal';
 
-import { getModalContent } from '@/utils/getModalContent';
+import { getModalContent } from 'utils/getModalContent';
 
 import s from './ModalProvider.module.scss';
 

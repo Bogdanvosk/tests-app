@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 
-import { getIcon } from '../../../utils/getIcon';
+import { getIcon } from 'utils/getIcon';
 
 const Icon = ({ name, className = '', fill, ...props }) => {
   const SVGIcon = getIcon(name);

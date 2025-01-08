@@ -1,5 +1,5 @@
 import { call, put, takeLatest } from 'redux-saga/effects';
-import { getUserReq, logoutReq, signInReq, signUpReq } from '../../../api';
+import { getUserReq, logoutReq, signInReq, signUpReq } from '@/api';
 import {
   getUserError,
   getUserSuccess,

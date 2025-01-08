@@ -1,7 +1,7 @@
 import cn from 'classnames';
 import PropTypes from 'prop-types';
 
-import Icon from '../Icon/Icon';
+import Icon from 'components/common/Icon/Icon';
 
 import s from './Button.module.scss';
 

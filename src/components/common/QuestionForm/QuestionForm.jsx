@@ -7,7 +7,7 @@ import { FormProvider, useFieldArray, useForm } from 'react-hook-form';
 import { useModalContext } from '../ModalProvider/ModalProvider';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { selectCurrentTest } from '@/store/features/test/selectors';
+import { selectCurrentTest } from 'store/features/test/selectors';
 import {
   addAnswerAction,
   addNewQuestionAction,

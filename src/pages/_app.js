@@ -1,10 +1,10 @@
-import ReduxProvider from '@/store/ReduxProvider';
+import ReduxProvider from 'store/ReduxProvider';
 
-import HeadLayout from '@/components/common/HeadLayout/HeadLayout';
+import HeadLayout from 'components/common/HeadLayout/HeadLayout';
+import ModalPovider from 'components/common/ModalProvider/ModalProvider';
 
-import '@/styles/reset.scss';
-import '@/styles/globals.scss';
-import ModalPovider from '@/components/common/ModalProvider/ModalProvider';
+import 'styles/reset.scss';
+import 'styles/globals.scss';
 
 export default function App({ Component, pageProps }) {
   return (

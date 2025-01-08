@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import cn from 'classnames';
 import { useContext } from 'react';
 
-import { isOpenFormContext } from '@/components/pages/Test/Test';
+import { isOpenFormContext } from 'components/pages/Test/Test';
 
 import s from './Question.module.scss';
 
