@@ -21,5 +21,13 @@
 }
 
 .cancel {
-  @include button(true);
+  background-color: $color-red;
+
+  @include hover {
+    background-color: color.adjust($color-red, $lightness: -20%);
+  }
+
+  &:active {
+    background-color: color.adjust($color-red, $lightness: -10%);
+  }
 }

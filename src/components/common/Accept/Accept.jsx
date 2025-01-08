@@ -1,6 +1,7 @@
 import cn from 'classnames';
 
 import Button from '../Button/Button';
+import Typography from '../Typography/Typography';
 
 import { useModalContext } from '../ModalProvider/ModalProvider';
 
@@ -20,7 +21,9 @@ const Accept = ({ handleIsAccepted, actionValue, id }) => {
 
   return (
     <div className={s.accept}>
-      <span className={s.title}>Вы уверены?</span>
+      <Typography tag='p' className={s.title}>
+        Вы уверены?
+      </Typography>
       <div className={s.buttons}>
         <Button className={s.button} onClick={onAccept}>
           Да

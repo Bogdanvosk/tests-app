@@ -120,18 +120,10 @@ const QuestionForm = ({ questionType, selectedQuestion, onCloseForm }) => {
       }
       resetForm();
       // ? Нужно ли закрывать форму
-    }
-
-    if (
-      questionStep === 1 &&
-      selectedQuestion.question_type !== 'number' &&
-      !selectedQuestion
-    )
-      handleCreateQuestion(data);
-
-    if (questionStep === 1 && selectedQuestion.question_type === 'number') {
+    } else {
       handleCreateQuestion(data);
     }
+
   });
 
   const handleCreateQuestion = (data) => {
@@ -140,7 +132,7 @@ const QuestionForm = ({ questionType, selectedQuestion, onCloseForm }) => {
     dispatch(
       addNewQuestionAction({
         title,
-        question_type: selectedQuestion.question_type,
+        question_type: questionType,
         answer: 1,
         testId: test.id,
       })
@@ -149,9 +141,9 @@ const QuestionForm = ({ questionType, selectedQuestion, onCloseForm }) => {
     setQuestionStep(2);
   };
 
-  // TODO: не добавлять ответ в вопросе с question_type == 'number'
+  // TODO: questionType или selectedQuestion.question_type
   const handleAppendAnswer = () => {
-    if (selectedQuestion.question_type !== 'number') {
+    if (questionType !== 'number') {
       append({ text: '', is_right: false });
     } else {
       append({ text: '' });
@@ -320,7 +312,7 @@ const QuestionForm = ({ questionType, selectedQuestion, onCloseForm }) => {
       return;
     }
 
-    if (selectedQuestion.question_type === 'single') {
+    if (selectedQuestion.question_type === 'single' || questionType === 'single') {
       const oldCorrectAnswerIdx = fields.findIndex((f) => f.is_right === true);
 
       setCorrectAnswer(index);

@@ -48,5 +48,5 @@
 }
 
 .cancel {
-  @include button(true);
+  @include button;
 }

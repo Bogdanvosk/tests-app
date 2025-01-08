@@ -27,7 +27,7 @@
   display: block;
   margin-bottom: 0.5rem;
 
-  @include button();
+  @include button;
 
   padding: 1rem 2rem;
   font-weight: 700;
@@ -42,9 +42,16 @@
 }
 
 .delete {
-  @include button(true);
-
   padding: 1rem 2rem;
+  background-color: $color-red;
+
+  @include hover {
+    background-color: color.adjust($color-red, $lightness: -20%);
+  }
+
+  &:active {
+    background-color: color.adjust($color-red, $lightness: -10%);
+  }
 }
 
 .content {
