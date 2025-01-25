@@ -1,11 +1,20 @@
 import PropTypes from 'prop-types';
 import cn from 'classnames';
 import { DndContext } from '@dnd-kit/core';
-import { SortableContext } from '@dnd-kit/sortable';
 
+import {
+  QuestionTypeContext,
+  SelectQuestionContext,
+} from '@/components/pages/Test/Test';
 import { FormProvider, useFieldArray, useForm } from 'react-hook-form';
-import { useModalContext } from '../ModalProvider/ModalProvider';
-import { useEffect, useState } from 'react';
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectCurrentTest } from 'store/features/test/selectors';
 import {
@@ -19,25 +28,28 @@ import {
 
 import Input from '../Input/Input';
 import Button from '../Button/Button';
-import Icon from '../Icon/Icon';
-import SortableItem from '../SortableItem/SortableItem';
+import AnswersList from '../AnswersList/AnswersList';
 
 import s from './QuestionForm.module.scss';
 
 // TODO: добавить toaster для уведомлений валидации/создания/обновления вопросов и ответов
 
-const QuestionForm = ({ questionType, selectedQuestion, onCloseForm }) => {
+const QuestionForm = ({ onCloseForm }) => {
   const [questionStep, setQuestionStep] = useState(1);
   const [isAnswerEditing, setIsAnswerEditing] = useState(false);
   const [correctAnswer, setCorrectAnswer] = useState(null);
-  const [isPositionChanged, setIsPositionChanged] = useState(false);
   const [acceptedAction, setAcceptedAction] = useState(null);
-  const [isNumberAnswerAdded, setIsNumberAnswerAdded] = useState(false);
 
-  const { showModal } = useModalContext();
+  const { selectedQuestion } = useContext(SelectQuestionContext);
+  const { questionType } = useContext(QuestionTypeContext);
 
   const test = useSelector(selectCurrentTest);
   const dispatch = useDispatch();
+
+  const firstStep = useMemo(
+    () => questionStep === 1 && !selectedQuestion,
+    [questionStep, selectedQuestion]
+  );
 
   const methods = useForm({
     defaultValues: {
@@ -53,8 +65,10 @@ const QuestionForm = ({ questionType, selectedQuestion, onCloseForm }) => {
 
   useEffect(() => {
     if (selectedQuestion) {
-      methods.setValue('title', selectedQuestion.title);
-      methods.setValue('answers', selectedQuestion.answers);
+      methods.reset({
+        title: selectedQuestion.title,
+        answers: selectedQuestion.answers,
+      });
       update(-1, selectedQuestion.answers);
 
       const correctAnswer = selectedQuestion.answers.findIndex(
@@ -70,40 +84,23 @@ const QuestionForm = ({ questionType, selectedQuestion, onCloseForm }) => {
     }
   }, [acceptedAction]);
 
-  const handleSubmit = methods.handleSubmit((data) => {
-    if (selectedQuestion) {
-      const oldTitle = selectedQuestion.title;
-      const oldAnswersSet = new Set(selectedQuestion.answers);
-      const newAnswersSet = new Set(data.answers);
-
-      const isAnswersChanged =
-        JSON.stringify(selectedQuestion.answers) !==
-        JSON.stringify(data.answers);
-
-      if (oldTitle !== data.title) {
-        dispatch(
-          updateQuestionAction({
-            questionId: selectedQuestion.id,
-            title: data.title,
-            question_type: selectedQuestion.question_type,
-          })
-        );
-      }
-
-      // Определяю, есть ли изменения в ответах и патчу ответы
-      if (
-        isAnswersChanged &&
-        data.answers.length === selectedQuestion.answers.length
-      ) {
-        if (oldAnswersSet.size === newAnswersSet.size && isPositionChanged) {
-          resetForm();
-          return;
+  const onSubmit = useCallback(
+    (data) => {
+      if (selectedQuestion) {
+        const oldTitle = selectedQuestion.title;
+        if (oldTitle !== data.title) {
+          dispatch(
+            updateQuestionAction({
+              questionId: selectedQuestion.id,
+              title: data.title,
+              question_type: questionType,
+            })
+          );
         }
 
         data.answers.forEach((_, index) => {
           const newAnswer = data.answers[index];
           const oldAnswer = selectedQuestion.answers[index];
-
           if (
             oldAnswer.text !== newAnswer.text ||
             oldAnswer.is_right !== newAnswer.is_right
@@ -117,14 +114,16 @@ const QuestionForm = ({ questionType, selectedQuestion, onCloseForm }) => {
             );
           }
         });
-      }
-      resetForm();
-      // ? Нужно ли закрывать форму
-    } else {
-      handleCreateQuestion(data);
-    }
 
-  });
+        resetForm();
+      } else if (questionStep === 1) {
+        handleCreateQuestion(data);
+      }
+    },
+    [selectedQuestion, questionStep, dispatch]
+  );
+
+  const handleSubmit = methods.handleSubmit(onSubmit);
 
   const handleCreateQuestion = (data) => {
     const title = data.title;
@@ -141,26 +140,25 @@ const QuestionForm = ({ questionType, selectedQuestion, onCloseForm }) => {
     setQuestionStep(2);
   };
 
-  // TODO: questionType или selectedQuestion.question_type
-  const handleAppendAnswer = () => {
-    if (questionType !== 'number') {
-      append({ text: '', is_right: false });
-    } else {
-      append({ text: '' });
-      isAnswerAppended = true;
+  const handleCreateAnswer = () => {
+    if (!isAnswerEditing) {
+      if (questionType !== 'number') {
+        append({ text: '', is_right: false });
+      } else {
+        append({ text: '' });
+      }
+
+      setIsAnswerEditing(true);
+      return;
     }
 
-    setIsAnswerEditing(true);
-  };
+    const questionId = selectedQuestion
+      ? selectedQuestion.id
+      : test.questions[test.questions.length - 1].id;
 
-  const handleCreateAnswer = () => {
-    const questionId = !selectedQuestion
-      ? test.questions[test.questions.length - 1].id
-      : selectedQuestion.id;
-    const allAnswers = methods.getValues().answers;
-    const newAnswer = allAnswers[allAnswers.length - 1];
+    const newAnswer = methods.getValues().answers.slice(-1)[0];
 
-    if (newAnswer.text === '') {
+    if (!newAnswer.text.trim()) {
       alert('Введите текст ответа');
       return;
     }
@@ -171,37 +169,11 @@ const QuestionForm = ({ questionType, selectedQuestion, onCloseForm }) => {
         answer: newAnswer,
       })
     );
-
     setIsAnswerEditing(false);
   };
 
-  const acceptDeleteAnswer = (index) => {
-    if (
-      methods.getValues().answers[index].is_right &&
-      selectedQuestion.question_type === 'single'
-    ) {
-      alert('Нельзя удалить правильный ответ');
-      return;
-    }
-
-    showModal('accept', {
-      handleIsAccepted,
-      actionValue: 'delete-answer',
-      id: index,
-    });
-  };
-
-  const handleIsAccepted = (value) => {
-    setAcceptedAction(value);
-  };
-
   const handleDeleteAnswer = (id) => {
-    if (methods.getValues().answers.length < 3) {
-      alert(
-        'Нельзя удалить вопрос, если количество вариантов ответа не менее 3'
-      );
-      return;
-    }
+    handleValidateAnswer(id);
 
     const index = fields.findIndex((f, idx) => idx === id);
     remove(id);
@@ -219,6 +191,33 @@ const QuestionForm = ({ questionType, selectedQuestion, onCloseForm }) => {
         })
       );
       setAcceptedAction(null);
+    }
+  };
+
+  const handleValidateAnswer = (id) => {
+    const deletedAnswer = methods.getValues().answers[id];
+    const answersCount = methods.getValues().answers.length;
+    const correctAnswersCount = methods
+      .getValues()
+      .answers.filter((a) => a.is_right === true).length;
+
+    if (answersCount === 2) {
+      alert(
+        'Нельзя удалить вопрос, количество вариантов ответа должно быть более 2'
+      );
+      return;
+    }
+
+    if (deletedAnswer.is_right && questionType === 'single') {
+      alert('Нельзя удалить правильный ответ');
+      return;
+    }
+
+    if (deletedAnswer.is_right && correctAnswersCount === 1) {
+      alert(
+        'Нельзя удалить вопрос, количество правильных вариантов ответа должно быть более 1'
+      );
+      return;
     }
   };
 
@@ -256,29 +255,29 @@ const QuestionForm = ({ questionType, selectedQuestion, onCloseForm }) => {
       } else if (correctAnswer <= newIndex && correctAnswer > oldIndex) {
         setCorrectAnswer(correctAnswer - 1);
       }
-
-      setIsPositionChanged(true);
     }
   };
 
-  const handleValidate = () => {
-    if (questionStep === 1 && !selectedQuestion) {
+  const handleCloseForm = () => {
+    if (handleValidateQuestion() && !selectedQuestion) {
+      resetForm();
+    } else {
+      handleSubmit();
+    }
+  };
+
+  const handleValidateQuestion = () => {
+    if (firstStep) {
       return true;
     }
 
-    if (
-      selectedQuestion.question_type === 'single' ||
-      selectedQuestion.question_type === 'multiple'
-    ) {
+    if (questionType !== 'number') {
       if (fields.length < 2) {
         alert('Добавьте хотя бы два варианта ответа');
         return false;
       }
 
-      if (
-        selectedQuestion.question_type === 'single' &&
-        correctAnswer === null
-      ) {
+      if (correctAnswer === null && questionType === 'single') {
         alert('Выберите правильный ответ');
         return false;
       }
@@ -286,9 +285,7 @@ const QuestionForm = ({ questionType, selectedQuestion, onCloseForm }) => {
       return true;
     }
 
-    if (selectedQuestion.question_type === 'number') {
-      // TODO: add validation for "number"
-    }
+    // TODO: add validation for "number"
   };
 
   const resetForm = () => {
@@ -296,29 +293,6 @@ const QuestionForm = ({ questionType, selectedQuestion, onCloseForm }) => {
     setCorrectAnswer(null);
     methods.reset();
     onCloseForm();
-  };
-
-  const handleCloseForm = () => {
-    if (handleValidate() && !selectedQuestion) {
-      resetForm();
-    } else {
-      handleSubmit();
-    }
-  };
-
-  const handleChangeCorrectAnswer = (index) => {
-    if (questionStep === 2 && correctAnswer !== null) {
-      alert('Нельзя изменить правильный ответ');
-      return;
-    }
-
-    if (selectedQuestion.question_type === 'single' || questionType === 'single') {
-      const oldCorrectAnswerIdx = fields.findIndex((f) => f.is_right === true);
-
-      setCorrectAnswer(index);
-      methods.setValue(`answers.${index}.is_right`, true);
-      methods.setValue(`answers.${oldCorrectAnswerIdx}.is_right`, false);
-    }
   };
 
   return (
@@ -331,93 +305,15 @@ const QuestionForm = ({ questionType, selectedQuestion, onCloseForm }) => {
             fieldName='title'
             placeholder='Введите вопрос'
           />
+          <AnswersList
+            fields={fields}
+            questionType={questionType}
+            questionStep={questionStep}
+            correctAnswer={correctAnswer}
+            setCorrectAnswer={setCorrectAnswer}
+          />
 
-          <div className={s.answers}>
-            <SortableContext items={fields}>
-              {questionType === 'single' &&
-                fields.map((field, index) => {
-                  return (
-                    <SortableItem field={field} key={field.id}>
-                      <div className={s.answer}>
-                        <Input
-                          className={s.input}
-                          type='text'
-                          fieldName={`answers.${index}.text`}
-                          placeholder='Введите вариант ответа'
-                        />
-                        <Input
-                          className={s.checkbox}
-                          type='checkbox'
-                          fieldName={`answers.${index}.is_right`}
-                          checked={correctAnswer === index}
-                          onClick={() => handleChangeCorrectAnswer(index)}
-                        />
-                        {questionStep !== 2 && (
-                          <div onClick={() => acceptDeleteAnswer(index)}>
-                            <Icon
-                              id='delete'
-                              name='delete'
-                              className={s.delete}
-                            />
-                          </div>
-                        )}
-                      </div>
-                    </SortableItem>
-                  );
-                })}
-
-              {questionType === 'multiple' &&
-                fields.map((field, index) => {
-                  return (
-                    <SortableItem field={field} key={field.id}>
-                      <div className={s.answer}>
-                        <Input
-                          className={s.input}
-                          type='text'
-                          fieldName={`answers.${index}.text`}
-                          placeholder='Введите вариант ответа'
-                        />
-                        <Input
-                          className={s.checkbox}
-                          type='checkbox'
-                          fieldName={`answers.${index}.is_right`}
-                          onClick={() => handleChangeCorrectAnswer(index)}
-                          defaultChecked={field.is_right}
-                        />
-                        <div onClick={() => acceptDeleteAnswer(index)}>
-                          <Icon name='delete' className={s.delete} />
-                        </div>
-                      </div>
-                    </SortableItem>
-                  );
-                })}
-            </SortableContext>
-
-            {questionType === 'number' && (
-              // fields.map((field, index) => {
-              //   return (
-              //     <div className={cn(s.answer, s.number)} key={field.id}>
-              //       <Input
-              //         className={s.input}
-              //         type='number'
-              //         fieldName={`answers.${index}.text`}
-              //         placeholder='Введите вариант ответа'
-              //       />
-              //     </div>
-              //   );
-              // })
-              <div className={cn(s.answer, s.number)} key={fields[0].id}>
-                <Input
-                  className={s.input}
-                  type='number'
-                  fieldName={`answers.0.text`}
-                  placeholder='Введите вариант ответа'
-                />
-              </div>
-            )}
-          </div>
-
-          {questionStep === 1 && !selectedQuestion && (
+          {firstStep && (
             <Button className={s.button} type='submit'>
               {selectedQuestion ? 'Сохранить вопрос' : 'Создать вопрос'}
             </Button>
@@ -427,21 +323,18 @@ const QuestionForm = ({ questionType, selectedQuestion, onCloseForm }) => {
             <Button
               className={s.button}
               type='button'
-              onClick={
-                isAnswerEditing ? handleCreateAnswer : handleAppendAnswer
-              }
+              onClick={handleCreateAnswer}
             >
               {isAnswerEditing ? 'Создать ответ' : 'Добавить вариант ответа'}
             </Button>
           )}
-
           <Button
             className={cn(s.button, {
-              [s.cancel]: questionStep === 1 && !selectedQuestion,
+              [s.cancel]: firstStep,
             })}
             onClick={handleCloseForm}
           >
-            {questionStep === 1 && !selectedQuestion ? 'Отмена' : 'Готово'}
+            {firstStep ? 'Отмена' : 'Готово'}
           </Button>
         </form>
       </FormProvider>
@@ -452,13 +345,5 @@ const QuestionForm = ({ questionType, selectedQuestion, onCloseForm }) => {
 export default QuestionForm;
 
 QuestionForm.propTypes = {
-  questionType: PropTypes.oneOf(['single', 'multiple', 'number']),
-  selectedQuestion: PropTypes.shape({
-    id: PropTypes.number,
-    title: PropTypes.string,
-    question_type: PropTypes.oneOf(['single', 'multiple', 'number']),
-    answer: PropTypes.number,
-    answers: PropTypes.arrayOf(PropTypes.object),
-  }),
-  onUpdateQuestion: PropTypes.func,
+  onCloseForm: PropTypes.func,
 };

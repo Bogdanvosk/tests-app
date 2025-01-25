@@ -24,25 +24,6 @@
   @include button;
 }
 
-.answer {
-  display: flex;
-  align-items: center;
-  flex-grow: 1;
-  gap: 1rem;
-}
-
-.delete {
-  width: 25px;
-  height: 25px;
-  transition: color 0.1s ease, transform 0.1s ease;
-  cursor: pointer;
-
-  @include hover {
-    color: $color-red;
-    transform: translateY(-2px);
-  }
-}
-
 .number {
   margin-top: 1rem;
 }

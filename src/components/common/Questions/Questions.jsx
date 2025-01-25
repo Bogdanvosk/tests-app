@@ -1,42 +1,100 @@
-import PropTypes from 'prop-types';
+import cn from 'classnames';
 
-import Question from '../Question/Question';
-import Icon from '../Icon/Icon';
+import {
+  QuestionTypeContext,
+  SelectQuestionContext,
+} from '@/components/pages/Test/Test';
+import { createContext, useContext, useEffect, useState } from 'react';
+import { useModalContext } from '../ModalProvider/ModalProvider';
+import { useDispatch } from 'react-redux';
+
+import { deleteQuestionAction } from '@/store/features/test';
+import { questionTypes } from '@/content';
+import Button from '@/components/common/Button/Button';
+import QuestionsList from '@/components/common/QuestionsList/QuestionsList';
+import Dropdown from '@/components/common/Dropdown/Dropdown';
 
 import s from './Questions.module.scss';
 
-const Questions = ({ questions = [], onDeleteQuestion, onSelectQuestion }) => {
+export const isOpenFormContext = createContext({ open: false, id: null });
+
+const Questions = ({
+  currentQuestions,
+  currentTest,
+  isQuestionFormOpen,
+  setIsQuestionFormOpen,
+}) => {
+  const dispatch = useDispatch();
+  const { showModal } = useModalContext();
+  const { selectedQuestion, handleSelectQuestion } = useContext(
+    SelectQuestionContext
+  );
+  const { setQuestionType } = useContext(QuestionTypeContext);
+
+  const [questions, setQuestions] = useState([]);
+  const [acceptedAction, setAcceptedAction] = useState(null);
+
+  useEffect(() => {
+    if (acceptedAction?.actionValue === 'delete-question') {
+      handleDeleteQuestion(acceptedAction.id);
+    }
+  }, [acceptedAction]);
+
+  useEffect(() => {
+    currentQuestions && setQuestions(currentQuestions);
+
+    if (selectedQuestion) handleSelectQuestion(selectedQuestion?.id);
+  }, [currentTest, currentQuestions]);
+
+  const handleSelectQuestionType = (value) => {
+    setQuestionType(value);
+  };
+
+  const handleOpenQuestionForm = () => {
+    setIsQuestionFormOpen(true);
+  };
+
+  const handleDeleteQuestion = (id) => {
+    dispatch(deleteQuestionAction(id));
+    setIsQuestionFormOpen(false);
+  };
+
+  const acceptDeleteQuestion = (id) => {
+    showModal('accept', {
+      handleIsAccepted,
+      actionValue: 'delete-question',
+      id,
+    });
+  };
+
+  const handleIsAccepted = (value) => {
+    setAcceptedAction(value);
+  };
+
   return (
-    <ul className={s.questions}>
-      {questions.map((question) => {
-        return (
-          <li className={s.question} key={question.id}>
-            <Question
-              question={question}
-              handleSelectQuestion={onSelectQuestion}
-            />
-            <div onClick={() => onDeleteQuestion(question.id)}>
-              <Icon name='delete' className={s.delete} />
-            </div>
-          </li>
-        );
-      })}
-    </ul>
+    <div className={s.questions}>
+      <isOpenFormContext.Provider
+        value={{ open: isQuestionFormOpen, id: selectedQuestion?.id }}
+      >
+        <QuestionsList
+          questions={questions}
+          onDeleteQuestion={acceptDeleteQuestion}
+        />
+      </isOpenFormContext.Provider>
+
+      <Button
+        className={cn(s.button, s.addQuestion)}
+        type='button'
+        onClick={handleOpenQuestionForm}
+      >
+        Добавить вопрос
+      </Button>
+      <Dropdown
+        options={questionTypes}
+        onSelectQuestionType={handleSelectQuestionType}
+      />
+    </div>
   );
 };
 
 export default Questions;
-
-Questions.propTypes = {
-  questions: PropTypes.arrayOf(
-    PropTypes.shape({
-      id: PropTypes.number,
-      title: PropTypes.string,
-      question_type: PropTypes.string,
-      answer: PropTypes.number,
-      answers: PropTypes.arrayOf(PropTypes.object),
-    })
-  ),
-  onDeleteQuestion: PropTypes.func,
-  onSelectQuestion: PropTypes.func,
-};

@@ -2,12 +2,14 @@ import PropTypes from 'prop-types';
 import cn from 'classnames';
 import { useContext } from 'react';
 
-import { isOpenFormContext } from 'components/pages/Test/Test';
+import { isOpenFormContext } from '@/components/common/Questions/Questions';
 
 import s from './Question.module.scss';
+import { SelectQuestionContext } from '@/components/pages/Test/Test';
 
-const Question = ({ question, handleSelectQuestion }) => {
+const Question = ({ question }) => {
   const { open: isFormOpen, id } = useContext(isOpenFormContext);
+  const { handleSelectQuestion } = useContext(SelectQuestionContext);
 
   return (
     <div

@@ -1,19 +1,19 @@
 import PropTypes from 'prop-types';
 import cn from 'classnames';
 
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
+import { SelectQuestionContext } from '@/components/pages/Test/Test';
 
 import s from './Dropdown.module.scss';
 
-const Dropdown = ({
-  options,
-  onSelectQuestionType,
-  selectedQuestion,
-  disabled,
-}) => {
+const Dropdown = ({ options, onSelectQuestionType }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [items, setItems] = useState(options);
   const [selectedItem, setSelectedItem] = useState(options[0].value);
+
+  const { selectedQuestion } = useContext(
+      SelectQuestionContext
+    );
 
   useEffect(() => {
     selectedQuestion && setSelectedItem(selectedQuestion.question_type);
@@ -32,7 +32,7 @@ const Dropdown = ({
   };
 
   return (
-    <div className={cn(s.dropdown, { [s.disabled]: disabled })}>
+    <div className={cn(s.dropdown, { [s.disabled]: selectedQuestion })}>
       <div className={s.header} onClick={toggleDropdown}>
         {items.find((item) => item.value === selectedItem).text}
       </div>

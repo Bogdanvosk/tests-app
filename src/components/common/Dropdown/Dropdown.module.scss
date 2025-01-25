@@ -1,7 +1,8 @@
 .dropdown {
   background-color: white;
+  border: 3px solid transparent;
   border-radius: 10px;
-  transition: box-shadow 0.3s ease;
+  transition: box-shadow 0.3s ease, border 0.3s ease;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
 
   @include hover {
@@ -46,5 +47,6 @@
 
 .disabled {
   pointer-events: none;
-  opacity: 0.7;
+  border-color: $color-mindaro;
+  opacity: 0.9;
 }

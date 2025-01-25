@@ -1,0 +1,47 @@
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  &Wrapper {
+    padding: 1.5rem 0;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
+  }
+}
+
+.input {
+  width: 400px;
+  padding: 1rem;
+
+  @include input;
+}
+
+.buttons {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  font-size: 1.13rem;
+}
+
+.button {
+  display: block;
+  margin-bottom: 0.5rem;
+
+  @include button;
+
+  padding: 1rem 2rem;
+  font-weight: 700;
+}
+
+.delete {
+  padding: 1rem 2rem;
+  background-color: $color-red;
+
+  @include hover {
+    background-color: color.adjust($color-red, $lightness: -20%);
+  }
+
+  &:active {
+    background-color: color.adjust($color-red, $lightness: -10%);
+  }
+}
