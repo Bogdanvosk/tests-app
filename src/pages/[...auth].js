@@ -2,7 +2,7 @@ import { useRouter } from 'next/router';
 import { useEffect } from 'react';
 import useLocalStorage from 'hooks/useLocalStorage';
 
-import Auth from 'components/pages/Auth/Auth';
+import Auth from '@/components/pages/Auth/Auth';
 
 const Page = () => {
   const [mode, setMode] = useLocalStorage('mode');

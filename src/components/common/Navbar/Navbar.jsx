@@ -5,6 +5,7 @@ import { logoutAction } from '@/store/features/auth';
 import { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import useDebounce from '@/hooks/useDebounce';
+import { toastify } from '@/utils/toastify';
 
 import Container from '../Container/Container';
 import Button from '../Button/Button';
@@ -26,6 +27,7 @@ const Navbar = ({ currentTest, currentQuestions }) => {
     dispatch(
       updateTestAction({ testId: currentTest.id, title: debouncedValue })
     );
+    toastify('success', 'Имя теста успешно обновлено');
   }, [debouncedValue]);
 
   const handleChangeTitle = (e) => {
@@ -65,14 +67,15 @@ const Navbar = ({ currentTest, currentQuestions }) => {
             placeholder='Введите название теста'
           />
           <div className={s.buttons}>
+            {/* Если тест не создан - показывать кнопку */}
             <Button
               className={cn(s.button, { [s.show]: currentTest })}
               type='button'
               onClick={handleCreateTest}
             >
-              {/* // TODO: conditional button (create && "Создать" | edit && "Сохранить") */}
               Создать
             </Button>
+            {/* Если тест создан - показывать кнопку */}
             <Button
               className={cn(s.button, s.delete)}
               type='button'

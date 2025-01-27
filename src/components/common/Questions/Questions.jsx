@@ -15,6 +15,7 @@ import QuestionsList from '@/components/common/QuestionsList/QuestionsList';
 import Dropdown from '@/components/common/Dropdown/Dropdown';
 
 import s from './Questions.module.scss';
+import { toastify } from '@/utils/toastify';
 
 export const isOpenFormContext = createContext({ open: false, id: null });
 
@@ -23,6 +24,7 @@ const Questions = ({
   currentTest,
   isQuestionFormOpen,
   setIsQuestionFormOpen,
+  onCloseForm,
 }) => {
   const dispatch = useDispatch();
   const { showModal } = useModalContext();
@@ -56,7 +58,8 @@ const Questions = ({
 
   const handleDeleteQuestion = (id) => {
     dispatch(deleteQuestionAction(id));
-    setIsQuestionFormOpen(false);
+    toastify('success', 'Вопрос успешно удален');
+    onCloseForm();
   };
 
   const acceptDeleteQuestion = (id) => {
@@ -91,7 +94,7 @@ const Questions = ({
       </Button>
       <Dropdown
         options={questionTypes}
-        onSelectQuestionType={handleSelectQuestionType}
+        onSelectOption={handleSelectQuestionType}
       />
     </div>
   );

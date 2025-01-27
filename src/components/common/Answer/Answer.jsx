@@ -1,5 +1,8 @@
 import PropTypes from 'prop-types';
 
+import { useContext } from 'react';
+import { editingAnswerContext } from '../QuestionForm/QuestionForm';
+
 import Icon from '../Icon/Icon';
 import Input from '../Input/Input';
 import SortableItem from '../SortableItem/SortableItem';
@@ -8,17 +11,32 @@ import s from './Answer.module.scss';
 
 const Answer = ({
   field,
-  index,
-  acceptDeleteAnswer,
-  handleChangeCorrectAnswer,
+  fieldIndex = 0,
+  acceptDeleteAnswer = () => {},
+  handleChangeCorrectAnswer = () => {},
 }) => {
+  // const editingAnswerId = useContext(editingAnswerContext);
+
   const onChangeCorrectAnswer = () => {
-    handleChangeCorrectAnswer(index);
+    handleChangeCorrectAnswer(fieldIndex);
   };
 
   const onDeleteAnswer = () => {
-    acceptDeleteAnswer(index);
+    acceptDeleteAnswer(fieldIndex);
   };
+
+  // if (editingAnswerId === fieldIndex)
+  //   return (
+  //     <div className={s.answer}>
+  //       <Input
+  //         className={s.input}
+  //         type='text'
+  //         fieldName={`answers.${fieldIndex}.text`}
+  //         placeholder='Введите вариант ответа'
+  //       />
+
+  //     </div>
+  //   );
 
   return (
     <SortableItem field={field} key={field.id}>
@@ -26,13 +44,13 @@ const Answer = ({
         <Input
           className={s.input}
           type='text'
-          fieldName={`answers.${index}.text`}
+          fieldName={`answers.${fieldIndex}.text`}
           placeholder='Введите вариант ответа'
         />
 
         <Input
           type='checkbox'
-          fieldName={`answers.${index}.is_right`}
+          fieldName={`answers.${fieldIndex}.is_right`}
           onClick={onChangeCorrectAnswer}
         />
 

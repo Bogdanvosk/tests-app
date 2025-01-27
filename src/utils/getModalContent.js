@@ -1,4 +1,4 @@
-import Accept from 'components/common/Accept/Accept';
+import Accept from '@/components/common/Accept/Accept';
 
 export const getModalContent = (type) => {
   switch (type) {

@@ -1,19 +1,36 @@
+import cn from 'classnames';
+import PropTypes from 'prop-types';
 import { SortableContext } from '@dnd-kit/sortable';
+
+import { SelectQuestionContext } from '@/components/pages/Test/Test';
+import { CorrectAnswerContext } from '../QuestionForm/QuestionForm';
+import { useFormContext } from 'react-hook-form';
+import { useModalContext } from '../ModalProvider/ModalProvider';
+import { useContext, useMemo } from 'react';
 
 import Answer from '../Answer/Answer';
 import Input from '../Input/Input';
 
 import s from './AnswersList.module.scss';
-import { useFormContext } from 'react-hook-form';
+import { toastify } from '@/utils/toastify';
 
 const AnswersList = ({
   fields,
   questionType,
   questionStep,
-  correctAnswer,
-  setCorrectAnswer,
+  setAcceptedAction,
 }) => {
   const methods = useFormContext();
+
+  const { showModal } = useModalContext();
+  const { correctAnswer, setCorrectAnswer } = useContext(CorrectAnswerContext);
+  const { selectedQuestion } = useContext(SelectQuestionContext);
+
+  const isNumberInputVisible = useMemo(() => {
+    if (selectedQuestion) return questionType === 'number';
+
+    return questionType === 'number' && questionStep === 2;
+  }, [questionStep, questionType, selectedQuestion]);
 
   const handleIsAccepted = (value) => {
     setAcceptedAction(value);
@@ -28,13 +45,20 @@ const AnswersList = ({
   };
 
   const handleChangeCorrectAnswer = (index) => {
+    const answers = methods.getValues().answers;
+
     if (questionStep === 2 && correctAnswer !== null) {
-      alert('Нельзя изменить правильный ответ');
+      toastify('error', 'Нельзя изменить правильный ответ');
       return;
     }
 
     if (questionType === 'single') {
-      const oldCorrectAnswerIdx = fields.findIndex((f) => f.is_right === true);
+      const oldCorrectAnswerIdx = answers.findIndex((f) => f.is_right === true);
+
+      if (index === oldCorrectAnswerIdx) {
+        methods.setValue(`answers.${index}.is_right`, answers[index].is_right);
+        return;
+      }
 
       setCorrectAnswer(index);
       methods.setValue(`answers.${index}.is_right`, true);
@@ -42,33 +66,20 @@ const AnswersList = ({
     }
 
     if (questionType === 'multiple') {
-      methods.setValue(`answers.${index}.is_right`, !fields[index].is_right);
+      methods.setValue(`answers.${index}.is_right`, !answers[index].is_right);
     }
   };
 
   return (
     <>
       <SortableContext items={fields}>
-        {questionType === 'single' &&
+        {questionType !== 'number' &&
           fields.map((field, index) => {
             return (
               <Answer
                 key={field.id}
                 field={field}
-                index={index}
-                acceptDeleteAnswer={acceptDeleteAnswer}
-                handleChangeCorrectAnswer={handleChangeCorrectAnswer}
-              />
-            );
-          })}
-
-        {questionType === 'multiple' &&
-          fields.map((field, index) => {
-            return (
-              <Answer
-                key={field.id}
-                field={field}
-                index={index}
+                fieldIndex={index}
                 acceptDeleteAnswer={acceptDeleteAnswer}
                 handleChangeCorrectAnswer={handleChangeCorrectAnswer}
               />
@@ -76,11 +87,10 @@ const AnswersList = ({
           })}
       </SortableContext>
 
-      {questionType === 'number' && (
-        <div className={cn(s.answer, s.number)} key={fields[0].id}>
+      {isNumberInputVisible && (
+        <div className={cn(s.answer, s.number)}>
           <Input
             className={s.input}
-            type='number'
             fieldName={`answers.0.text`}
             placeholder='Введите вариант ответа'
           />
@@ -91,3 +101,16 @@ const AnswersList = ({
 };
 
 export default AnswersList;
+
+AnswersList.propTypes = {
+  fields: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.string,
+      text: PropTypes.string,
+      is_right: PropTypes.bool,
+    })
+  ),
+  questionType: PropTypes.string,
+  questionStep: PropTypes.number,
+  setAcceptedAction: PropTypes.func,
+};

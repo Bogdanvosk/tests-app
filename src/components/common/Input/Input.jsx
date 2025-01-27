@@ -34,6 +34,7 @@ const Input = ({
       className={cn(s.input, className)}
       placeholder={placeholder}
       type={type}
+      {...props}
     />
   );
 };

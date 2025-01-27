@@ -80,6 +80,7 @@ const Test = () => {
                 currentTest={currentTest}
                 isQuestionFormOpen={isQuestionFormOpen}
                 setIsQuestionFormOpen={setIsQuestionFormOpen}
+                onCloseForm={handleCloseQuestionForm}
               />
               {isQuestionFormOpen && (
                 <QuestionForm onCloseForm={handleCloseQuestionForm} />

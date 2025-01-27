@@ -1,6 +1,5 @@
 import PropTypes from 'prop-types';
 import cn from 'classnames';
-import { DndContext } from '@dnd-kit/core';
 
 import {
   QuestionTypeContext,
@@ -22,21 +21,24 @@ import {
   addNewQuestionAction,
   deleteAnswerAction,
   updateAnswerAction,
-  updatePositionAction,
   updateQuestionAction,
 } from '@/store/features/test';
+import { isNumber } from '@/utils/isNumber';
+import { toastify } from '@/utils/toastify';
 
 import Input from '../Input/Input';
 import Button from '../Button/Button';
 import AnswersList from '../AnswersList/AnswersList';
+import DndArea from '../DndArea/DndArea';
 
 import s from './QuestionForm.module.scss';
 
-// TODO: добавить toaster для уведомлений валидации/создания/обновления вопросов и ответов
+export const CorrectAnswerContext = createContext(null);
+export const editingAnswerContext = createContext(null);
 
 const QuestionForm = ({ onCloseForm }) => {
   const [questionStep, setQuestionStep] = useState(1);
-  const [isAnswerEditing, setIsAnswerEditing] = useState(false);
+  const [editingAnswerId, setEditingAnswerId] = useState(null);
   const [correctAnswer, setCorrectAnswer] = useState(null);
   const [acceptedAction, setAcceptedAction] = useState(null);
 
@@ -48,6 +50,11 @@ const QuestionForm = ({ onCloseForm }) => {
 
   const firstStep = useMemo(
     () => questionStep === 1 && !selectedQuestion,
+    [questionStep, selectedQuestion]
+  );
+
+  const secondStep = useMemo(
+    () => questionStep === 2 || selectedQuestion,
     [questionStep, selectedQuestion]
   );
 
@@ -96,11 +103,22 @@ const QuestionForm = ({ onCloseForm }) => {
               question_type: questionType,
             })
           );
+          toastify('success', 'Вопрос успешно обновлен');
+        }
+
+        if (data.answers.slice(-1)[0].text === '') {
+          toastify('error', 'Введите текст ответа');
+          return;
         }
 
         data.answers.forEach((_, index) => {
           const newAnswer = data.answers[index];
           const oldAnswer = selectedQuestion.answers[index];
+          if (questionType === 'number' && !isNumber(newAnswer.text)) {
+            toastify('error', 'Введите число');
+            return;
+          }
+
           if (
             oldAnswer.text !== newAnswer.text ||
             oldAnswer.is_right !== newAnswer.is_right
@@ -112,6 +130,7 @@ const QuestionForm = ({ onCloseForm }) => {
                 newData: newAnswer,
               })
             );
+            toastify('success', 'Ответ успешно обновлен');
           }
         });
 
@@ -128,6 +147,11 @@ const QuestionForm = ({ onCloseForm }) => {
   const handleCreateQuestion = (data) => {
     const title = data.title;
 
+    if (!title) {
+      toastify('error', 'Введите название вопроса');
+      return;
+    }
+
     dispatch(
       addNewQuestionAction({
         title,
@@ -136,30 +160,53 @@ const QuestionForm = ({ onCloseForm }) => {
         testId: test.id,
       })
     );
+    toastify('success', 'Вопрос успешно добавлен');
 
     setQuestionStep(2);
   };
 
   const handleCreateAnswer = () => {
-    if (!isAnswerEditing) {
-      if (questionType !== 'number') {
-        append({ text: '', is_right: false });
-      } else {
-        append({ text: '' });
+    const currentQuestion = test.questions[test.questions.length - 1];
+    const questionId = selectedQuestion
+      ? selectedQuestion.id
+      : currentQuestion.id;
+    const allAnswers = methods.getValues().answers;
+
+    const newAnswer = allAnswers.slice(-1)[0];
+
+    if (questionType === 'number') {
+      if (currentQuestion.answers.length === 1) {
+        onCloseForm();
+        return;
       }
 
-      setIsAnswerEditing(true);
+      const newNumberAnswer = allAnswers[0];
+
+      if (!isNumber(newNumberAnswer.text)) {
+        toastify('error', 'Введите число');
+        return;
+      }
+
+      dispatch(
+        addAnswerAction({
+          questionId,
+          answer: newNumberAnswer,
+        })
+      );
+      toastify('success', 'Ответ успешно добавлен');
+      onCloseForm();
       return;
     }
 
-    const questionId = selectedQuestion
-      ? selectedQuestion.id
-      : test.questions[test.questions.length - 1].id;
+    if (editingAnswerId === null) {
+      append({ text: '', is_right: false });
 
-    const newAnswer = methods.getValues().answers.slice(-1)[0];
+      setEditingAnswerId(allAnswers.length);
+      return;
+    }
 
     if (!newAnswer.text.trim()) {
-      alert('Введите текст ответа');
+      toastify('error', 'Введите текст ответа');
       return;
     }
 
@@ -169,123 +216,95 @@ const QuestionForm = ({ onCloseForm }) => {
         answer: newAnswer,
       })
     );
-    setIsAnswerEditing(false);
+
+    toastify('success', 'Ответ успешно добавлен');
+    setEditingAnswerId(null);
   };
 
   const handleDeleteAnswer = (id) => {
-    handleValidateAnswer(id);
+    if (handleValidateAnswer(id)) {
+      const index = fields.findIndex((f, idx) => idx === id);
+      remove(id);
+      if (index === correctAnswer) setCorrectAnswer(null);
 
-    const index = fields.findIndex((f, idx) => idx === id);
-    remove(id);
-    if (index === correctAnswer) setCorrectAnswer(null);
+      if (index < correctAnswer) setCorrectAnswer(correctAnswer - 1);
 
-    if (index < correctAnswer) setCorrectAnswer(correctAnswer - 1);
+      if (selectedQuestion) {
+        const answerId = selectedQuestion.answers[id].id;
 
-    if (selectedQuestion) {
-      const answerId = selectedQuestion.answers[id].id;
+        dispatch(
+          deleteAnswerAction({
+            questionId: selectedQuestion.id,
+            answerId,
+          })
+        );
 
-      dispatch(
-        deleteAnswerAction({
-          questionId: selectedQuestion.id,
-          answerId,
-        })
-      );
-      setAcceptedAction(null);
+        toastify('success', 'Ответ успешно удален');
+        setAcceptedAction(null);
+      }
     }
   };
 
   const handleValidateAnswer = (id) => {
-    const deletedAnswer = methods.getValues().answers[id];
-    const answersCount = methods.getValues().answers.length;
-    const correctAnswersCount = methods
-      .getValues()
-      .answers.filter((a) => a.is_right === true).length;
+    const answers = methods.getValues().answers;
+
+    const deletedAnswerId = answers[id];
+    const answersCount = answers.length;
+    const correctAnswersCount = answers.filter(
+      (a) => a.is_right === true
+    ).length;
 
     if (answersCount === 2) {
-      alert(
+      toastify(
+        'error',
         'Нельзя удалить вопрос, количество вариантов ответа должно быть более 2'
       );
-      return;
+      return false;
     }
 
-    if (deletedAnswer.is_right && questionType === 'single') {
-      alert('Нельзя удалить правильный ответ');
-      return;
+    if (deletedAnswerId.is_right && questionType === 'single') {
+      toastify('error', 'Нельзя удалить правильный ответ');
+      return false;
     }
 
-    if (deletedAnswer.is_right && correctAnswersCount === 1) {
-      alert(
+    if (deletedAnswerId.is_right && correctAnswersCount === 1) {
+      toastify(
+        'error',
         'Нельзя удалить вопрос, количество правильных вариантов ответа должно быть более 1'
       );
-      return;
+      return false;
     }
-  };
-
-  const handleDragEnd = (event) => {
-    const { active, over } = event;
-
-    const field = fields.find((f) => f.id === active.id);
-
-    const answerId = selectedQuestion.answers.find(
-      (a) => a.text === field.text
-    ).id;
-
-    if (over == null) {
-      return;
-    }
-    if (active.id !== over.id) {
-      const oldIndex = fields.findIndex((field) => field.id === active.id);
-      const newIndex = fields.findIndex((field) => field.id === over.id);
-
-      dispatch(
-        updatePositionAction({
-          questionId: selectedQuestion.id,
-          position: newIndex,
-          answerId,
-        })
-      );
-      move(oldIndex, newIndex);
-
-      // Присваиваю корректный индекс правильного ответа
-      if (correctAnswer === oldIndex) setCorrectAnswer(newIndex);
-      if (correctAnswer === newIndex) setCorrectAnswer(oldIndex);
-
-      if (correctAnswer >= newIndex && correctAnswer < oldIndex) {
-        setCorrectAnswer(correctAnswer + 1);
-      } else if (correctAnswer <= newIndex && correctAnswer > oldIndex) {
-        setCorrectAnswer(correctAnswer - 1);
-      }
-    }
+    return true;
   };
 
   const handleCloseForm = () => {
-    if (handleValidateQuestion() && !selectedQuestion) {
-      resetForm();
-    } else {
-      handleSubmit();
+    const isNumberType = questionType === 'number';
+    const isValidQuestion = handleValidateQuestion();
+
+    if (isNumberType) {
+      !selectedQuestion ? handleCreateAnswer() : handleSubmit();
+      return;
     }
+
+    if (isValidQuestion && !selectedQuestion) resetForm();
+    else handleSubmit();
   };
 
   const handleValidateQuestion = () => {
-    if (firstStep) {
-      return true;
-    }
+    if (firstStep) return true;
 
     if (questionType !== 'number') {
       if (fields.length < 2) {
-        alert('Добавьте хотя бы два варианта ответа');
+        toastify('error', 'Добавьте хотя бы два варианта ответа');
         return false;
       }
 
       if (correctAnswer === null && questionType === 'single') {
-        alert('Выберите правильный ответ');
+        toastify('error', 'Выберите правильный ответ');
         return false;
       }
-
       return true;
     }
-
-    // TODO: add validation for "number"
   };
 
   const resetForm = () => {
@@ -296,49 +315,55 @@ const QuestionForm = ({ onCloseForm }) => {
   };
 
   return (
-    <DndContext onDragEnd={handleDragEnd}>
-      <FormProvider {...methods}>
-        <form className={s.form} onSubmit={handleSubmit}>
-          <Input
-            className={cn(s.input, s.text)}
-            type='text'
-            fieldName='title'
-            placeholder='Введите вопрос'
-          />
-          <AnswersList
-            fields={fields}
-            questionType={questionType}
-            questionStep={questionStep}
-            correctAnswer={correctAnswer}
-            setCorrectAnswer={setCorrectAnswer}
-          />
+    <CorrectAnswerContext.Provider value={{ correctAnswer, setCorrectAnswer }}>
+      <DndArea fields={fields} move={move}>
+        <FormProvider {...methods}>
+          <form className={s.form} onSubmit={handleSubmit}>
+            <Input
+              className={cn(s.input, s.text)}
+              type='text'
+              fieldName='title'
+              placeholder='Введите вопрос'
+            />
+            <editingAnswerContext.Provider value={editingAnswerId}>
+              <AnswersList
+                fields={fields}
+                questionType={questionType}
+                questionStep={questionStep}
+                setAcceptedAction={setAcceptedAction}
+              />
+            </editingAnswerContext.Provider>
 
-          {firstStep && (
-            <Button className={s.button} type='submit'>
-              {selectedQuestion ? 'Сохранить вопрос' : 'Создать вопрос'}
-            </Button>
-          )}
+            {firstStep && (
+              <Button className={s.button} type='submit'>
+                Создать вопрос
+              </Button>
+            )}
 
-          {(questionStep === 2 || selectedQuestion) && (
+            {questionType !== 'number' && secondStep && (
+              <Button
+                className={s.button}
+                type='button'
+                onClick={handleCreateAnswer}
+              >
+                {editingAnswerId !== null
+                  ? 'Создать ответ'
+                  : 'Добавить вариант ответа'}
+              </Button>
+            )}
+
             <Button
-              className={s.button}
-              type='button'
-              onClick={handleCreateAnswer}
+              className={cn(s.button, {
+                [s.cancel]: firstStep,
+              })}
+              onClick={handleCloseForm}
             >
-              {isAnswerEditing ? 'Создать ответ' : 'Добавить вариант ответа'}
+              {firstStep ? 'Отмена' : 'Готово'}
             </Button>
-          )}
-          <Button
-            className={cn(s.button, {
-              [s.cancel]: firstStep,
-            })}
-            onClick={handleCloseForm}
-          >
-            {firstStep ? 'Отмена' : 'Готово'}
-          </Button>
-        </form>
-      </FormProvider>
-    </DndContext>
+          </form>
+        </FormProvider>
+      </DndArea>
+    </CorrectAnswerContext.Provider>
   );
 };
 

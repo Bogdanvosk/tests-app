@@ -1,5 +1,6 @@
 .button {
   display: block;
+  width: 100%;
   margin-bottom: 0.5rem;
 
   @include button;
