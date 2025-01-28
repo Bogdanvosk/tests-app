@@ -3,7 +3,10 @@ import PropTypes from 'prop-types';
 import { SortableContext } from '@dnd-kit/sortable';
 
 import { SelectQuestionContext } from '@/components/pages/Test/Test';
-import { CorrectAnswerContext } from '../QuestionForm/QuestionForm';
+import {
+  CorrectAnswerContext,
+  EditingAnswerContext,
+} from '../QuestionForm/QuestionForm';
 import { useFormContext } from 'react-hook-form';
 import { useModalContext } from '../ModalProvider/ModalProvider';
 import { useContext, useMemo } from 'react';
@@ -25,6 +28,7 @@ const AnswersList = ({
   const { showModal } = useModalContext();
   const { correctAnswer, setCorrectAnswer } = useContext(CorrectAnswerContext);
   const { selectedQuestion } = useContext(SelectQuestionContext);
+  const editingAnswerId = useContext(EditingAnswerContext);
 
   const isNumberInputVisible = useMemo(() => {
     if (selectedQuestion) return questionType === 'number';
@@ -47,8 +51,9 @@ const AnswersList = ({
   const handleChangeCorrectAnswer = (index) => {
     const answers = methods.getValues().answers;
 
-    if (questionStep === 2 && correctAnswer !== null) {
-      toastify('error', 'Нельзя изменить правильный ответ');
+    if (editingAnswerId === index && correctAnswer !== null) {
+      toastify('warning', 'Завершите редактирование ответа');
+      methods.setValue(`answers.${index}.is_right`, false);
       return;
     }
 

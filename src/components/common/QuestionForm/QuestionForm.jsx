@@ -15,7 +15,7 @@ import {
   useState,
 } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { selectCurrentTest } from 'store/features/test/selectors';
+import { selectCurrentTest } from '@/store/features/test/selectors';
 import {
   addAnswerAction,
   addNewQuestionAction,
@@ -34,7 +34,7 @@ import DndArea from '../DndArea/DndArea';
 import s from './QuestionForm.module.scss';
 
 export const CorrectAnswerContext = createContext(null);
-export const editingAnswerContext = createContext(null);
+export const EditingAnswerContext = createContext(null);
 
 const QuestionForm = ({ onCloseForm }) => {
   const [questionStep, setQuestionStep] = useState(1);
@@ -103,7 +103,7 @@ const QuestionForm = ({ onCloseForm }) => {
               question_type: questionType,
             })
           );
-          toastify('success', 'Вопрос успешно обновлен');
+          isLoading && toastify('success', 'Вопрос успешно обновлен');
         }
 
         if (data.answers.slice(-1)[0].text === '') {
@@ -225,11 +225,15 @@ const QuestionForm = ({ onCloseForm }) => {
     if (handleValidateAnswer(id)) {
       const index = fields.findIndex((f, idx) => idx === id);
       remove(id);
-      if (index === correctAnswer) setCorrectAnswer(null);
+      setEditingAnswerId(null);
 
+      if (index === correctAnswer) setCorrectAnswer(null);
       if (index < correctAnswer) setCorrectAnswer(correctAnswer - 1);
 
-      if (selectedQuestion) {
+      if (
+        selectedQuestion &&
+        fields.length === selectedQuestion.answers.length
+      ) {
         const answerId = selectedQuestion.answers[id].id;
 
         dispatch(
@@ -292,6 +296,10 @@ const QuestionForm = ({ onCloseForm }) => {
 
   const handleValidateQuestion = () => {
     if (firstStep) return true;
+    if (editingAnswerId !== null) {
+      toastify('warning', 'Завершите редактирование ответа');
+      return false;
+    }
 
     if (questionType !== 'number') {
       if (fields.length < 2) {
@@ -316,53 +324,53 @@ const QuestionForm = ({ onCloseForm }) => {
 
   return (
     <CorrectAnswerContext.Provider value={{ correctAnswer, setCorrectAnswer }}>
-      <DndArea fields={fields} move={move}>
-        <FormProvider {...methods}>
-          <form className={s.form} onSubmit={handleSubmit}>
-            <Input
-              className={cn(s.input, s.text)}
-              type='text'
-              fieldName='title'
-              placeholder='Введите вопрос'
-            />
-            <editingAnswerContext.Provider value={editingAnswerId}>
+      <EditingAnswerContext.Provider value={editingAnswerId}>
+        <DndArea fields={fields} move={move}>
+          <FormProvider {...methods}>
+            <form className={s.form} onSubmit={handleSubmit}>
+              <Input
+                className={cn(s.input, s.text)}
+                type='text'
+                fieldName='title'
+                placeholder='Введите вопрос'
+              />
               <AnswersList
                 fields={fields}
                 questionType={questionType}
                 questionStep={questionStep}
                 setAcceptedAction={setAcceptedAction}
               />
-            </editingAnswerContext.Provider>
 
-            {firstStep && (
-              <Button className={s.button} type='submit'>
-                Создать вопрос
-              </Button>
-            )}
+              {firstStep && (
+                <Button className={s.button} type='submit'>
+                  Создать вопрос
+                </Button>
+              )}
 
-            {questionType !== 'number' && secondStep && (
+              {questionType !== 'number' && secondStep && (
+                <Button
+                  className={s.button}
+                  type='button'
+                  onClick={handleCreateAnswer}
+                >
+                  {editingAnswerId !== null
+                    ? 'Создать ответ'
+                    : 'Добавить вариант ответа'}
+                </Button>
+              )}
+
               <Button
-                className={s.button}
-                type='button'
-                onClick={handleCreateAnswer}
+                className={cn(s.button, {
+                  [s.cancel]: firstStep,
+                })}
+                onClick={handleCloseForm}
               >
-                {editingAnswerId !== null
-                  ? 'Создать ответ'
-                  : 'Добавить вариант ответа'}
+                {firstStep ? 'Отмена' : 'Готово'}
               </Button>
-            )}
-
-            <Button
-              className={cn(s.button, {
-                [s.cancel]: firstStep,
-              })}
-              onClick={handleCloseForm}
-            >
-              {firstStep ? 'Отмена' : 'Готово'}
-            </Button>
-          </form>
-        </FormProvider>
-      </DndArea>
+            </form>
+          </FormProvider>
+        </DndArea>
+      </EditingAnswerContext.Provider>
     </CorrectAnswerContext.Provider>
   );
 };
