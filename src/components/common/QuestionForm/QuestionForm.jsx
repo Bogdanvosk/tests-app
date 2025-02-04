@@ -139,7 +139,7 @@ const QuestionForm = ({ onCloseForm }) => {
         handleCreateQuestion(data);
       }
     },
-    [selectedQuestion, questionStep, dispatch]
+    [selectedQuestion, questionStep, dispatch, questionType]
   );
 
   const handleSubmit = methods.handleSubmit(onSubmit);

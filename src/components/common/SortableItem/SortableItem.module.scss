@@ -16,6 +16,10 @@
     &:active {
       background-color: $color-light-gray;
     }
+
+    @include tablet {
+      margin-right: 0;
+    }
   }
 }
 

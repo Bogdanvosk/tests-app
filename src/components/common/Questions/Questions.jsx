@@ -7,15 +7,15 @@ import {
 import { createContext, useContext, useEffect, useState } from 'react';
 import { useModalContext } from '../ModalProvider/ModalProvider';
 import { useDispatch } from 'react-redux';
-
+import { toastify } from '@/utils/toastify';
 import { deleteQuestionAction } from '@/store/features/test';
+
 import { questionTypes } from '@/content';
 import Button from '@/components/common/Button/Button';
 import QuestionsList from '@/components/common/QuestionsList/QuestionsList';
 import Dropdown from '@/components/common/Dropdown/Dropdown';
 
 import s from './Questions.module.scss';
-import { toastify } from '@/utils/toastify';
 
 export const isOpenFormContext = createContext({ open: false, id: null });
 
@@ -75,7 +75,7 @@ const Questions = ({
   };
 
   return (
-    <div className={s.questions}>
+    <div>
       <isOpenFormContext.Provider
         value={{ open: isQuestionFormOpen, id: selectedQuestion?.id }}
       >

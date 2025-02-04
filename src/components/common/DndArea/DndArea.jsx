@@ -16,8 +16,6 @@ const DndArea = ({ fields, move, children }) => {
   const editingAnswerId = useContext(EditingAnswerContext);
 
   const handleDragEnd = (event) => {
-    console.log('editingAnswerId', editingAnswerId);
-    
     if (!selectedQuestion) {
       toastify('warning', 'Завершите редактирование вопроса');
       return;

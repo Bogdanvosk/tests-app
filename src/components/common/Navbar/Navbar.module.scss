@@ -9,18 +9,17 @@
   }
 }
 
+.logout {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
 .input {
   width: 400px;
   padding: 1rem;
 
   @include input;
-}
-
-.buttons {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  font-size: 1.13rem;
 }
 
 .button {
@@ -31,6 +30,10 @@
 
   padding: 1rem 2rem;
   font-weight: 700;
+
+  @media (max-width: $xs) {
+    padding: 1rem;
+  }
 }
 
 .delete {
@@ -43,5 +46,9 @@
 
   &:active {
     background-color: color.adjust($color-red, $lightness: -10%);
+  }
+
+  @media (max-width: $xs) {
+    padding: 1rem;
   }
 }

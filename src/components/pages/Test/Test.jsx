@@ -5,6 +5,7 @@ import {
   selectCurrentQuestions,
   selectCurrentTest,
 } from '@/store/features/test/selectors';
+import { selectIsLoading } from '@/store/features/auth/selectors';
 import { useRouter } from 'next/router';
 import useLocalStorage from '@/hooks/useLocalStorage';
 
@@ -26,6 +27,7 @@ const Test = () => {
 
   const currentTest = useSelector(selectCurrentTest);
   const currentQuestions = useSelector(selectCurrentQuestions);
+  const isLoading = useSelector(selectIsLoading);
 
   const [selectedQuestion, setSelectedQuestion] = useState(null);
   const [questionType, setQuestionType] = useState(questionTypes[0].value);
@@ -48,6 +50,8 @@ const Test = () => {
 
   const handleSelectQuestion = useCallback(
     (id) => {
+      if (isLoading) return;
+
       const question = currentQuestions.find((q) => q.id === id);
       if (question) {
         setSelectedQuestion(question);
@@ -55,40 +59,42 @@ const Test = () => {
         setQuestionType(question.question_type);
       }
     },
-    [currentQuestions]
+    [currentQuestions, isLoading]
   );
 
   return (
     <div className={s.test}>
       <Navbar currentQuestions={currentQuestions} currentTest={currentTest} />
-      <Container>
-        <div className={s.content}>
-          <SelectQuestionContext.Provider
-            value={{
-              selectedQuestion,
-              handleSelectQuestion,
-            }}
-          >
-            <QuestionTypeContext.Provider
+      {currentTest && (
+        <Container>
+          <div className={s.content}>
+            <SelectQuestionContext.Provider
               value={{
-                questionType,
-                setQuestionType,
+                selectedQuestion,
+                handleSelectQuestion,
               }}
             >
-              <Questions
-                currentQuestions={currentQuestions}
-                currentTest={currentTest}
-                isQuestionFormOpen={isQuestionFormOpen}
-                setIsQuestionFormOpen={setIsQuestionFormOpen}
-                onCloseForm={handleCloseQuestionForm}
-              />
-              {isQuestionFormOpen && (
-                <QuestionForm onCloseForm={handleCloseQuestionForm} />
-              )}
-            </QuestionTypeContext.Provider>
-          </SelectQuestionContext.Provider>
-        </div>
-      </Container>
+              <QuestionTypeContext.Provider
+                value={{
+                  questionType,
+                  setQuestionType,
+                }}
+              >
+                <Questions
+                  currentQuestions={currentQuestions}
+                  currentTest={currentTest}
+                  isQuestionFormOpen={isQuestionFormOpen}
+                  setIsQuestionFormOpen={setIsQuestionFormOpen}
+                  onCloseForm={handleCloseQuestionForm}
+                />
+                {isQuestionFormOpen && (
+                  <QuestionForm onCloseForm={handleCloseQuestionForm} />
+                )}
+              </QuestionTypeContext.Provider>
+            </SelectQuestionContext.Provider>
+          </div>
+        </Container>
+      )}
     </div>
   );
 };
