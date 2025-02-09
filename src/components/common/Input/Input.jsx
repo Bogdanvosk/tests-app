@@ -1,7 +1,6 @@
+import { useFormContext } from 'react-hook-form';
 import PropTypes from 'prop-types';
 import cn from 'classnames';
-
-import { useFormContext } from 'react-hook-form';
 
 import s from './Input.module.scss';
 

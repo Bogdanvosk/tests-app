@@ -1,9 +1,9 @@
-import PropTypes from 'prop-types';
+import { useRef } from 'react';
 import { createPortal } from 'react-dom';
+import PropTypes from 'prop-types';
 import cn from 'classnames';
 
-import { useRef } from 'react';
-import useOutsideClick from 'hooks/useOutsideClick';
+import useOutsideClick from '@/hooks/useOutsideClick';
 import { useModalContext } from '../ModalProvider/ModalProvider';
 
 import s from './Modal.module.scss';

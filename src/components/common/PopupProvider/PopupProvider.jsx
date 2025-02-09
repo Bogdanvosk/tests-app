@@ -1,4 +1,5 @@
 import { ToastContainer, Slide } from 'react-toastify';
+import PropTypes from 'prop-types';
 
 const PopupProvider = ({ children }) => {
   return (
@@ -19,3 +20,7 @@ const PopupProvider = ({ children }) => {
 };
 
 export default PopupProvider;
+
+PopupProvider.propTypes = {
+  children: PropTypes.node,
+};

@@ -1,7 +1,6 @@
-import PropTypes from 'prop-types';
-
-import { CSS } from '@dnd-kit/utilities';
 import { useSortable } from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
+import PropTypes from 'prop-types';
 
 import Icon from '../Icon/Icon';
 

@@ -50,6 +50,12 @@ export const updateTestReq = async ({ testId, title }) => {
   return data;
 };
 
+export const deleteTestReq = async (testId) => {
+  const { data } = await instance.delete(`/tests/${testId}`);
+
+  return data;
+};
+
 // QUESTION
 export const addQuestionReq = async ({
   testId,

@@ -1,21 +1,21 @@
-import cn from 'classnames';
-import PropTypes from 'prop-types';
+import { useContext, useMemo } from 'react';
+import { useFormContext } from 'react-hook-form';
 import { SortableContext } from '@dnd-kit/sortable';
+import PropTypes from 'prop-types';
+import cn from 'classnames';
 
 import { SelectQuestionContext } from '@/components/pages/Test/Test';
 import {
   CorrectAnswerContext,
   EditingAnswerContext,
 } from '../QuestionForm/QuestionForm';
-import { useFormContext } from 'react-hook-form';
 import { useModalContext } from '../ModalProvider/ModalProvider';
-import { useContext, useMemo } from 'react';
+import { toastify } from '@/utils/toastify';
 
 import Answer from '../Answer/Answer';
 import Input from '../Input/Input';
 
 import s from './AnswersList.module.scss';
-import { toastify } from '@/utils/toastify';
 
 const AnswersList = ({
   fields,

@@ -9,8 +9,8 @@ import s from './Answer.module.scss';
 const Answer = ({
   field,
   fieldIndex = 0,
-  acceptDeleteAnswer = () => {},
-  handleChangeCorrectAnswer = () => {},
+  acceptDeleteAnswer,
+  handleChangeCorrectAnswer,
 }) => {
   const onChangeCorrectAnswer = () => {
     handleChangeCorrectAnswer(fieldIndex);

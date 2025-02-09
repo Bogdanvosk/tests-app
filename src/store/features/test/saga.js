@@ -10,6 +10,8 @@ import {
   deleteAnswerSuccess,
   deleteQuestionError,
   deleteQuestionSuccess,
+  deleteTestError,
+  deleteTestSuccess,
   getAllTestsError,
   getAllTestsSuccess,
   getCurrentTestError,
@@ -29,6 +31,7 @@ import {
   createTestReq,
   deleteAnswerReq,
   deleteQuestionReq,
+  deleteTestReq,
   getAllTestsReq,
   getCurrentTestReq,
   updateAnswerReq,
@@ -48,12 +51,14 @@ import {
   ADD_ANSWER,
   UPDATE_ANSWER,
   UPDATE_POSITION,
+  DELETE_TEST,
 } from './constants';
 
 export function* testSagaWatcher() {
   yield takeLatest(GET_CURRENT_TEST, getCurrentTestWorker);
   yield takeLatest(CREATE_TEST, createTestWorker);
   yield takeLatest(UPDATE_TEST, updateTestWorker);
+  yield takeLatest(DELETE_TEST, deleteTestWorker);
   yield takeLatest(GET_ALL_TESTS, getAllTestsWorker);
 
   yield takeLatest(ADD_QUESTION, addQuestionWorker);
@@ -83,6 +88,23 @@ function* createTestWorker({ payload }) {
     yield put(createTestError(error));
   }
 }
+function* updateTestWorker({ payload }) {
+  try {
+    const data = yield call(updateTestReq, payload);
+    yield put(updateTestSuccess(data));
+  } catch (error) {
+    yield put(updateTestError(error));
+  }
+}
+
+function* deleteTestWorker({ payload }) {
+  try {
+    const data = yield call(deleteTestReq, payload);
+    yield put(deleteTestSuccess(data));
+  } catch (error) {
+    yield put(deleteTestError(error));
+  }
+}
 
 function* getAllTestsWorker() {
   try {
@@ -108,15 +130,6 @@ function* deleteQuestionWorker({ payload }) {
     yield put(deleteQuestionSuccess(payload));
   } catch (error) {
     yield put(deleteQuestionError(error));
-  }
-}
-
-function* updateTestWorker({ payload }) {
-  try {
-    const data = yield call(updateTestReq, payload);
-    yield put(updateTestSuccess(data));
-  } catch (error) {
-    yield put(updateTestError(error));
   }
 }
 

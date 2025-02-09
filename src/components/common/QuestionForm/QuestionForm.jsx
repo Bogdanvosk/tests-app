@@ -1,11 +1,3 @@
-import PropTypes from 'prop-types';
-import cn from 'classnames';
-
-import {
-  QuestionTypeContext,
-  SelectQuestionContext,
-} from '@/components/pages/Test/Test';
-import { FormProvider, useFieldArray, useForm } from 'react-hook-form';
 import {
   createContext,
   useCallback,
@@ -15,6 +7,14 @@ import {
   useState,
 } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { FormProvider, useFieldArray, useForm } from 'react-hook-form';
+import PropTypes from 'prop-types';
+import cn from 'classnames';
+
+import {
+  QuestionTypeContext,
+  SelectQuestionContext,
+} from '@/components/pages/Test/Test';
 import { selectCurrentTest } from '@/store/features/test/selectors';
 import {
   addAnswerAction,
@@ -25,6 +25,7 @@ import {
 } from '@/store/features/test';
 import { isNumber } from '@/utils/isNumber';
 import { toastify } from '@/utils/toastify';
+import { selectIsLoading } from '@/store/features/auth/selectors';
 
 import Input from '../Input/Input';
 import Button from '../Button/Button';
@@ -41,6 +42,8 @@ const QuestionForm = ({ onCloseForm }) => {
   const [editingAnswerId, setEditingAnswerId] = useState(null);
   const [correctAnswer, setCorrectAnswer] = useState(null);
   const [acceptedAction, setAcceptedAction] = useState(null);
+
+  const isLoading = useSelector(selectIsLoading);
 
   const { selectedQuestion } = useContext(SelectQuestionContext);
   const { questionType } = useContext(QuestionTypeContext);
@@ -91,50 +94,62 @@ const QuestionForm = ({ onCloseForm }) => {
     }
   }, [acceptedAction]);
 
+  const updateSelectedQuestion = (data) => {
+    const oldTitle = selectedQuestion.title;
+    if (oldTitle !== data.title) {
+      dispatch(
+        updateQuestionAction({
+          questionId: selectedQuestion.id,
+          title: data.title,
+          question_type: questionType,
+        })
+      );
+      toastify('success', 'Вопрос успешно обновлен');
+    }
+
+    if (data.answers.slice(-1)[0].text === '') {
+      toastify('error', 'Введите текст ответа');
+      return;
+    }
+
+    let countOfChangedAnswers = 0;
+
+    data.answers.forEach((_, index) => {
+      const newAnswer = data.answers[index];
+      const oldAnswer = selectedQuestion.answers[index];
+      if (questionType === 'number' && !isNumber(newAnswer.text)) {
+        toastify('error', 'Введите число');
+        return;
+      }
+
+      if (
+        oldAnswer.text !== newAnswer.text ||
+        oldAnswer.is_right !== newAnswer.is_right
+      ) {
+        dispatch(
+          updateAnswerAction({
+            answerId: oldAnswer.id,
+            questionId: selectedQuestion.id,
+            newData: newAnswer,
+          })
+        );
+        countOfChangedAnswers += 1;
+      }
+    });
+
+    countOfChangedAnswers > 1
+      ? toastify('success', 'Ответы успешно обновлены')
+      : countOfChangedAnswers === 1
+      ? toastify('success', 'Ответ успешно обновлен')
+      : null;
+
+    resetForm();
+  };
+
   const onSubmit = useCallback(
     (data) => {
       if (selectedQuestion) {
-        const oldTitle = selectedQuestion.title;
-        if (oldTitle !== data.title) {
-          dispatch(
-            updateQuestionAction({
-              questionId: selectedQuestion.id,
-              title: data.title,
-              question_type: questionType,
-            })
-          );
-          isLoading && toastify('success', 'Вопрос успешно обновлен');
-        }
-
-        if (data.answers.slice(-1)[0].text === '') {
-          toastify('error', 'Введите текст ответа');
-          return;
-        }
-
-        data.answers.forEach((_, index) => {
-          const newAnswer = data.answers[index];
-          const oldAnswer = selectedQuestion.answers[index];
-          if (questionType === 'number' && !isNumber(newAnswer.text)) {
-            toastify('error', 'Введите число');
-            return;
-          }
-
-          if (
-            oldAnswer.text !== newAnswer.text ||
-            oldAnswer.is_right !== newAnswer.is_right
-          ) {
-            dispatch(
-              updateAnswerAction({
-                answerId: oldAnswer.id,
-                questionId: selectedQuestion.id,
-                newData: newAnswer,
-              })
-            );
-            toastify('success', 'Ответ успешно обновлен');
-          }
-        });
-
-        resetForm();
+        updateSelectedQuestion(data);
       } else if (questionStep === 1) {
         handleCreateQuestion(data);
       }
@@ -166,6 +181,11 @@ const QuestionForm = ({ onCloseForm }) => {
   };
 
   const handleCreateAnswer = () => {
+    if (firstStep) {
+      onCloseForm();
+      return;
+    }
+
     const currentQuestion = test.questions[test.questions.length - 1];
     const questionId = selectedQuestion
       ? selectedQuestion.id
@@ -342,7 +362,7 @@ const QuestionForm = ({ onCloseForm }) => {
               />
 
               {firstStep && (
-                <Button className={s.button} type='submit'>
+                <Button className={s.button} type='submit' disabled={isLoading}>
                   Создать вопрос
                 </Button>
               )}
@@ -352,6 +372,7 @@ const QuestionForm = ({ onCloseForm }) => {
                   className={s.button}
                   type='button'
                   onClick={handleCreateAnswer}
+                  disabled={isLoading}
                 >
                   {editingAnswerId !== null
                     ? 'Создать ответ'
@@ -364,6 +385,7 @@ const QuestionForm = ({ onCloseForm }) => {
                   [s.cancel]: firstStep,
                 })}
                 onClick={handleCloseForm}
+                disabled={isLoading}
               >
                 {firstStep ? 'Отмена' : 'Готово'}
               </Button>

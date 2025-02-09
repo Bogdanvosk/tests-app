@@ -1,4 +1,5 @@
 import cn from 'classnames';
+import PropTypes from 'prop-types';
 
 import Button from '../Button/Button';
 import Typography from '../Typography/Typography';
@@ -37,3 +38,9 @@ const Accept = ({ handleIsAccepted, actionValue, id }) => {
 };
 
 export default Accept;
+
+Accept.propTypes = {
+  handleIsAccepted: PropTypes.func,
+  actionValue: PropTypes.string,
+  id: PropTypes.number,
+}

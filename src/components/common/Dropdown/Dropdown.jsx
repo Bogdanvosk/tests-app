@@ -1,7 +1,7 @@
+import { useContext, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import cn from 'classnames';
 
-import { useContext, useEffect, useState } from 'react';
 import {
   QuestionTypeContext,
   SelectQuestionContext,
@@ -22,12 +22,14 @@ const Dropdown = ({ options, onSelectOption }) => {
 
   const toggleDropdown = () => setIsOpen(!isOpen);
 
-  const handleItemClick = (value) => {
-    const questionType = options.find((item) => item.value === value).value;
+  const handleItemClick = ({ target }) => {
+    const id = target.id;
 
-    setSelectedItem(value);
+    const newQuestionType = options.find((item) => item.value === id).value;
+
+    setSelectedItem(id);
     setIsOpen(false);
-    onSelectOption(questionType);
+    onSelectOption(newQuestionType);
   };
 
   return (
@@ -43,7 +45,7 @@ const Dropdown = ({ options, onSelectOption }) => {
             className={cn(s.item, {
               [s.selected]: item.value === selectedItem,
             })}
-            onClick={(e) => handleItemClick(e.target.id)}
+            onClick={handleItemClick}
           >
             {item.text}
           </div>

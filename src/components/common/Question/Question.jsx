@@ -4,8 +4,9 @@ import { useContext } from 'react';
 
 import { isOpenFormContext } from '@/components/common/Questions/Questions';
 
-import s from './Question.module.scss';
 import { SelectQuestionContext } from '@/components/pages/Test/Test';
+
+import s from './Question.module.scss';
 
 const Question = ({ question }) => {
   const { open: isFormOpen, id } = useContext(isOpenFormContext);

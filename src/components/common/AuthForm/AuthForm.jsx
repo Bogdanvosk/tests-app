@@ -1,14 +1,14 @@
+import { useEffect, useState } from 'react';
+import { FormProvider, useForm } from 'react-hook-form';
+import { useDispatch, useSelector } from 'react-redux';
+import { useRouter } from 'next/router';
 import PropTypes from 'prop-types';
 import cn from 'classnames';
 
 import { authFormInputs } from '@/content';
-import { useEffect, useState } from 'react';
-import { FormProvider, useForm } from 'react-hook-form';
-import { useDispatch, useSelector } from 'react-redux';
-import { signInAction, signUpAction } from 'store/features/auth';
-import { selectError, selectUser } from 'store/features/auth/selectors';
-import { useRouter } from 'next/router';
-import useLocalStorage from 'hooks/useLocalStorage';
+import { signInAction, signUpAction } from '@/store/features/auth';
+import { selectError, selectUser } from '@/store/features/auth/selectors';
+import useLocalStorage from '@/hooks/useLocalStorage';
 
 import Button from '../Button/Button';
 import AuthInput from '../AuthInput/AuthInput';
@@ -41,8 +41,7 @@ const AuthForm = ({ mode, className = '' }) => {
   useEffect(() => {
     if (currentUser !== null) {
       setUser(currentUser);
-      if (currentUser.is_admin) router.push('/test');
-      else router.push('/tests');
+      currentUser.is_admin ? router.push('/test') : router.push('/tests');
     }
   }, [currentUser, router, setUser, methods]);
 

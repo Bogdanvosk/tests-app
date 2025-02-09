@@ -1,6 +1,5 @@
 import PropTypes from 'prop-types';
 import cn from 'classnames';
-
 import { useFormContext } from 'react-hook-form';
 
 import Icon from '../Icon/Icon';
@@ -11,9 +10,9 @@ const AuthInput = ({
   fieldName = null,
   type,
   placeholder,
-  className = '',
+  handleCheckboxChange,
   checkboxValue = false,
-  handleCheckboxChange = () => {},
+  className = '',
 }) => {
   const {
     register,

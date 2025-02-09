@@ -51,6 +51,19 @@ export const testSlice = createSlice({
       state.isLoading = false;
       state.error = action.payload;
     },
+    deleteTestAction: (state) => {
+      state.isLoading = true;
+    },
+    deleteTestSuccess: (state, action) => {
+      state.isLoading = false;
+      state.tests = state.tests.filter((t) => t.id !== action.payload.id);
+      state.currentTest = null;
+      state.error = null;
+    },
+    deleteTestError: (state, action) => {
+      state.isLoading = false;
+      state.error = action.payload;
+    },
     getAllTestsAction: (state) => {
       state.isLoading = true;
     },
@@ -201,6 +214,7 @@ export const testSlice = createSlice({
           return q;
         }),
       };
+      state.isLoading = false;
     },
     updatePositionError: (state, action) => {
       state.isLoading = false;
@@ -221,6 +235,9 @@ export const {
   updateTestAction,
   updateTestSuccess,
   updateTestError,
+  deleteTestAction,
+  deleteTestSuccess,
+  deleteTestError,
   getAllTestsAction,
   getAllTestsSuccess,
   getAllTestsError,

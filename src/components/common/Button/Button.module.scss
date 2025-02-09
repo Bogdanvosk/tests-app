@@ -32,3 +32,9 @@
 .default {
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
 }
+
+.disabled {
+  opacity: 0.6;
+  pointer-events: none;
+  cursor: not-allowed;
+}

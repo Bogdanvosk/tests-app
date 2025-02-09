@@ -1,11 +1,17 @@
-import cn from 'classnames';
-
-import { createTestAction, updateTestAction } from '@/store/features/test';
-import { logoutAction } from '@/store/features/auth';
 import { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
+import { useRouter } from 'next/router';
+import cn from 'classnames';
+
+import {
+  createTestAction,
+  deleteTestAction,
+  updateTestAction,
+} from '@/store/features/test';
+import { logoutAction } from '@/store/features/auth';
 import useDebounce from '@/hooks/useDebounce';
 import { toastify } from '@/utils/toastify';
+import useLocalStorage from '@/hooks/useLocalStorage';
 
 import Container from '../Container/Container';
 import Button from '../Button/Button';
@@ -13,17 +19,23 @@ import Button from '../Button/Button';
 import s from './Navbar.module.scss';
 
 const Navbar = ({ currentTest, currentQuestions }) => {
+  const [user, setUser] = useLocalStorage('user');
   const [title, setTitle] = useState('');
 
   const dispatch = useDispatch();
+  const router = useRouter();
 
   useEffect(() => {
     currentTest && setTitle(currentTest.title);
   }, [currentTest, currentQuestions]);
 
+  useEffect(() => {
+    if (user === null) router.push('/sign-in');
+  }, [user]);
+
   const debouncedValue = useDebounce(title, 500).trim();
   useEffect(() => {
-    if (!currentTest) return;
+    if (!currentTest || !title) return;
     dispatch(
       updateTestAction({ testId: currentTest.id, title: debouncedValue })
     );
@@ -37,12 +49,14 @@ const Navbar = ({ currentTest, currentQuestions }) => {
   const handleCreateTest = () => {
     if (title) {
       dispatch(createTestAction({ title }));
-      setIsTestCreated(true);
+      toastify('success', 'Тест успешно создан');
     }
   };
 
   const handleDeleteTest = () => {
-    // TODO: delete test logic
+    dispatch(deleteTestAction(currentTest.id));
+    setTitle('');
+    toastify('success', 'Тест успешно удален');
   };
 
   const handleLogout = () => {

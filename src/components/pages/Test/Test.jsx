@@ -24,6 +24,7 @@ const Test = () => {
   const router = useRouter();
   const dispatch = useDispatch();
   const [user, setUser] = useLocalStorage('user');
+  const [currTestId, setCurrTestId] = useLocalStorage('test');
 
   const currentTest = useSelector(selectCurrentTest);
   const currentQuestions = useSelector(selectCurrentQuestions);
@@ -34,10 +35,16 @@ const Test = () => {
   const [isQuestionFormOpen, setIsQuestionFormOpen] = useState(false);
 
   useEffect(() => {
+    currTestId && dispatch(getCurrentTestAction(currTestId));
+  }, []);
+
+  useEffect(() => {
     if (user === null) router.push('/sign-in');
-    // TODO: get testId from props if existed test, else null
-    else dispatch(getCurrentTestAction(1562));
   }, [user]);
+
+  useEffect(() => {
+    setCurrTestId(currentTest?.id);
+  }, [currentTest]);
 
   useEffect(() => {
     !isQuestionFormOpen && setQuestionType(questionTypes[0].value);

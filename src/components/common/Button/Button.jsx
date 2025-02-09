@@ -1,7 +1,6 @@
-import cn from 'classnames';
-import PropTypes from 'prop-types';
-
 import { useCallback } from 'react';
+import PropTypes from 'prop-types';
+import cn from 'classnames';
 
 import Icon from '@/components/common/Icon/Icon';
 
@@ -13,8 +12,9 @@ const Button = ({
   type = 'button',
   iconName = '',
   className = '',
-  onClick = () => {},
+  onClick,
   preventClick = false,
+  disabled = false,
   ...props
 }) => {
   const handleClick = useCallback(
@@ -30,8 +30,14 @@ const Button = ({
   return (
     <button
       onClick={handleClick}
-      className={cn(s.button, s[variant], className)}
+      className={cn(
+        s.button,
+        s[variant],
+        { [s.disabled]: disabled },
+        className
+      )}
       type={type}
+      disabled={disabled}
       {...props}
     >
       {children}

@@ -1,12 +1,13 @@
+import { createContext, useContext, useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
+import PropTypes from 'prop-types';
 import cn from 'classnames';
 
 import {
   QuestionTypeContext,
   SelectQuestionContext,
 } from '@/components/pages/Test/Test';
-import { createContext, useContext, useEffect, useState } from 'react';
 import { useModalContext } from '../ModalProvider/ModalProvider';
-import { useDispatch } from 'react-redux';
 import { toastify } from '@/utils/toastify';
 import { deleteQuestionAction } from '@/store/features/test';
 
@@ -101,3 +102,32 @@ const Questions = ({
 };
 
 export default Questions;
+
+Questions.propTypes = {
+  currentQuestions: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.number,
+      title: PropTypes.string,
+      question_type: PropTypes.string,
+      answer: PropTypes.number,
+      answers: PropTypes.arrayOf(PropTypes.object),
+    })
+  ),
+  currentTest: PropTypes.shape({
+    created_at: PropTypes.string,
+    id: PropTypes.number,
+    title: PropTypes.string,
+    questions: PropTypes.arrayOf(
+      PropTypes.shape({
+        id: PropTypes.number,
+        title: PropTypes.string,
+        question_type: PropTypes.string,
+        answer: PropTypes.number,
+        answers: PropTypes.arrayOf(PropTypes.object),
+      })
+    ),
+  }),
+  isQuestionFormOpen: PropTypes.bool,
+  setIsQuestionFormOpen: PropTypes.func,
+  onCloseForm: PropTypes.func,
+};

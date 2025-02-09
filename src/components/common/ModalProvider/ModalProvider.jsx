@@ -1,8 +1,9 @@
 import { createContext, useContext, useEffect, useState } from 'react';
+import PropTypes from 'prop-types';
+
+import { getModalContent } from '@/utils/getModalContent';
 
 import Modal from '../Modal/Modal';
-
-import { getModalContent } from 'utils/getModalContent';
 
 import s from './ModalProvider.module.scss';
 
@@ -51,3 +52,7 @@ const ModalPovider = ({ children }) => {
 };
 
 export default ModalPovider;
+
+ModalPovider.propTypes = {
+  children: PropTypes.node,
+};
