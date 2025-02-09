@@ -12,12 +12,12 @@ const AuthInput = ({
   placeholder,
   handleCheckboxChange,
   checkboxValue = false,
-  className = '',
+  className = ''
 }) => {
   const {
     register,
     formState: { errors },
-    watch,
+    watch
   } = useFormContext();
 
   const passwordValue = watch('password');
@@ -27,8 +27,8 @@ const AuthInput = ({
     password: { required: 'Пароль обязателен' },
     password_confirmation: {
       required: 'Подтвердите пароль',
-      validate: (value) => value === passwordValue || 'Пароли должны совпадать',
-    },
+      validate: value => value === passwordValue || 'Пароли должны совпадать'
+    }
   };
 
   if (type === 'checkbox') {
@@ -73,5 +73,5 @@ AuthInput.propTypes = {
   placeholder: PropTypes.string,
   className: PropTypes.string,
   checkboxValue: PropTypes.bool,
-  handleCheckboxChange: PropTypes.func,
+  handleCheckboxChange: PropTypes.func
 };

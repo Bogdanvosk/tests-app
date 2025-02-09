@@ -9,7 +9,7 @@ import s from './ModalProvider.module.scss';
 
 const initialStore = {
   modalType: null,
-  modalProps: {},
+  modalProps: {}
 };
 
 const ModalContext = createContext(initialStore);
@@ -54,5 +54,5 @@ const ModalPovider = ({ children }) => {
 export default ModalPovider;
 
 ModalPovider.propTypes = {
-  children: PropTypes.node,
+  children: PropTypes.node
 };

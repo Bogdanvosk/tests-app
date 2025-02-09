@@ -10,7 +10,7 @@ import {
   updateAnswerAction,
   updatePositionAction,
   updateQuestionAction,
-  updateTestAction,
+  updateTestAction
 } from '.';
 
 export const GET_CURRENT_TEST = getCurrentTestAction.type;

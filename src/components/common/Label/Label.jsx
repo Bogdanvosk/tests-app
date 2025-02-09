@@ -27,5 +27,5 @@ Label.propTypes = {
   children: PropTypes.node,
   reversed: PropTypes.boolean,
   title: PropTypes.string,
-  className: PropTypes.string,
+  className: PropTypes.string
 };

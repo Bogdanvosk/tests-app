@@ -45,5 +45,5 @@ const Delete = ({ className = '' }) => {
 export default Delete;
 
 Delete.propTypes = {
-  className: PropTypes.string,
+  className: PropTypes.string
 };

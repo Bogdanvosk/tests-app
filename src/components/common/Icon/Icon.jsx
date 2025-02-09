@@ -12,5 +12,5 @@ export default Icon;
 Icon.propTypes = {
   name: PropTypes.string,
   className: PropTypes.string,
-  fill: PropTypes.string,
+  fill: PropTypes.string
 };

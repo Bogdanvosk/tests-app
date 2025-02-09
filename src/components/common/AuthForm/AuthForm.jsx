@@ -29,8 +29,8 @@ const AuthForm = ({ mode, className = '' }) => {
     defaultValues: {
       username: '',
       password: '',
-      password_confirmation: '',
-    },
+      password_confirmation: ''
+    }
   });
 
   useEffect(() => {
@@ -45,11 +45,11 @@ const AuthForm = ({ mode, className = '' }) => {
     }
   }, [currentUser, router, setUser, methods]);
 
-  const handleSubmit = methods.handleSubmit((data) => {
+  const handleSubmit = methods.handleSubmit(data => {
     const signInData = { username: data.username, password: data.password };
     const signUpData = {
       ...data,
-      is_admin: isAdmin,
+      is_admin: isAdmin
     };
 
     if (mode === 'signIn') dispatch(signInAction(signInData));
@@ -75,7 +75,7 @@ const AuthForm = ({ mode, className = '' }) => {
     <FormProvider {...methods}>
       <form className={cn(s.form, className)} onSubmit={handleSubmit}>
         <div className={s.inputs}>
-          {authFormInputs.map((input) => {
+          {authFormInputs.map(input => {
             if (input.mode.includes(mode)) {
               return (
                 <Label key={input.fieldName} title={input.title}>
@@ -102,12 +102,7 @@ const AuthForm = ({ mode, className = '' }) => {
         )}
 
         <span className={s.error}>{handleSetServerError()}</span>
-        <Button
-          variant='tabs'
-          iconName='submit'
-          type='submit'
-          className={s.button}
-        >
+        <Button variant='tabs' iconName='submit' type='submit' className={s.button}>
           {mode === 'signIn' ? 'Войти' : 'Создать аккаунт'}
         </Button>
       </form>
@@ -119,5 +114,5 @@ export default AuthForm;
 
 AuthForm.propTypes = {
   mode: PropTypes.string,
-  classNames: PropTypes.string,
+  classNames: PropTypes.string
 };

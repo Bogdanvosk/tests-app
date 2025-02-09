@@ -3,11 +3,7 @@ import { useDispatch } from 'react-redux';
 import { useRouter } from 'next/router';
 import cn from 'classnames';
 
-import {
-  createTestAction,
-  deleteTestAction,
-  updateTestAction,
-} from '@/store/features/test';
+import { createTestAction, deleteTestAction, updateTestAction } from '@/store/features/test';
 import { logoutAction } from '@/store/features/auth';
 import useDebounce from '@/hooks/useDebounce';
 import { toastify } from '@/utils/toastify';
@@ -36,13 +32,11 @@ const Navbar = ({ currentTest, currentQuestions }) => {
   const debouncedValue = useDebounce(title, 500).trim();
   useEffect(() => {
     if (!currentTest || !title) return;
-    dispatch(
-      updateTestAction({ testId: currentTest.id, title: debouncedValue })
-    );
+    dispatch(updateTestAction({ testId: currentTest.id, title: debouncedValue }));
     toastify('success', 'Имя теста успешно обновлено');
   }, [debouncedValue]);
 
-  const handleChangeTitle = (e) => {
+  const handleChangeTitle = e => {
     setTitle(e.target.value);
   };
 
@@ -72,11 +66,7 @@ const Navbar = ({ currentTest, currentQuestions }) => {
             Выйти
           </Button>
           {currentTest ? (
-            <Button
-              className={cn(s.button, s.delete)}
-              type='button'
-              onClick={handleDeleteTest}
-            >
+            <Button className={cn(s.button, s.delete)} type='button' onClick={handleDeleteTest}>
               Удалить тест
             </Button>
           ) : (
@@ -94,7 +84,7 @@ const Navbar = ({ currentTest, currentQuestions }) => {
             type='text'
             className={s.input}
             value={title}
-            onChange={(e) => handleChangeTitle(e)}
+            onChange={e => handleChangeTitle(e)}
             placeholder='Введите название теста'
           />
         </div>

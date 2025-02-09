@@ -19,5 +19,5 @@ export default HeadLayout;
 
 HeadLayout.propTypes = {
   favicon: PropTypes.string,
-  title: PropTypes.string,
+  title: PropTypes.string
 };

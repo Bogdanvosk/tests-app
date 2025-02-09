@@ -1,8 +1,7 @@
 import { useCallback } from 'react';
+import Icon from '@/components/common/Icon/Icon';
 import PropTypes from 'prop-types';
 import cn from 'classnames';
-
-import Icon from '@/components/common/Icon/Icon';
 
 import s from './Button.module.scss';
 
@@ -18,7 +17,7 @@ const Button = ({
   ...props
 }) => {
   const handleClick = useCallback(
-    (e) => {
+    e => {
       e.stopPropagation();
 
       if (preventClick) e.preventDefault();
@@ -30,12 +29,7 @@ const Button = ({
   return (
     <button
       onClick={handleClick}
-      className={cn(
-        s.button,
-        s[variant],
-        { [s.disabled]: disabled },
-        className
-      )}
+      className={cn(s.button, s[variant], { [s.disabled]: disabled }, className)}
       type={type}
       disabled={disabled}
       {...props}
@@ -55,5 +49,5 @@ Button.propTypes = {
   type: PropTypes.string,
   className: PropTypes.string,
   onClick: PropTypes.func,
-  preventClick: PropTypes.bool,
+  preventClick: PropTypes.bool
 };

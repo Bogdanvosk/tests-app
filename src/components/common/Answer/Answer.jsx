@@ -6,12 +6,7 @@ import SortableItem from '../SortableItem/SortableItem';
 
 import s from './Answer.module.scss';
 
-const Answer = ({
-  field,
-  fieldIndex = 0,
-  acceptDeleteAnswer,
-  handleChangeCorrectAnswer,
-}) => {
+const Answer = ({ field, fieldIndex = 0, acceptDeleteAnswer, handleChangeCorrectAnswer }) => {
   const onChangeCorrectAnswer = () => {
     handleChangeCorrectAnswer(fieldIndex);
   };
@@ -50,9 +45,9 @@ Answer.propTypes = {
   field: PropTypes.shape({
     id: PropTypes.string,
     text: PropTypes.string,
-    is_right: PropTypes.bool,
+    is_right: PropTypes.bool
   }),
   index: PropTypes.number,
   acceptDeleteAnswer: PropTypes.func,
-  handleChangeCorrectAnswer: PropTypes.func,
+  handleChangeCorrectAnswer: PropTypes.func
 };

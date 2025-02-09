@@ -14,5 +14,5 @@ const Username = ({ className = '' }) => {
 export default Username;
 
 Username.propTypes = {
-  className: PropTypes.string,
+  className: PropTypes.string
 };

@@ -12,7 +12,7 @@ const sagaMiddleware = createSagaMiddleware();
 
 const reducers = combineReducers({
   auth: authSlice,
-  test: testSlice,
+  test: testSlice
 });
 
 function* rootSaga() {
@@ -21,8 +21,7 @@ function* rootSaga() {
 
 const store = configureStore({
   reducer: reducers,
-  middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat(sagaMiddleware, logger),
+  middleware: getDefaultMiddleware => getDefaultMiddleware().concat(sagaMiddleware, logger)
 });
 
 sagaMiddleware.run(rootSaga);

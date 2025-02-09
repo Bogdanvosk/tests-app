@@ -8,7 +8,7 @@ import s from './QuestionsList.module.scss';
 const QuestionsList = ({ questions = [], onDeleteQuestion }) => {
   return (
     <ul className={s.questions}>
-      {questions.map((question) => {
+      {questions.map(question => {
         return (
           <li className={s.question} key={question.id}>
             <Question question={question} />
@@ -31,8 +31,8 @@ QuestionsList.propTypes = {
       title: PropTypes.string,
       question_type: PropTypes.string,
       answer: PropTypes.number,
-      answers: PropTypes.arrayOf(PropTypes.object),
+      answers: PropTypes.arrayOf(PropTypes.object)
     })
   ),
-  onDeleteQuestion: PropTypes.func,
+  onDeleteQuestion: PropTypes.func
 };

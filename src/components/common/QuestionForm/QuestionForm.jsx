@@ -1,27 +1,17 @@
-import {
-  createContext,
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
-} from 'react';
+import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { FormProvider, useFieldArray, useForm } from 'react-hook-form';
 import PropTypes from 'prop-types';
 import cn from 'classnames';
 
-import {
-  QuestionTypeContext,
-  SelectQuestionContext,
-} from '@/components/pages/Test/Test';
+import { QuestionTypeContext, SelectQuestionContext } from '@/components/pages/Test/Test';
 import { selectCurrentTest } from '@/store/features/test/selectors';
 import {
   addAnswerAction,
   addNewQuestionAction,
   deleteAnswerAction,
   updateAnswerAction,
-  updateQuestionAction,
+  updateQuestionAction
 } from '@/store/features/test';
 import { isNumber } from '@/utils/isNumber';
 import { toastify } from '@/utils/toastify';
@@ -64,26 +54,24 @@ const QuestionForm = ({ onCloseForm }) => {
   const methods = useForm({
     defaultValues: {
       title: '',
-      answers: [],
-    },
+      answers: []
+    }
   });
 
   const { fields, append, remove, move, update } = useFieldArray({
     control: methods.control,
-    name: 'answers',
+    name: 'answers'
   });
 
   useEffect(() => {
     if (selectedQuestion) {
       methods.reset({
         title: selectedQuestion.title,
-        answers: selectedQuestion.answers,
+        answers: selectedQuestion.answers
       });
       update(-1, selectedQuestion.answers);
 
-      const correctAnswer = selectedQuestion.answers.findIndex(
-        (a) => a.is_right
-      );
+      const correctAnswer = selectedQuestion.answers.findIndex(a => a.is_right);
       setCorrectAnswer(correctAnswer);
     }
   }, [selectedQuestion]);
@@ -94,14 +82,14 @@ const QuestionForm = ({ onCloseForm }) => {
     }
   }, [acceptedAction]);
 
-  const updateSelectedQuestion = (data) => {
+  const updateSelectedQuestion = data => {
     const oldTitle = selectedQuestion.title;
     if (oldTitle !== data.title) {
       dispatch(
         updateQuestionAction({
           questionId: selectedQuestion.id,
           title: data.title,
-          question_type: questionType,
+          question_type: questionType
         })
       );
       toastify('success', 'Вопрос успешно обновлен');
@@ -122,15 +110,12 @@ const QuestionForm = ({ onCloseForm }) => {
         return;
       }
 
-      if (
-        oldAnswer.text !== newAnswer.text ||
-        oldAnswer.is_right !== newAnswer.is_right
-      ) {
+      if (oldAnswer.text !== newAnswer.text || oldAnswer.is_right !== newAnswer.is_right) {
         dispatch(
           updateAnswerAction({
             answerId: oldAnswer.id,
             questionId: selectedQuestion.id,
-            newData: newAnswer,
+            newData: newAnswer
           })
         );
         countOfChangedAnswers += 1;
@@ -140,14 +125,14 @@ const QuestionForm = ({ onCloseForm }) => {
     countOfChangedAnswers > 1
       ? toastify('success', 'Ответы успешно обновлены')
       : countOfChangedAnswers === 1
-      ? toastify('success', 'Ответ успешно обновлен')
-      : null;
+        ? toastify('success', 'Ответ успешно обновлен')
+        : null;
 
     resetForm();
   };
 
   const onSubmit = useCallback(
-    (data) => {
+    data => {
       if (selectedQuestion) {
         updateSelectedQuestion(data);
       } else if (questionStep === 1) {
@@ -159,7 +144,7 @@ const QuestionForm = ({ onCloseForm }) => {
 
   const handleSubmit = methods.handleSubmit(onSubmit);
 
-  const handleCreateQuestion = (data) => {
+  const handleCreateQuestion = data => {
     const title = data.title;
 
     if (!title) {
@@ -172,7 +157,7 @@ const QuestionForm = ({ onCloseForm }) => {
         title,
         question_type: questionType,
         answer: 1,
-        testId: test.id,
+        testId: test.id
       })
     );
     toastify('success', 'Вопрос успешно добавлен');
@@ -187,9 +172,7 @@ const QuestionForm = ({ onCloseForm }) => {
     }
 
     const currentQuestion = test.questions[test.questions.length - 1];
-    const questionId = selectedQuestion
-      ? selectedQuestion.id
-      : currentQuestion.id;
+    const questionId = selectedQuestion ? selectedQuestion.id : currentQuestion.id;
     const allAnswers = methods.getValues().answers;
 
     const newAnswer = allAnswers.slice(-1)[0];
@@ -210,7 +193,7 @@ const QuestionForm = ({ onCloseForm }) => {
       dispatch(
         addAnswerAction({
           questionId,
-          answer: newNumberAnswer,
+          answer: newNumberAnswer
         })
       );
       toastify('success', 'Ответ успешно добавлен');
@@ -233,7 +216,7 @@ const QuestionForm = ({ onCloseForm }) => {
     dispatch(
       addAnswerAction({
         questionId,
-        answer: newAnswer,
+        answer: newAnswer
       })
     );
 
@@ -241,7 +224,7 @@ const QuestionForm = ({ onCloseForm }) => {
     setEditingAnswerId(null);
   };
 
-  const handleDeleteAnswer = (id) => {
+  const handleDeleteAnswer = id => {
     if (handleValidateAnswer(id)) {
       const index = fields.findIndex((f, idx) => idx === id);
       remove(id);
@@ -250,16 +233,13 @@ const QuestionForm = ({ onCloseForm }) => {
       if (index === correctAnswer) setCorrectAnswer(null);
       if (index < correctAnswer) setCorrectAnswer(correctAnswer - 1);
 
-      if (
-        selectedQuestion &&
-        fields.length === selectedQuestion.answers.length
-      ) {
+      if (selectedQuestion && fields.length === selectedQuestion.answers.length) {
         const answerId = selectedQuestion.answers[id].id;
 
         dispatch(
           deleteAnswerAction({
             questionId: selectedQuestion.id,
-            answerId,
+            answerId
           })
         );
 
@@ -269,20 +249,15 @@ const QuestionForm = ({ onCloseForm }) => {
     }
   };
 
-  const handleValidateAnswer = (id) => {
+  const handleValidateAnswer = id => {
     const answers = methods.getValues().answers;
 
     const deletedAnswerId = answers[id];
     const answersCount = answers.length;
-    const correctAnswersCount = answers.filter(
-      (a) => a.is_right === true
-    ).length;
+    const correctAnswersCount = answers.filter(a => a.is_right === true).length;
 
     if (answersCount === 2) {
-      toastify(
-        'error',
-        'Нельзя удалить вопрос, количество вариантов ответа должно быть более 2'
-      );
+      toastify('error', 'Нельзя удалить вопрос, количество вариантов ответа должно быть более 2');
       return false;
     }
 
@@ -374,15 +349,13 @@ const QuestionForm = ({ onCloseForm }) => {
                   onClick={handleCreateAnswer}
                   disabled={isLoading}
                 >
-                  {editingAnswerId !== null
-                    ? 'Создать ответ'
-                    : 'Добавить вариант ответа'}
+                  {editingAnswerId !== null ? 'Создать ответ' : 'Добавить вариант ответа'}
                 </Button>
               )}
 
               <Button
                 className={cn(s.button, {
-                  [s.cancel]: firstStep,
+                  [s.cancel]: firstStep
                 })}
                 onClick={handleCloseForm}
                 disabled={isLoading}
@@ -400,5 +373,5 @@ const QuestionForm = ({ onCloseForm }) => {
 export default QuestionForm;
 
 QuestionForm.propTypes = {
-  onCloseForm: PropTypes.func,
+  onCloseForm: PropTypes.func
 };

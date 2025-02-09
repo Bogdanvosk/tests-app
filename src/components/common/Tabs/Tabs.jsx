@@ -7,7 +7,7 @@ import Icon from '../Icon/Icon';
 import s from './Tabs.module.scss';
 
 const Tabs = ({ activeTab, tabs, onSetFormMode }) => {
-  const handleClickTab = (mode) => {
+  const handleClickTab = mode => {
     onSetFormMode(mode);
   };
 
@@ -37,7 +37,8 @@ Tabs.propTypes = {
     PropTypes.shape({
       title: PropTypes.string,
       mode: PropTypes.string,
-      name: PropTypes.string,
-  })),
-  onSetFormMode: PropTypes.func,
+      name: PropTypes.string
+    })
+  ),
+  onSetFormMode: PropTypes.func
 };

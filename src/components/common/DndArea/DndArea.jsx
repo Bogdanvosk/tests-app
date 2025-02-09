@@ -4,10 +4,7 @@ import PropTypes from 'prop-types';
 import { DndContext } from '@dnd-kit/core';
 
 import { SelectQuestionContext } from '@/components/pages/Test/Test';
-import {
-  CorrectAnswerContext,
-  EditingAnswerContext,
-} from '../QuestionForm/QuestionForm';
+import { CorrectAnswerContext, EditingAnswerContext } from '../QuestionForm/QuestionForm';
 import { updatePositionAction } from '@/store/features/test';
 import { toastify } from '@/utils/toastify';
 
@@ -18,7 +15,7 @@ const DndArea = ({ fields, move, children }) => {
   const { correctAnswer, setCorrectAnswer } = useContext(CorrectAnswerContext);
   const editingAnswerId = useContext(EditingAnswerContext);
 
-  const handleDragEnd = (event) => {
+  const handleDragEnd = event => {
     if (!selectedQuestion) {
       toastify('warning', 'Завершите редактирование вопроса');
       return;
@@ -29,24 +26,22 @@ const DndArea = ({ fields, move, children }) => {
     }
 
     const { active, over } = event;
-    const field = fields.find((f) => f.id === active.id);
-    const answerId = selectedQuestion.answers.find(
-      (a) => a.text === field.text
-    ).id;
+    const field = fields.find(f => f.id === active.id);
+    const answerId = selectedQuestion.answers.find(a => a.text === field.text).id;
 
     if (over === null) {
       return;
     }
 
     if (active.id !== over.id) {
-      const oldIndex = fields.findIndex((field) => field.id === active.id);
-      const newIndex = fields.findIndex((field) => field.id === over.id);
+      const oldIndex = fields.findIndex(field => field.id === active.id);
+      const newIndex = fields.findIndex(field => field.id === over.id);
 
       dispatch(
         updatePositionAction({
           questionId: selectedQuestion.id,
           position: newIndex,
-          answerId,
+          answerId
         })
       );
 
@@ -75,9 +70,9 @@ DndArea.propTypes = {
     PropTypes.shape({
       id: PropTypes.string,
       text: PropTypes.string,
-      is_right: PropTypes.bool,
+      is_right: PropTypes.bool
     })
   ),
   children: PropTypes.node,
-  move: PropTypes.func,
+  move: PropTypes.func
 };

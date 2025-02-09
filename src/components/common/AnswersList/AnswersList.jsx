@@ -5,10 +5,7 @@ import PropTypes from 'prop-types';
 import cn from 'classnames';
 
 import { SelectQuestionContext } from '@/components/pages/Test/Test';
-import {
-  CorrectAnswerContext,
-  EditingAnswerContext,
-} from '../QuestionForm/QuestionForm';
+import { CorrectAnswerContext, EditingAnswerContext } from '../QuestionForm/QuestionForm';
 import { useModalContext } from '../ModalProvider/ModalProvider';
 import { toastify } from '@/utils/toastify';
 
@@ -17,12 +14,7 @@ import Input from '../Input/Input';
 
 import s from './AnswersList.module.scss';
 
-const AnswersList = ({
-  fields,
-  questionType,
-  questionStep,
-  setAcceptedAction,
-}) => {
+const AnswersList = ({ fields, questionType, questionStep, setAcceptedAction }) => {
   const methods = useFormContext();
 
   const { showModal } = useModalContext();
@@ -36,19 +28,19 @@ const AnswersList = ({
     return questionType === 'number' && questionStep === 2;
   }, [questionStep, questionType, selectedQuestion]);
 
-  const handleIsAccepted = (value) => {
+  const handleIsAccepted = value => {
     setAcceptedAction(value);
   };
 
-  const acceptDeleteAnswer = (index) => {
+  const acceptDeleteAnswer = index => {
     showModal('accept', {
       handleIsAccepted,
       actionValue: 'delete-answer',
-      id: index,
+      id: index
     });
   };
 
-  const handleChangeCorrectAnswer = (index) => {
+  const handleChangeCorrectAnswer = index => {
     const answers = methods.getValues().answers;
 
     if (editingAnswerId === index && correctAnswer !== null) {
@@ -58,7 +50,7 @@ const AnswersList = ({
     }
 
     if (questionType === 'single') {
-      const oldCorrectAnswerIdx = answers.findIndex((f) => f.is_right === true);
+      const oldCorrectAnswerIdx = answers.findIndex(f => f.is_right === true);
 
       if (index === oldCorrectAnswerIdx) {
         methods.setValue(`answers.${index}.is_right`, answers[index].is_right);
@@ -112,10 +104,10 @@ AnswersList.propTypes = {
     PropTypes.shape({
       id: PropTypes.string,
       text: PropTypes.string,
-      is_right: PropTypes.bool,
+      is_right: PropTypes.bool
     })
   ),
   questionType: PropTypes.string,
   questionStep: PropTypes.number,
-  setAcceptedAction: PropTypes.func,
+  setAcceptedAction: PropTypes.func
 };

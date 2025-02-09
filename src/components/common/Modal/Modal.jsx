@@ -12,7 +12,7 @@ const Modal = ({ children, className = '' }) => {
   const { hideModal } = useModalContext();
   const modalRef = useRef(null);
 
-  const onCloseModal = (e) => {
+  const onCloseModal = e => {
     if (e.target.tagName === 'svg') return;
 
     hideModal();
@@ -35,5 +35,5 @@ export default Modal;
 
 Modal.propTypes = {
   children: PropTypes.node,
-  className: PropTypes.string,
+  className: PropTypes.string
 };

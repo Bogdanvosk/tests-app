@@ -3,10 +3,7 @@ import { useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
 import cn from 'classnames';
 
-import {
-  QuestionTypeContext,
-  SelectQuestionContext,
-} from '@/components/pages/Test/Test';
+import { QuestionTypeContext, SelectQuestionContext } from '@/components/pages/Test/Test';
 import { useModalContext } from '../ModalProvider/ModalProvider';
 import { toastify } from '@/utils/toastify';
 import { deleteQuestionAction } from '@/store/features/test';
@@ -25,13 +22,11 @@ const Questions = ({
   currentTest,
   isQuestionFormOpen,
   setIsQuestionFormOpen,
-  onCloseForm,
+  onCloseForm
 }) => {
   const dispatch = useDispatch();
   const { showModal } = useModalContext();
-  const { selectedQuestion, handleSelectQuestion } = useContext(
-    SelectQuestionContext
-  );
+  const { selectedQuestion, handleSelectQuestion } = useContext(SelectQuestionContext);
   const { setQuestionType } = useContext(QuestionTypeContext);
 
   const [questions, setQuestions] = useState([]);
@@ -49,7 +44,7 @@ const Questions = ({
     if (selectedQuestion) handleSelectQuestion(selectedQuestion?.id);
   }, [currentTest, currentQuestions]);
 
-  const handleSelectQuestionType = (value) => {
+  const handleSelectQuestionType = value => {
     setQuestionType(value);
   };
 
@@ -57,33 +52,28 @@ const Questions = ({
     setIsQuestionFormOpen(true);
   };
 
-  const handleDeleteQuestion = (id) => {
+  const handleDeleteQuestion = id => {
     dispatch(deleteQuestionAction(id));
     toastify('success', 'Вопрос успешно удален');
     onCloseForm();
   };
 
-  const acceptDeleteQuestion = (id) => {
+  const acceptDeleteQuestion = id => {
     showModal('accept', {
       handleIsAccepted,
       actionValue: 'delete-question',
-      id,
+      id
     });
   };
 
-  const handleIsAccepted = (value) => {
+  const handleIsAccepted = value => {
     setAcceptedAction(value);
   };
 
   return (
     <div>
-      <isOpenFormContext.Provider
-        value={{ open: isQuestionFormOpen, id: selectedQuestion?.id }}
-      >
-        <QuestionsList
-          questions={questions}
-          onDeleteQuestion={acceptDeleteQuestion}
-        />
+      <isOpenFormContext.Provider value={{ open: isQuestionFormOpen, id: selectedQuestion?.id }}>
+        <QuestionsList questions={questions} onDeleteQuestion={acceptDeleteQuestion} />
       </isOpenFormContext.Provider>
 
       <Button
@@ -93,10 +83,7 @@ const Questions = ({
       >
         Добавить вопрос
       </Button>
-      <Dropdown
-        options={questionTypes}
-        onSelectOption={handleSelectQuestionType}
-      />
+      <Dropdown options={questionTypes} onSelectOption={handleSelectQuestionType} />
     </div>
   );
 };
@@ -110,7 +97,7 @@ Questions.propTypes = {
       title: PropTypes.string,
       question_type: PropTypes.string,
       answer: PropTypes.number,
-      answers: PropTypes.arrayOf(PropTypes.object),
+      answers: PropTypes.arrayOf(PropTypes.object)
     })
   ),
   currentTest: PropTypes.shape({
@@ -123,11 +110,11 @@ Questions.propTypes = {
         title: PropTypes.string,
         question_type: PropTypes.string,
         answer: PropTypes.number,
-        answers: PropTypes.arrayOf(PropTypes.object),
+        answers: PropTypes.arrayOf(PropTypes.object)
       })
-    ),
+    )
   }),
   isQuestionFormOpen: PropTypes.bool,
   setIsQuestionFormOpen: PropTypes.func,
-  onCloseForm: PropTypes.func,
+  onCloseForm: PropTypes.func
 };

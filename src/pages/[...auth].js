@@ -22,10 +22,7 @@ const Page = () => {
     }
   }, [user]);
 
-  if (
-    query.auth &&
-    (query.auth[0] === 'sign-in' || query.auth[0] === 'sign-up')
-  ) {
+  if (query.auth && (query.auth[0] === 'sign-in' || query.auth[0] === 'sign-up')) {
     return <Auth />;
   }
 

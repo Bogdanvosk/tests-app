@@ -2,13 +2,13 @@ export const authTabs = [
   {
     mode: 'signIn',
     title: 'Войти',
-    name: 'user',
+    name: 'user'
   },
   {
     mode: 'signUp',
     title: 'Создать аккаунт',
-    name: 'create',
-  },
+    name: 'create'
+  }
 ];
 
 export const authFormInputs = [
@@ -17,26 +17,26 @@ export const authFormInputs = [
     fieldName: 'username',
     placeholder: 'Логин',
     type: 'text',
-    mode: ['signIn', 'signUp'],
+    mode: ['signIn', 'signUp']
   },
   {
     title: 'Пароль',
     fieldName: 'password',
     placeholder: 'Пароль',
     type: 'password',
-    mode: ['signIn', 'signUp'],
+    mode: ['signIn', 'signUp']
   },
   {
     title: 'Подтвердите пароль',
     fieldName: 'password_confirmation',
     placeholder: 'Подтвердите пароль',
     type: 'password',
-    mode: ['signUp'],
-  },
+    mode: ['signUp']
+  }
 ];
 
 export const questionTypes = [
-  { id: "1", value: 'single', text: 'Один из списка' },
-  { id: "2", value: 'multiple', text: 'Несколько из списка' },
-  { id: "3", value: 'number', text: 'Численный ответ' },
+  { id: '1', value: 'single', text: 'Один из списка' },
+  { id: '2', value: 'multiple', text: 'Несколько из списка' },
+  { id: '3', value: 'number', text: 'Численный ответ' }
 ];

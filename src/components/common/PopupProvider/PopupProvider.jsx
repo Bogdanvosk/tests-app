@@ -22,5 +22,5 @@ const PopupProvider = ({ children }) => {
 export default PopupProvider;
 
 PopupProvider.propTypes = {
-  children: PropTypes.node,
+  children: PropTypes.node
 };

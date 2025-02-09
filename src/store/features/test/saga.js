@@ -23,7 +23,7 @@ import {
   updateQuestionError,
   updateQuestionSuccess,
   updateTestError,
-  updateTestSuccess,
+  updateTestSuccess
 } from '.';
 import {
   addAnswerReq,
@@ -37,7 +37,7 @@ import {
   updateAnswerReq,
   updatePositionReq,
   updateQuestionReq,
-  updateTestReq,
+  updateTestReq
 } from '@/api';
 import {
   CREATE_TEST,
@@ -51,7 +51,7 @@ import {
   ADD_ANSWER,
   UPDATE_ANSWER,
   UPDATE_POSITION,
-  DELETE_TEST,
+  DELETE_TEST
 } from './constants';
 
 export function* testSagaWatcher() {

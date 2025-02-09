@@ -8,7 +8,7 @@ import {
   signInError,
   signInSuccess,
   signUpError,
-  signUpSuccess,
+  signUpSuccess
 } from '.';
 import { GET_USER, SIGN_IN, SIGN_UP, LOGOUT } from './constants';
 

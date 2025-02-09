@@ -1,10 +1,7 @@
 import { createContext, useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { getCurrentTestAction } from '@/store/features/test';
-import {
-  selectCurrentQuestions,
-  selectCurrentTest,
-} from '@/store/features/test/selectors';
+import { selectCurrentQuestions, selectCurrentTest } from '@/store/features/test/selectors';
 import { selectIsLoading } from '@/store/features/auth/selectors';
 import { useRouter } from 'next/router';
 import useLocalStorage from '@/hooks/useLocalStorage';
@@ -56,10 +53,10 @@ const Test = () => {
   };
 
   const handleSelectQuestion = useCallback(
-    (id) => {
+    id => {
       if (isLoading) return;
 
-      const question = currentQuestions.find((q) => q.id === id);
+      const question = currentQuestions.find(q => q.id === id);
       if (question) {
         setSelectedQuestion(question);
         setIsQuestionFormOpen(true);
@@ -78,13 +75,13 @@ const Test = () => {
             <SelectQuestionContext.Provider
               value={{
                 selectedQuestion,
-                handleSelectQuestion,
+                handleSelectQuestion
               }}
             >
               <QuestionTypeContext.Provider
                 value={{
                   questionType,
-                  setQuestionType,
+                  setQuestionType
                 }}
               >
                 <Questions
@@ -94,9 +91,7 @@ const Test = () => {
                   setIsQuestionFormOpen={setIsQuestionFormOpen}
                   onCloseForm={handleCloseQuestionForm}
                 />
-                {isQuestionFormOpen && (
-                  <QuestionForm onCloseForm={handleCloseQuestionForm} />
-                )}
+                {isQuestionFormOpen && <QuestionForm onCloseForm={handleCloseQuestionForm} />}
               </QuestionTypeContext.Provider>
             </SelectQuestionContext.Provider>
           </div>

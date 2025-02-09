@@ -16,7 +16,7 @@ const Question = ({ question }) => {
     <div
       onClick={() => handleSelectQuestion(question.id)}
       className={cn(s.question, {
-        [s.selected]: isFormOpen && question.id === id,
+        [s.selected]: isFormOpen && question.id === id
       })}
     >
       {question.title}
@@ -32,6 +32,6 @@ Question.propTypes = {
     title: PropTypes.string,
     question_type: PropTypes.string,
     answer: PropTypes.number,
-    answers: PropTypes.arrayOf(PropTypes.object),
-  }),
+    answers: PropTypes.arrayOf(PropTypes.object)
+  })
 };

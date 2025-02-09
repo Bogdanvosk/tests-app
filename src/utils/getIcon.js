@@ -6,7 +6,7 @@ import User from '@/components/icons/Tabs/User';
 import Username from '@/components/icons/Username';
 import DragHandle from '@/components/icons/DragHandle';
 
-export const getIcon = (iconName) => {
+export const getIcon = iconName => {
   switch (iconName) {
     case 'create':
       return Create;

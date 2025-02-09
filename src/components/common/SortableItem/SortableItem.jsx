@@ -7,18 +7,13 @@ import Icon from '../Icon/Icon';
 import s from './SortableItem.module.scss';
 
 function SortableItem({ field, children }) {
-  const {
-    attributes,
-    listeners,
-    setNodeRef,
-    transform,
-    transition,
-    isDragging,
-  } = useSortable({ id: field.id });
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
+    id: field.id
+  });
 
   const style = {
     transform: CSS.Transform.toString(transform),
-    transition,
+    transition
   };
 
   return (
@@ -41,5 +36,5 @@ export default SortableItem;
 
 SortableItem.propTypes = {
   field: PropTypes.object,
-  children: PropTypes.node,
+  children: PropTypes.node
 };

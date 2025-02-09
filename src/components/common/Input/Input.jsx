@@ -4,13 +4,7 @@ import cn from 'classnames';
 
 import s from './Input.module.scss';
 
-const Input = ({
-  type,
-  className = '',
-  placeholder = '',
-  fieldName = null,
-  ...props
-}) => {
+const Input = ({ type, className = '', placeholder = '', fieldName = null, ...props }) => {
   const { register } = useFormContext();
 
   if (type === 'checkbox') {
@@ -44,5 +38,5 @@ Input.propTypes = {
   type: PropTypes.string,
   className: PropTypes.string,
   placeholder: PropTypes.string,
-  fieldName: PropTypes.string,
+  fieldName: PropTypes.string
 };

@@ -42,5 +42,5 @@ export default Accept;
 Accept.propTypes = {
   handleIsAccepted: PropTypes.func,
   actionValue: PropTypes.string,
-  id: PropTypes.number,
-}
+  id: PropTypes.number
+};

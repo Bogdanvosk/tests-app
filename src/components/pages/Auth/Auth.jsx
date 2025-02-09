@@ -15,7 +15,7 @@ const Auth = () => {
   const [mode, setMode] = useLocalStorage('mode');
   const router = useRouter();
 
-  const handleSetFormMode = (modeValue) => {
+  const handleSetFormMode = modeValue => {
     if (modeValue === 'signUp') router.push('/sign-up');
     else router.push('/sign-in');
 
@@ -29,11 +29,7 @@ const Auth = () => {
           <div className={s.content}>
             <Logo imageSrc={'/logo.png'} />
             <h1 className={s.title}>Продолжайте обучение с QuizWiz!</h1>
-            <Tabs
-              activeTab={mode}
-              tabs={authTabs}
-              onSetFormMode={handleSetFormMode}
-            />
+            <Tabs activeTab={mode} tabs={authTabs} onSetFormMode={handleSetFormMode} />
             <AuthForm mode={mode} className={s.form} />
           </div>
           <div className={s.image}>

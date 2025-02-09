@@ -3,14 +3,14 @@ import { createSlice } from '@reduxjs/toolkit';
 const initialState = {
   isLoading: false,
   user: null,
-  error: null,
+  error: null
 };
 
 export const authSlice = createSlice({
   name: 'auth',
   initialState,
   reducers: {
-    signInAction: (state) => {
+    signInAction: state => {
       state.isLoading = true;
     },
     signInSuccess: (state, action) => {
@@ -22,7 +22,7 @@ export const authSlice = createSlice({
       state.isLoading = false;
       state.error = action.payload;
     },
-    signUpAction: (state) => {
+    signUpAction: state => {
       state.isLoading = true;
     },
     signUpSuccess: (state, action) => {
@@ -34,28 +34,28 @@ export const authSlice = createSlice({
       state.isLoading = false;
       state.error = action.payload;
     },
-    getUserAction: (state) => {
+    getUserAction: state => {
       state.isLoading = true;
     },
     getUserSuccess: (state, action) => {
       state.isLoading = false;
       state.user = action.payload;
     },
-    getUserError: (state) => {
+    getUserError: state => {
       state.isLoading = false;
     },
-    logoutAction: (state) => {
+    logoutAction: state => {
       state.isLoading = true;
     },
-    logoutSuccess: (state) => {
+    logoutSuccess: state => {
       state.isLoading = false;
       state.user = null;
     },
     logoutError: (state, action) => {
       state.isLoading = false;
       state.error = action.payload;
-    },
-  },
+    }
+  }
 });
 
 export default authSlice.reducer;
@@ -72,5 +72,5 @@ export const {
   getUserError,
   logoutAction,
   logoutSuccess,
-  logoutError,
+  logoutError
 } = authSlice.actions;
