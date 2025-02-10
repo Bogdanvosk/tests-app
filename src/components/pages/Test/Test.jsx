@@ -68,7 +68,7 @@ const Test = () => {
 
   return (
     <div className={s.test}>
-      <Navbar currentQuestions={currentQuestions} currentTest={currentTest} />
+      <Navbar currentTest={currentTest} />
       {currentTest && (
         <Container>
           <div className={s.content}>

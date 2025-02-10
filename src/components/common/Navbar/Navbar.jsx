@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useRouter } from 'next/router';
+import PropTypes from 'prop-types';
 import cn from 'classnames';
 
 import { createTestAction, deleteTestAction, updateTestAction } from '@/store/features/test';
@@ -14,7 +15,7 @@ import Button from '../Button/Button';
 
 import s from './Navbar.module.scss';
 
-const Navbar = ({ currentTest, currentQuestions }) => {
+const Navbar = ({ currentTest }) => {
   const [user, setUser] = useLocalStorage('user');
   const [title, setTitle] = useState('');
 
@@ -23,7 +24,7 @@ const Navbar = ({ currentTest, currentQuestions }) => {
 
   useEffect(() => {
     currentTest && setTitle(currentTest.title);
-  }, [currentTest, currentQuestions]);
+  }, [currentTest]);
 
   useEffect(() => {
     if (user === null) router.push('/sign-in');
@@ -94,3 +95,20 @@ const Navbar = ({ currentTest, currentQuestions }) => {
 };
 
 export default Navbar;
+
+Navbar.propTypes = {
+  currentTest: PropTypes.shape({
+    created_at: PropTypes.string,
+    id: PropTypes.number,
+    title: PropTypes.string,
+    questions: PropTypes.arrayOf(
+      PropTypes.shape({
+        id: PropTypes.number,
+        title: PropTypes.string,
+        question_type: PropTypes.string,
+        answer: PropTypes.number,
+        answers: PropTypes.arrayOf(PropTypes.object)
+      })
+    )
+  })
+};

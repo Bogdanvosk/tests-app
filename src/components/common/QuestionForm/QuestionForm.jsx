@@ -95,8 +95,15 @@ const QuestionForm = ({ onCloseForm }) => {
       toastify('success', 'Вопрос успешно обновлен');
     }
 
-    if (data.answers.slice(-1)[0].text === '') {
+    const currAns = data.answers.slice(-1)[0];
+
+    if (currAns.text === '') {
       toastify('error', 'Введите текст ответа');
+      return;
+    }
+
+    if (questionType === 'number' && !isNumber(currAns.text)) {
+      toastify('error', 'Введите число');
       return;
     }
 
@@ -105,10 +112,6 @@ const QuestionForm = ({ onCloseForm }) => {
     data.answers.forEach((_, index) => {
       const newAnswer = data.answers[index];
       const oldAnswer = selectedQuestion.answers[index];
-      if (questionType === 'number' && !isNumber(newAnswer.text)) {
-        toastify('error', 'Введите число');
-        return;
-      }
 
       if (oldAnswer.text !== newAnswer.text || oldAnswer.is_right !== newAnswer.is_right) {
         dispatch(
@@ -250,7 +253,7 @@ const QuestionForm = ({ onCloseForm }) => {
   };
 
   const handleValidateAnswer = id => {
-    const answers = methods.getValues().answers;
+    const answers = selectedQuestion.answers;
 
     const deletedAnswerId = answers[id];
     const answersCount = answers.length;
@@ -303,7 +306,7 @@ const QuestionForm = ({ onCloseForm }) => {
       }
 
       if (correctAnswer === null && questionType === 'single') {
-        toastify('error', 'Выберите правильный ответ');
+        toastify('error', 'Добавьте правильный ответ');
         return false;
       }
       return true;
