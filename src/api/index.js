@@ -38,12 +38,6 @@ export const createTestReq = async (title) => {
   return data;
 };
 
-export const getAllTestsReq = async () => {
-  const { data } = await instance.get('/tests');
-
-  return data;
-};
-
 export const updateTestReq = async ({ testId, title }) => {
   const { data } = await instance.patch(`/tests/${testId}`, { title });
 

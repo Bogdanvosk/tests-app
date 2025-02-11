@@ -64,18 +64,6 @@ export const testSlice = createSlice({
       state.isLoading = false;
       state.error = action.payload;
     },
-    getAllTestsAction: state => {
-      state.isLoading = true;
-    },
-    getAllTestsSuccess: (state, action) => {
-      state.isLoading = false;
-      state.tests = action.payload;
-      state.error = null;
-    },
-    getAllTestsError: (state, action) => {
-      state.isLoading = false;
-      state.error = action.payload;
-    },
     addNewQuestionAction: state => {
       state.isLoading = true;
     },
@@ -230,9 +218,6 @@ export const {
   deleteTestAction,
   deleteTestSuccess,
   deleteTestError,
-  getAllTestsAction,
-  getAllTestsSuccess,
-  getAllTestsError,
   addNewQuestionAction,
   addNewQuestionSuccess,
   addNewQuestionError,
