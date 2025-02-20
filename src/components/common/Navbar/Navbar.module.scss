@@ -1,7 +1,8 @@
 .navbar {
   display: flex;
-  justify-content: space-between;
+  // justify-content: space-between;
   align-items: center;
+  gap: 0.5rem;
 
   &Wrapper {
     padding: 1.5rem 0;
@@ -24,7 +25,6 @@
 
 .button {
   display: block;
-  margin-bottom: 0.5rem;
 
   @include button;
 
@@ -37,6 +37,7 @@
 }
 
 .delete {
+  margin-bottom: 0.5rem;
   padding: 1rem 2rem;
   background-color: $color-red;
 

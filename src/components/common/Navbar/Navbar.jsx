@@ -66,17 +66,9 @@ const Navbar = ({ currentTest }) => {
           <Button className={cn(s.button, s.delete)} onClick={handleLogout}>
             Выйти
           </Button>
-          {currentTest ? (
+          {currentTest && (
             <Button className={cn(s.button, s.delete)} type='button' onClick={handleDeleteTest}>
               Удалить тест
-            </Button>
-          ) : (
-            <Button
-              className={cn(s.button, { [s.show]: currentTest })}
-              type='button'
-              onClick={handleCreateTest}
-            >
-              Создать
             </Button>
           )}
         </div>
@@ -88,6 +80,15 @@ const Navbar = ({ currentTest }) => {
             onChange={e => handleChangeTitle(e)}
             placeholder='Введите название теста'
           />
+          {!currentTest && (
+            <Button
+              className={cn(s.button, { [s.show]: currentTest })}
+              type='button'
+              onClick={handleCreateTest}
+            >
+              Создать тест
+            </Button>
+          )}
         </div>
       </Container>
     </div>
