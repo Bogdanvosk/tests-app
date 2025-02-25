@@ -1,6 +1,10 @@
 .container {
   @include container(1180px, 50px);
 
+  @include tablet {
+    @include container(1180px, 30px);
+  }
+
   @include mobile {
     @include container(1170px, 21px);
   }

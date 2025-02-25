@@ -18,5 +18,5 @@ export default Typography;
 Typography.propTypes = {
   tag: PropTypes.string,
   className: PropTypes.string,
-  children: PropTypes.node,
+  children: PropTypes.node
 };

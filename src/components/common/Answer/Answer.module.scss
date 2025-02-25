@@ -1,0 +1,32 @@
+.input {
+  flex-grow: 1;
+  padding: 0.7rem;
+  font-size: 16px;
+
+  @media (max-width: $xs) {
+    width: 70%;
+  }
+}
+
+.answer {
+  display: flex;
+  align-items: center;
+  flex-grow: 1;
+  gap: 1rem;
+
+  @include tablet {
+    gap: 0.5rem;
+  }
+}
+
+.delete {
+  width: 25px;
+  height: 25px;
+  transition: color 0.1s ease, transform 0.1s ease;
+  cursor: pointer;
+
+  @include hover {
+    color: $color-red;
+    transform: translateY(-2px);
+  }
+}

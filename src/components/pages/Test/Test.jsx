@@ -1,60 +1,102 @@
-import cn from 'classnames';
+import { createContext, useCallback, useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { getCurrentTestAction } from '@/store/features/test';
+import { selectCurrentQuestions, selectCurrentTest } from '@/store/features/test/selectors';
+import { selectIsLoading } from '@/store/features/auth/selectors';
+import { useRouter } from 'next/router';
+import useLocalStorage from '@/hooks/useLocalStorage';
 
-import { useState } from 'react';
-import { useDispatch } from 'react-redux';
-
-import Container from '../../common/Container/Container';
-import Button from '../../common/Button/Button';
-import Questions from '../../common/Questions/Questions';
+import { questionTypes } from '@/content';
+import Container from '@/components/common/Container/Container';
+import QuestionForm from '@/components/common/QuestionForm/QuestionForm';
+import Navbar from '@/components/common/Navbar/Navbar';
+import Questions from '@/components/common/Questions/Questions';
 
 import s from './Test.module.scss';
 
-const Test = () => {
-  const [title, setTitle] = useState('');
+export const SelectQuestionContext = createContext(null);
+export const QuestionTypeContext = createContext(null);
 
-  const onChangeTitle = (e) => {
-    setTitle(e.target.value);
+const Test = () => {
+  const router = useRouter();
+  const dispatch = useDispatch();
+  const [user, setUser] = useLocalStorage('user');
+  const [currTestId, setCurrTestId] = useLocalStorage('test');
+
+  const currentTest = useSelector(selectCurrentTest);
+  const currentQuestions = useSelector(selectCurrentQuestions);
+  const isLoading = useSelector(selectIsLoading);
+
+  const [selectedQuestion, setSelectedQuestion] = useState(null);
+  const [questionType, setQuestionType] = useState(questionTypes[0].value);
+  const [isQuestionFormOpen, setIsQuestionFormOpen] = useState(false);
+
+  useEffect(() => {
+    currTestId && dispatch(getCurrentTestAction(currTestId));
+  }, []);
+
+  useEffect(() => {
+    if (user === null) router.push('/sign-in');
+  }, [user]);
+
+  useEffect(() => {
+    setCurrTestId(currentTest?.id);
+  }, [currentTest]);
+
+  useEffect(() => {
+    !isQuestionFormOpen && setQuestionType(questionTypes[0].value);
+  }, [isQuestionFormOpen]);
+
+  const handleCloseQuestionForm = () => {
+    setIsQuestionFormOpen(false);
+    setSelectedQuestion(null);
   };
+
+  const handleSelectQuestion = useCallback(
+    id => {
+      if (isLoading) return;
+
+      const question = currentQuestions.find(q => q.id === id);
+      if (question) {
+        setSelectedQuestion(question);
+        setIsQuestionFormOpen(true);
+        setQuestionType(question.question_type);
+      }
+    },
+    [currentQuestions, isLoading]
+  );
 
   return (
     <div className={s.test}>
-      <div className={s.navbarWrapper}>
+      <Navbar currentTest={currentTest} />
+      {currentTest && (
         <Container>
-          <div className={s.navbar}>
-            <input
-              type='text'
-              className={s.input}
-              value={title}
-              onChange={(e) => onChangeTitle(e)}
-              placeholder='Введите название теста'
-            />
-            <div className={s.buttons}>
-              <Button className={s.button} type='button'>
-                Сохранить
-              </Button>
-              <Button className={cn(s.button, s.delete)} type='button'>
-                Удалить
-              </Button>
-            </div>
+          <div className={s.content}>
+            <SelectQuestionContext.Provider
+              value={{
+                selectedQuestion,
+                handleSelectQuestion
+              }}
+            >
+              <QuestionTypeContext.Provider
+                value={{
+                  questionType,
+                  setQuestionType
+                }}
+              >
+                <Questions
+                  currentQuestions={currentQuestions}
+                  currentTest={currentTest}
+                  isQuestionFormOpen={isQuestionFormOpen}
+                  setIsQuestionFormOpen={setIsQuestionFormOpen}
+                  onCloseForm={handleCloseQuestionForm}
+                />
+                {isQuestionFormOpen && <QuestionForm onCloseForm={handleCloseQuestionForm} />}
+              </QuestionTypeContext.Provider>
+            </SelectQuestionContext.Provider>
           </div>
         </Container>
-      </div>
-      <Container>
-        <div className={s.content}>
-          <div className={s.questions}>
-            <Questions />
-            <div className={s.controls}>
-              <Button
-                className={s.button}
-                type='button'
-                onClick={onAddQuestion}
-              >
-                Добавить вопрос
-              </Button>
-            </div>
-          </div>
-        </div>
-      </Container>
+      )}
     </div>
   );
 };

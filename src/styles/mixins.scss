@@ -1,4 +1,5 @@
-@use "variables" as *;
+@use 'variables' as *;
+@use 'sass:color';
 
 @mixin hover {
   @media (hover: hover) {
@@ -30,4 +31,76 @@
   max-width: calc($width + $padding * 2);
   margin: 0 auto;
   padding: 0 $padding;
+}
+
+@mixin input {
+  font-size: 1.25rem;
+  background-color: color.adjust($color-light-gray, $lightness: 5%);
+  border: 3px solid $color-white;
+  border-radius: 10px;
+  transition: border-color 0.3s ease;
+  outline: none;
+  transition:
+    background-color 0.3s ease,
+    border-color 0.3s ease;
+
+  @include hover {
+    background-color: $color-linen;
+    border-color: $color-mindaro;
+  }
+
+  &:focus {
+    background-color: $color-linen;
+    border-color: $color-mindaro;
+  }
+}
+
+@mixin delete($top: auto, $right: auto, $bottom: auto, $left: auto) {
+  position: absolute;
+  top: $top;
+  right: $right;
+  bottom: $bottom;
+  left: $left;
+  width: 30px;
+  height: 30px;
+  background-color: transparent;
+  border: none;
+  transition: opacity 0.3s ease;
+  cursor: pointer;
+
+  @include hover {
+    opacity: 0.6;
+  }
+
+  &::before,
+  &::after {
+    position: absolute;
+    top: 50%;
+    right: 0;
+    width: 20px;
+    height: 2px;
+    background-color: $color-black;
+    content: '';
+  }
+
+  &::before {
+    transform: rotate(45deg);
+  }
+
+  &::after {
+    transform: rotate(-45deg);
+  }
+}
+
+@mixin button {
+  padding: 0.7rem;
+  background-color: $color-mindaro;
+
+  @include hover {
+    background-color: color.adjust($color-mindaro, $lightness: -20%);
+  }
+
+  &:active {
+    background-color: color.adjust($color-mindaro, $lightness: -10%);
+  }
 }

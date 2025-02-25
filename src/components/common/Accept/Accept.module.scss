@@ -1,0 +1,33 @@
+.accept {
+  margin: 0 auto;
+  padding: 1.5rem;
+  background-color: $color-white;
+  border-radius: 10px;
+}
+
+.title {
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+.buttons {
+  display: flex;
+  gap: 1rem;
+  margin-top: 3rem;
+}
+
+.button {
+  @include button;
+}
+
+.cancel {
+  background-color: $color-red;
+
+  @include hover {
+    background-color: color.adjust($color-red, $lightness: -20%);
+  }
+
+  &:active {
+    background-color: color.adjust($color-red, $lightness: -10%);
+  }
+}

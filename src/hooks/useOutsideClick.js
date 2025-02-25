@@ -8,7 +8,7 @@ const useOutsideClick = (ref, callback) => {
   }, [callback]);
 
   useEffect(() => {
-    const handler = (event) => {
+    const handler = event => {
       const { current: target } = ref;
 
       if (target && !target.contains(event.target)) {

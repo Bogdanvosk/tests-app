@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import cn from 'classnames';
 
 import Typography from '../Typography/Typography';
@@ -6,7 +7,7 @@ import Icon from '../Icon/Icon';
 import s from './Tabs.module.scss';
 
 const Tabs = ({ activeTab, tabs, onSetFormMode }) => {
-  const handleClickTab = (mode) => {
+  const handleClickTab = mode => {
     onSetFormMode(mode);
   };
 
@@ -29,3 +30,15 @@ const Tabs = ({ activeTab, tabs, onSetFormMode }) => {
 };
 
 export default Tabs;
+
+Tabs.propTypes = {
+  activeTab: PropTypes.string,
+  tabs: PropTypes.arrayOf(
+    PropTypes.shape({
+      title: PropTypes.string,
+      mode: PropTypes.string,
+      name: PropTypes.string
+    })
+  ),
+  onSetFormMode: PropTypes.func
+};

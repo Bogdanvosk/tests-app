@@ -1,0 +1,42 @@
+.form {
+  width: 50%;
+  height: 100%;
+  margin-bottom: 1rem;
+  padding: 1rem;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
+
+  @include mobile {
+    width: 100%;
+  }
+
+  @media (max-width: $xs) {
+    padding: 0.5rem;
+  }
+}
+
+.input {
+  flex-grow: 1;
+  padding: 0.7rem;
+  font-size: 16px;
+}
+
+.text {
+  width: 100%;
+  padding: 1rem;
+  font-size: 20px;
+}
+
+.button {
+  margin-top: 1rem;
+
+  @include button;
+}
+
+.number {
+  margin-top: 1rem;
+}
+
+.cancel {
+  @include button;
+}

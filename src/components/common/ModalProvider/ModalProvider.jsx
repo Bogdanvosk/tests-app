@@ -1,14 +1,15 @@
 import { createContext, useContext, useEffect, useState } from 'react';
+import PropTypes from 'prop-types';
+
+import { getModalContent } from '@/utils/getModalContent';
 
 import Modal from '../Modal/Modal';
 
-import { getModalContent } from '../../../hooks/getModalContent';
-
-import s from './ModalPovider.module.scss';
+import s from './ModalProvider.module.scss';
 
 const initialStore = {
   modalType: null,
-  modalProps: {},
+  modalProps: {}
 };
 
 const ModalContext = createContext(initialStore);
@@ -34,6 +35,7 @@ const ModalPovider = ({ children }) => {
     if (!modalType) return null;
 
     const ModalComponent = getModalContent(modalType);
+
     return (
       <Modal className={s[modalType]}>
         <ModalComponent {...modalProps} />
@@ -50,3 +52,7 @@ const ModalPovider = ({ children }) => {
 };
 
 export default ModalPovider;
+
+ModalPovider.propTypes = {
+  children: PropTypes.node
+};

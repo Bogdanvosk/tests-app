@@ -1,17 +1,18 @@
 import { combineReducers, configureStore } from '@reduxjs/toolkit';
+import logger from 'redux-logger';
 import { all, fork } from 'redux-saga/effects';
 import createSagaMiddleware from 'redux-saga';
+
 import authSlice from './features/auth';
+import testSlice from './features/test';
 import { authSagaWatcher } from './features/auth/saga';
-import logger from 'redux-logger';
 import { testSagaWatcher } from './features/test/saga';
-import { testSlice } from './features/test';
 
 const sagaMiddleware = createSagaMiddleware();
 
 const reducers = combineReducers({
   auth: authSlice,
-  test: testSlice,
+  test: testSlice
 });
 
 function* rootSaga() {
@@ -20,8 +21,7 @@ function* rootSaga() {
 
 const store = configureStore({
   reducer: reducers,
-  middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat(sagaMiddleware, logger),
+  middleware: getDefaultMiddleware => getDefaultMiddleware().concat(sagaMiddleware, logger)
 });
 
 sagaMiddleware.run(rootSaga);

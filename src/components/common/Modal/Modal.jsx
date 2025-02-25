@@ -1,10 +1,10 @@
-import PropTypes from 'prop-types';
+import { useRef } from 'react';
 import { createPortal } from 'react-dom';
+import PropTypes from 'prop-types';
 import cn from 'classnames';
 
-import { useModalContext } from '../ModalPovider/ModalPovider';
-import { useRef } from 'react';
-import useOutsideClick from '../../../hooks/useOutsideClick';
+import useOutsideClick from '@/hooks/useOutsideClick';
+import { useModalContext } from '../ModalProvider/ModalProvider';
 
 import s from './Modal.module.scss';
 
@@ -12,7 +12,9 @@ const Modal = ({ children, className = '' }) => {
   const { hideModal } = useModalContext();
   const modalRef = useRef(null);
 
-  const onCloseModal = (e) => {
+  const onCloseModal = e => {
+    if (e.target.tagName === 'svg') return;
+
     hideModal();
   };
 
@@ -33,5 +35,5 @@ export default Modal;
 
 Modal.propTypes = {
   children: PropTypes.node,
-  className: PropTypes.string,
+  className: PropTypes.string
 };
