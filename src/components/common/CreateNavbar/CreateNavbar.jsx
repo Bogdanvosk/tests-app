@@ -13,17 +13,21 @@ import useLocalStorage from '@/hooks/useLocalStorage';
 import Container from '../Container/Container';
 import Button from '../Button/Button';
 
-import s from './Navbar.module.scss';
+import s from './CreateNavbar.module.scss';
 
-const Navbar = ({ currentTest }) => {
+const CreateNavbar = ({ currentTest }) => {
   const [user, setUser] = useLocalStorage('user');
+  const [currTestId, setCurrTestId] = useLocalStorage('test');
   const [title, setTitle] = useState('');
 
   const dispatch = useDispatch();
   const router = useRouter();
 
   useEffect(() => {
-    currentTest && setTitle(currentTest.title);
+    if (currentTest) {
+      setTitle(currentTest.title);
+      setCurrTestId(currentTest.id);
+    }
   }, [currentTest]);
 
   useEffect(() => {
@@ -50,6 +54,7 @@ const Navbar = ({ currentTest }) => {
 
   const handleDeleteTest = () => {
     dispatch(deleteTestAction(currentTest.id));
+    setCurrTestId(null);
     setTitle('');
     toastify('success', 'Тест успешно удален');
   };
@@ -59,18 +64,20 @@ const Navbar = ({ currentTest }) => {
     dispatch(logoutAction());
   };
 
+  const handleClickAllTests = () => {
+    router.push('/test-list');
+  };
+
   return (
     <div className={s.navbarWrapper}>
-      <Container>
-        <div className={s.logout}>
+      <Container className={s.container}>
+        <div className={s.buttons}>
           <Button className={cn(s.button, s.delete)} onClick={handleLogout}>
-            Выйти
+            Выйти из аккаунта
           </Button>
-          {currentTest && (
-            <Button className={cn(s.button, s.delete)} type='button' onClick={handleDeleteTest}>
-              Удалить тест
-            </Button>
-          )}
+          <Button className={s.button} type='button' onClick={handleClickAllTests}>
+            Все тесты
+          </Button>
         </div>
         <div className={s.navbar}>
           <input
@@ -89,15 +96,20 @@ const Navbar = ({ currentTest }) => {
               Создать тест
             </Button>
           )}
+          {currentTest && (
+            <Button className={cn(s.button, s.delete)} type='button' onClick={handleDeleteTest}>
+              Удалить тест
+            </Button>
+          )}
         </div>
       </Container>
     </div>
   );
 };
 
-export default Navbar;
+export default CreateNavbar;
 
-Navbar.propTypes = {
+CreateNavbar.propTypes = {
   currentTest: PropTypes.shape({
     created_at: PropTypes.string,
     id: PropTypes.number,

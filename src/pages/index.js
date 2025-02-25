@@ -10,7 +10,7 @@ export default function Home() {
   useEffect(() => {
     if (user !== null) {
       if (user.is_admin) router.push('/test');
-      else router.push('/tests');
+      else router.push('/test-list');
     } else router.push('/sign-in');
   }, [router, user]);
 

@@ -18,7 +18,7 @@ const Page = () => {
     query.auth && setMode(getModeFromUrl());
     if (user !== null) {
       if (user.is_admin) router.push('/test');
-      else router.push('/tests');
+      else router.push('/test-list');
     }
   }, [user]);
 

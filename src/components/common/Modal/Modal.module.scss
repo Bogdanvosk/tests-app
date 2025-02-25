@@ -15,7 +15,7 @@
 }
 
 .delete {
-  @include delete(10px, 24px);
+  @include delete-icon(10px, 24px);
 
   @include mobile {
     display: none;

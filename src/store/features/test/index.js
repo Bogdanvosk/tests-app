@@ -11,6 +11,19 @@ export const testSlice = createSlice({
   name: 'test',
   initialState,
   reducers: {
+    getAllTestsAction: state => {
+      state.isLoading = true;
+    },
+    getAllTestsSuccess: (state, action) => {
+      state.isLoading = false;
+      state.tests = action.payload;
+      state.error = null;
+    },
+    getAllTestsError: (state, action) => {
+      state.isLoading = false;
+      state.tests = [];
+      state.error = action.payload;
+    },
     getCurrentTestAction: state => {
       state.isLoading = true;
     },
@@ -206,6 +219,9 @@ export const testSlice = createSlice({
 export default testSlice.reducer;
 
 export const {
+  getAllTestsAction,
+  getAllTestsSuccess,
+  getAllTestsError,
   getCurrentTestAction,
   getCurrentTestSuccess,
   getCurrentTestError,

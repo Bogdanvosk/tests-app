@@ -2120,6 +2120,11 @@ prelude-ls@^1.2.1:
   resolved "https://registry.yarnpkg.com/prelude-ls/-/prelude-ls-1.2.1.tgz#debc6489d7a6e6b0e7611888cec880337d316396"
   integrity sha512-vkcDPrRZo1QZLbn5RLGPpg/WmIQ65qoWWhcGKf/b5eplkkarX0m9z8ppCat4mlOqUsWpyNuYgO3VRyrYHSzX5g==
 
+prettier@^3.4.2:
+  version "3.5.2"
+  resolved "https://registry.yarnpkg.com/prettier/-/prettier-3.5.2.tgz#d066c6053200da0234bf8fa1ef45168abed8b914"
+  integrity sha512-lc6npv5PH7hVqozBR7lkBNOGXV9vMwROAPlumdBkX0wTbbzPu/U1hk5yL8p2pt4Xoc+2mkT8t/sow2YrV/M5qg==
+
 prop-types@^15.8.1:
   version "15.8.1"
   resolved "https://registry.yarnpkg.com/prop-types/-/prop-types-15.8.1.tgz#67d87bf1a694f48435cf332c24af10214a3140b5"
@@ -2387,11 +2392,6 @@ signal-exit@^4.0.1:
   version "4.1.0"
   resolved "https://registry.yarnpkg.com/signal-exit/-/signal-exit-4.1.0.tgz#952188c1cbd546070e2dd20d0f41c0ae0530cb04"
   integrity sha512-bzyZ1e88w9O1iNJbKnOlvYTrWPDl46O1bG0D3XInv+9tkPrxrN8jUUTiFlDkkmKWgn1M6CfIA13SuGqOa9Korw==
-
-sonner@^1.7.2:
-  version "1.7.2"
-  resolved "https://registry.yarnpkg.com/sonner/-/sonner-1.7.2.tgz#d3e5e414be6aa888da5da5ec558444b43203441c"
-  integrity sha512-zMbseqjrOzQD1a93lxahm+qMGxWovdMxBlkTbbnZdNqVLt4j+amF9PQxUCL32WfztOFt9t9ADYkejAL3jF9iNA==
 
 "source-map-js@>=0.6.2 <2.0.0", source-map-js@^1.0.2:
   version "1.2.1"
