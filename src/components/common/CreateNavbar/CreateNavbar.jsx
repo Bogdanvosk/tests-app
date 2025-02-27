@@ -4,7 +4,12 @@ import { useRouter } from 'next/router';
 import PropTypes from 'prop-types';
 import cn from 'classnames';
 
-import { createTestAction, deleteTestAction, updateTestAction } from '@/store/features/test';
+import {
+  clearCurrentTest,
+  createTestAction,
+  deleteTestAction,
+  updateTestAction
+} from '@/store/features/test';
 import { logoutAction } from '@/store/features/auth';
 import useDebounce from '@/hooks/useDebounce';
 import { toastify } from '@/utils/toastify';
@@ -12,6 +17,7 @@ import useLocalStorage from '@/hooks/useLocalStorage';
 
 import Container from '../Container/Container';
 import Button from '../Button/Button';
+import Input from '../Input/Input';
 
 import s from './CreateNavbar.module.scss';
 
@@ -54,7 +60,7 @@ const CreateNavbar = ({ currentTest }) => {
 
   const handleDeleteTest = () => {
     dispatch(deleteTestAction(currentTest.id));
-    setCurrTestId(null);
+    dispatch(clearCurrentTest());
     setTitle('');
     toastify('success', 'Тест успешно удален');
   };
@@ -66,6 +72,10 @@ const CreateNavbar = ({ currentTest }) => {
 
   const handleClickAllTests = () => {
     router.push('/test-list');
+  };
+
+  const handleClearTitle = () => {
+    setTitle('');
   };
 
   return (
@@ -80,13 +90,15 @@ const CreateNavbar = ({ currentTest }) => {
           </Button>
         </div>
         <div className={s.navbar}>
-          <input
-            type='text'
-            className={s.input}
-            value={title}
-            onChange={e => handleChangeTitle(e)}
-            placeholder='Введите название теста'
-          />
+          <label htmlFor='title' className={s.titleLabel}>
+            <Input
+              id='title'
+              value={title}
+              onChange={handleChangeTitle}
+              placeholder='Введите название теста'
+            />
+            <span className={s.deleteIcon} onClick={handleClearTitle}></span>
+          </label>
           {!currentTest && (
             <Button
               className={cn(s.button, { [s.show]: currentTest })}

@@ -37,6 +37,9 @@ export const testSlice = createSlice({
       state.currentTest = null;
       state.error = action.payload;
     },
+    clearCurrentTest: state => {
+      state.currentTest = null;
+    },
     createTestAction: state => {
       state.isLoading = true;
     },
@@ -67,9 +70,8 @@ export const testSlice = createSlice({
     deleteTestAction: state => {
       state.isLoading = true;
     },
-    deleteTestSuccess: (state, action) => {
+    deleteTestSuccess: state => {
       state.isLoading = false;
-      state.tests = state.tests.filter(t => t.id !== action.payload.id);
       state.currentTest = null;
       state.error = null;
     },
@@ -225,6 +227,7 @@ export const {
   getCurrentTestAction,
   getCurrentTestSuccess,
   getCurrentTestError,
+  clearCurrentTest,
   createTestAction,
   createTestSuccess,
   createTestError,

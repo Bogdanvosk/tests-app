@@ -17,7 +17,7 @@ import { isNumber } from '@/utils/isNumber';
 import { toastify } from '@/utils/toastify';
 import { selectIsLoading } from '@/store/features/auth/selectors';
 
-import Input from '../Input/Input';
+import FormInput from '../FormInput/FormInput';
 import Button from '../Button/Button';
 import AnswersList from '../AnswersList/AnswersList';
 import DndArea from '../DndArea/DndArea';
@@ -326,7 +326,7 @@ const QuestionForm = ({ onCloseForm }) => {
         <DndArea fields={fields} move={move}>
           <FormProvider {...methods}>
             <form className={s.form} onSubmit={handleSubmit}>
-              <Input
+              <FormInput
                 className={cn(s.input, s.text)}
                 type='text'
                 fieldName='title'

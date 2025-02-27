@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { useDispatch } from 'react-redux';
 import cn from 'classnames';
@@ -10,7 +10,7 @@ import Container from '../Container/Container';
 
 import s from './TestsNavbar.module.scss';
 
-const TestsNavbar = () => {
+const TestsNavbar = ({ sort }) => {
   const [user, setUser] = useLocalStorage('user');
 
   const dispatch = useDispatch();
@@ -31,7 +31,7 @@ const TestsNavbar = () => {
 
   return (
     <div className={s.navbarWrapper}>
-      <Container>
+      <Container className={s.container}>
         <div className={s.buttons}>
           <Button className={cn(s.button, s.delete)} onClick={handleLogout}>
             Выйти из аккаунта

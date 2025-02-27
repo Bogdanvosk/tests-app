@@ -41,10 +41,8 @@ const Test = () => {
   }, [user]);
 
   useEffect(() => {
-    setCurrTestId(currentTest?.id);
+    currentTest ? setCurrTestId(currentTest?.id) : setCurrTestId(null);
   }, [currentTest]);
-
-  console.log('currentTest', currentTest);
 
   useEffect(() => {
     !isQuestionFormOpen && setQuestionType(questionTypes[0].value);

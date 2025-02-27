@@ -10,7 +10,7 @@ import { useModalContext } from '../ModalProvider/ModalProvider';
 import { toastify } from '@/utils/toastify';
 
 import Answer from '../Answer/Answer';
-import Input from '../Input/Input';
+import FormInput from '../FormInput/FormInput';
 
 import s from './AnswersList.module.scss';
 
@@ -86,7 +86,7 @@ const AnswersList = ({ fields, questionType, questionStep, setAcceptedAction }) 
 
       {isNumberInputVisible && (
         <div className={cn(s.answer, s.number)}>
-          <Input
+          <FormInput
             className={s.input}
             fieldName={`answers.0.text`}
             placeholder='Введите вариант ответа'
