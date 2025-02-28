@@ -1,15 +1,16 @@
 import { createContext, useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useRouter } from 'next/router';
+
 import { getCurrentTestAction } from '@/store/features/test';
 import { selectCurrentQuestions, selectCurrentTest } from '@/store/features/test/selectors';
 import { selectIsLoading } from '@/store/features/auth/selectors';
-import { useRouter } from 'next/router';
 import useLocalStorage from '@/hooks/useLocalStorage';
-
 import { questionTypes } from '@/content';
+
 import Container from '@/components/common/Container/Container';
 import QuestionForm from '@/components/common/QuestionForm/QuestionForm';
-import Navbar from '@/components/common/Navbar/Navbar';
+import CreateNavbar from '@/components/common/CreateNavbar/CreateNavbar';
 import Questions from '@/components/common/Questions/Questions';
 
 import s from './Test.module.scss';
@@ -40,7 +41,7 @@ const Test = () => {
   }, [user]);
 
   useEffect(() => {
-    setCurrTestId(currentTest?.id);
+    currentTest ? setCurrTestId(currentTest?.id) : setCurrTestId(null);
   }, [currentTest]);
 
   useEffect(() => {
@@ -68,7 +69,7 @@ const Test = () => {
 
   return (
     <div className={s.test}>
-      <Navbar currentTest={currentTest} />
+      <CreateNavbar currentTest={currentTest} />
       {currentTest && (
         <Container>
           <div className={s.content}>

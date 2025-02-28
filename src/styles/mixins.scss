@@ -55,7 +55,7 @@
   }
 }
 
-@mixin delete($top: auto, $right: auto, $bottom: auto, $left: auto) {
+@mixin delete-icon($top: auto, $right: auto, $bottom: auto, $left: auto) {
   position: absolute;
   top: $top;
   right: $right;
@@ -102,5 +102,35 @@
 
   &:active {
     background-color: color.adjust($color-mindaro, $lightness: -10%);
+  }
+}
+
+@mixin navbar-button {
+  display: block;
+
+  @include button;
+
+  padding: 1rem 2rem;
+  font-weight: 700;
+
+  @media (max-width: $xs) {
+    padding: 1rem;
+  }
+}
+
+@mixin navbar-button-delete {
+  padding: 1rem 2rem;
+  background-color: $color-red;
+
+  @include hover {
+    background-color: color.adjust($color-red, $lightness: -20%);
+  }
+
+  &:active {
+    background-color: color.adjust($color-red, $lightness: -10%);
+  }
+
+  @media (max-width: $xs) {
+    padding: 1rem;
   }
 }

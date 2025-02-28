@@ -1,0 +1,57 @@
+.container {
+  margin-top: 2rem;
+}
+
+.sort {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1.5rem;
+  cursor: pointer;
+
+  span {
+    position: relative;
+
+    &::after {
+      position: absolute;
+      left: 0;
+      bottom: -8px;
+      width: 0;
+      height: 4px;
+      background-color: $color-mindaro;
+      transition: width 0.3s ease;
+      content: '';
+    }
+
+    @include hover {
+      &::after {
+        width: 100%;
+      }
+    }
+  }
+
+  &Arrow {
+    display: block;
+    width: 27px;
+    height: 27px;
+    transition: transform 0.3s ease;
+  }
+}
+
+.params {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.up {
+  transform: rotate(180deg);
+}
+
+.searchLabel {
+  position: relative;
+}
+
+.deleteIcon {
+  @include delete-icon(16px, 16px);
+}

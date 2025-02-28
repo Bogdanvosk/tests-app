@@ -1,0 +1,39 @@
+.navbar {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+
+  &Wrapper {
+    padding: 1.5rem 0;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
+  }
+}
+
+.container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.buttons {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.5rem;
+}
+
+.titleLabel {
+  position: relative;
+}
+
+.deleteIcon {
+  @include delete-icon(16px, 16px);
+}
+
+.button {
+  @include navbar-button;
+}
+
+.delete {
+  @include navbar-button-delete;
+}

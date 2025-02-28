@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 
 import Icon from '../Icon/Icon';
-import Input from '../Input/Input';
+import FormInput from '../FormInput/FormInput';
 import SortableItem from '../SortableItem/SortableItem';
 
 import s from './Answer.module.scss';
@@ -18,14 +18,14 @@ const Answer = ({ field, fieldIndex = 0, acceptDeleteAnswer, handleChangeCorrect
   return (
     <SortableItem field={field} key={field.id}>
       <div className={s.answer}>
-        <Input
+        <FormInput
           className={s.input}
           type='text'
           fieldName={`answers.${fieldIndex}.text`}
           placeholder='Введите вариант ответа'
         />
 
-        <Input
+        <FormInput
           type='checkbox'
           fieldName={`answers.${fieldIndex}.is_right`}
           onClick={onChangeCorrectAnswer}
