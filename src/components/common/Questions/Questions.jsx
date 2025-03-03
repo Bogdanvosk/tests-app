@@ -36,6 +36,8 @@ const Questions = ({
     if (acceptedAction?.actionValue === 'delete-question') {
       handleDeleteQuestion(acceptedAction.id);
     }
+
+    // if ()
   }, [acceptedAction]);
 
   useEffect(() => {
@@ -62,7 +64,9 @@ const Questions = ({
     showModal('accept', {
       handleIsAccepted,
       actionValue: 'delete-question',
-      id
+      id,
+      title: 'Удалить вопрос?',
+      fail: 'Отмена'
     });
   };
 

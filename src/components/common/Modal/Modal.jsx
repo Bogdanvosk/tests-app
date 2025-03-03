@@ -8,12 +8,13 @@ import { useModalContext } from '../ModalProvider/ModalProvider';
 
 import s from './Modal.module.scss';
 
-const Modal = ({ children, className = '' }) => {
+const Modal = ({ children, className = '', ...props }) => {
   const { hideModal } = useModalContext();
   const modalRef = useRef(null);
 
   const onCloseModal = e => {
     if (e.target.tagName === 'svg') return;
+    if (e.target.tagName === 'LI') return;
 
     hideModal();
   };

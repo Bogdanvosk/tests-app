@@ -8,7 +8,14 @@ import { useModalContext } from '../ModalProvider/ModalProvider';
 
 import s from './Accept.module.scss';
 
-const Accept = ({ handleIsAccepted, actionValue, id }) => {
+const Accept = ({
+  handleIsAccepted,
+  actionValue,
+  id = null,
+  title = 'Вы уверены?',
+  success,
+  fail
+}) => {
   const { hideModal } = useModalContext();
 
   const onCloseModal = () => {
@@ -23,15 +30,17 @@ const Accept = ({ handleIsAccepted, actionValue, id }) => {
   return (
     <div className={s.accept}>
       <Typography tag='p' className={s.title}>
-        Вы уверены?
+        {title}
       </Typography>
       <div className={s.buttons}>
         <Button className={s.button} onClick={onAccept}>
-          Да
+          {success || 'Да'}
         </Button>
-        <Button className={cn(s.button, s.cancel)} onClick={onCloseModal}>
-          Отмена
-        </Button>
+        {fail && (
+          <Button className={cn(s.button, s.cancel)} onClick={onCloseModal}>
+            {fail}
+          </Button>
+        )}
       </div>
     </div>
   );

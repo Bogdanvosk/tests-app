@@ -24,15 +24,15 @@ export const testSlice = createSlice({
       state.tests = [];
       state.error = action.payload;
     },
-    getCurrentTestAction: state => {
+    getTestByIdAction: state => {
       state.isLoading = true;
     },
-    getCurrentTestSuccess: (state, action) => {
+    getTestByIdSuccess: (state, action) => {
       state.isLoading = false;
       state.currentTest = action.payload;
       state.error = null;
     },
-    getCurrentTestError: (state, action) => {
+    getTestByIdError: (state, action) => {
       state.isLoading = false;
       state.currentTest = null;
       state.error = action.payload;
@@ -224,9 +224,9 @@ export const {
   getAllTestsAction,
   getAllTestsSuccess,
   getAllTestsError,
-  getCurrentTestAction,
-  getCurrentTestSuccess,
-  getCurrentTestError,
+  getTestByIdAction,
+  getTestByIdSuccess,
+  getTestByIdError,
   clearCurrentTest,
   createTestAction,
   createTestSuccess,

@@ -7,7 +7,7 @@ const Input = ({ type, value, onChange, placeholder = '', className = '', ...pro
   return (
     <input
       type={type}
-      className={cn(s.input, s.className)}
+      className={cn(s.input, className)}
       value={value}
       onChange={onChange}
       placeholder={placeholder}

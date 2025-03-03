@@ -4,6 +4,7 @@ import { useDispatch } from 'react-redux';
 import cn from 'classnames';
 
 import useLocalStorage from '@/hooks/useLocalStorage';
+import { logoutAction } from '@/store/features/auth';
 
 import Button from '../Button/Button';
 import Container from '../Container/Container';
@@ -12,6 +13,7 @@ import s from './TestsNavbar.module.scss';
 
 const TestsNavbar = ({ sort }) => {
   const [user, setUser] = useLocalStorage('user');
+  const [testId, setTestId] = useLocalStorage('selected-test');
 
   const dispatch = useDispatch();
   const router = useRouter();
@@ -26,7 +28,8 @@ const TestsNavbar = ({ sort }) => {
   };
 
   const handleClickCreateTest = () => {
-    router.push('/test');
+    setTestId(null);
+    router.push('/create-test');
   };
 
   return (

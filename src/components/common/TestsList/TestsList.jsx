@@ -1,20 +1,53 @@
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import PropTypes from 'prop-types';
 
 import useLocalStorage from '@/hooks/useLocalStorage';
+import { useModalContext } from '../ModalProvider/ModalProvider';
 
 import Button from '../Button/Button';
 
 import s from './TestsList.module.scss';
 
 const TestsList = ({ items }) => {
+  const { showModal } = useModalContext();
+  const [acceptedAction, setAcceptedAction] = useState(null);
+
   const [user, setUser] = useLocalStorage('user');
-  const [testId, setTestId] = useLocalStorage('test');
+  const [testId, setTestId] = useLocalStorage('selected-test');
+  const [progressData, setProgressData] = useLocalStorage('progress');
   const router = useRouter();
+
+  useEffect(() => {
+    setProgressData(null);
+  }, []);
+
+  useEffect(() => {
+    if (acceptedAction?.actionValue === 'pass-test') {
+      handlePassTest(acceptedAction.id);
+    }
+  }, [acceptedAction]);
 
   const handleEditTest = id => {
     setTestId(id);
-    router.push('/test');
+    router.push('/create-test');
+  };
+
+  const handlePassTest = id => {
+    setTestId(id);
+    router.push(`/test/${id}`);
+  };
+
+  const handleIsAccepted = value => setAcceptedAction(value);
+
+  const acceptPassTest = id => {
+    showModal('accept', {
+      handleIsAccepted,
+      actionValue: 'pass-test',
+      id,
+      title: 'Начать прохождение теста?',
+      fail: 'Отмена'
+    });
   };
 
   return (
@@ -22,7 +55,7 @@ const TestsList = ({ items }) => {
       <ul className={s.list}>
         {items &&
           items.map(test => (
-            <li key={test.id} className={s.item}>
+            <li key={test.id} className={s.item} onClick={() => acceptPassTest(test.id)}>
               <div className={s.title}>{test.title}</div>
               {user.is_admin && (
                 <Button

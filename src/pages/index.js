@@ -8,10 +8,7 @@ export default function Home() {
   const [user, setUser] = useLocalStorage('user');
 
   useEffect(() => {
-    if (user !== null) {
-      if (user.is_admin) router.push('/test');
-      else router.push('/test-list');
-    } else router.push('/sign-in');
+    user !== null ? router.push('/test-list') : router.push('/sign-in');
   }, [router, user]);
 
   return null;

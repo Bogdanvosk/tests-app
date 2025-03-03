@@ -1,0 +1,26 @@
+.pass {
+  margin-top: 2rem;
+}
+
+.title {
+  font-size: 4.5rem;
+}
+
+.subtitle {
+  margin-top: 2rem;
+  font-size: 3rem;
+  text-align: center;
+}
+
+.navbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.button {
+  @include button;
+
+  padding: 1rem;
+  font-size: 1.5rem;
+}

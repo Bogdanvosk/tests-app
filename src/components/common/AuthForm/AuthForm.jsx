@@ -12,7 +12,7 @@ import useLocalStorage from '@/hooks/useLocalStorage';
 
 import Button from '../Button/Button';
 import AuthInput from '../AuthInput/AuthInput';
-import Label from '../Label/Label';
+import AuthLabel from '../AuthLabel/AuthLabel';
 
 import s from './AuthForm.module.scss';
 
@@ -41,7 +41,7 @@ const AuthForm = ({ mode, className = '' }) => {
   useEffect(() => {
     if (currentUser !== null) {
       setUser(currentUser);
-      currentUser.is_admin ? router.push('/test') : router.push('/tests');
+      currentUser.is_admin ? router.push('/create-test') : router.push('/test-list');
     }
   }, [currentUser, router, setUser, methods]);
 
@@ -78,27 +78,27 @@ const AuthForm = ({ mode, className = '' }) => {
           {authFormInputs.map(input => {
             if (input.mode.includes(mode)) {
               return (
-                <Label key={input.fieldName} title={input.title}>
+                <AuthLabel key={input.fieldName} title={input.title}>
                   <AuthInput
                     className={s.input}
                     placeholder={input.placeholder}
                     type={input.type}
                     fieldName={input.fieldName}
                   />
-                </Label>
+                </AuthLabel>
               );
             }
           })}
         </div>
 
         {mode === 'signUp' && (
-          <Label title='Администратор' className={s.admin} reversed>
+          <AuthLabel title='Администратор' className={s.admin} reversed={true}>
             <AuthInput
               type='checkbox'
               checkboxValue={isAdmin}
               handleCheckboxChange={onCheckboxChange}
             />
-          </Label>
+          </AuthLabel>
         )}
 
         <span className={s.error}>{handleSetServerError()}</span>

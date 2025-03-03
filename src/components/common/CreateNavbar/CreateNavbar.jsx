@@ -23,7 +23,7 @@ import s from './CreateNavbar.module.scss';
 
 const CreateNavbar = ({ currentTest }) => {
   const [user, setUser] = useLocalStorage('user');
-  const [currTestId, setCurrTestId] = useLocalStorage('test');
+  const [currTestId, setCurrTestId] = useLocalStorage('selected-test');
   const [title, setTitle] = useState('');
 
   const dispatch = useDispatch();

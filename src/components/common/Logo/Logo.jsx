@@ -12,6 +12,6 @@ const Logo = ({ imageSrc, className = '' }) => {
 export default Logo;
 
 Logo.propTypes = {
-  imageSrc: PropTypes.object,
+  imageSrc: PropTypes.string,
   className: PropTypes.string
 };
