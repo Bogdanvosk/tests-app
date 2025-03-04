@@ -1,5 +1,6 @@
 import cn from 'classnames';
 import { useContext } from 'react';
+import PropTypes from 'prop-types';
 
 import { QuestionMetaContext } from '../PassQuestion/PassQuestion';
 
