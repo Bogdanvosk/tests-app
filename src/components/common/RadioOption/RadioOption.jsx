@@ -11,6 +11,7 @@ const RadioOption = ({ value, title, selected, onChange, incorrect, correct }) =
 
   const handleChange = () => {
     if (questionType === 'single') return onChange([value]);
+    if (selected.includes(value)) return onChange(selected.filter(item => item !== value));
     onChange([...selected, value]);
   };
 
