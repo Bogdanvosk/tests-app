@@ -227,7 +227,7 @@ export const {
   getTestByIdAction,
   getTestByIdSuccess,
   getTestByIdError,
-  clearCurrentTestAction: clearCurrentTest,
+  clearCurrentTestAction,
   createTestAction,
   createTestSuccess,
   createTestError,
