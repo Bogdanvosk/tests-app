@@ -9,28 +9,26 @@ const RadioOption = ({ value, title, selected, onChange, incorrect, correct }) =
   const questionType = useContext(QuestionMetaContext);
 
   const handleChange = () => {
-    if (questionType === 'single') return onChange(value);
-    if (selected.includes(value)) return onChange(selected.filter(item => item !== value));
+    if (questionType === 'single') return onChange([value]);
     onChange([...selected, value]);
   };
 
-  const selectedItem =
-    (questionType === 'single' ? selected === value : selected.includes(value)) || correct;
+  const isItemSelected = selected.includes(value) || correct;
 
   return (
     <div
       className={cn(s.item, {
-        [s.selected]: selectedItem,
+        [s.selected]: isItemSelected,
         [s.incorrect]: selected && incorrect
       })}
       key={value}
       onClick={handleChange}
     >
-      <label className={s.label} htmlFor={`radio__${title}`}>
+      <label className={s.label}>
         {title}
         <span
           className={cn(s.radio, {
-            [s.selected]: selectedItem,
+            [s.selected]: isItemSelected,
             [s.multiple]: questionType === 'multiple',
             [s.incorrect]: selected && incorrect
           })}
@@ -41,3 +39,12 @@ const RadioOption = ({ value, title, selected, onChange, incorrect, correct }) =
 };
 
 export default RadioOption;
+
+RadioOption.propTypes = {
+  value: PropTypes.number,
+  title: PropTypes.string,
+  selected: PropTypes.arrayOf(PropTypes.number),
+  onChange: PropTypes.func,
+  incorrect: PropTypes.bool,
+  correct: PropTypes.bool
+};

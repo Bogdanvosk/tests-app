@@ -8,7 +8,7 @@ import { useModalContext } from '../ModalProvider/ModalProvider';
 
 import s from './Modal.module.scss';
 
-const Modal = ({ children, className = '', ...props }) => {
+const Modal = ({ children, className = '' }) => {
   const { hideModal } = useModalContext();
   const modalRef = useRef(null);
 

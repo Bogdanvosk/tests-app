@@ -32,6 +32,12 @@ Question.propTypes = {
     title: PropTypes.string,
     question_type: PropTypes.string,
     answer: PropTypes.number,
-    answers: PropTypes.arrayOf(PropTypes.object)
+    answers: PropTypes.arrayOf(
+      PropTypes.shape({
+        id: PropTypes.number,
+        text: PropTypes.string,
+        is_right: PropTypes.bool
+      })
+    )
   })
 };

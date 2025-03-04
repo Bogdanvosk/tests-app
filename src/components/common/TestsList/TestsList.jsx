@@ -1,9 +1,11 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import PropTypes from 'prop-types';
+import { useDispatch } from 'react-redux';
 
 import useLocalStorage from '@/hooks/useLocalStorage';
 import { useModalContext } from '../ModalProvider/ModalProvider';
+import { clearCurrentTestAction } from '@/store/features/test';
 
 import Button from '../Button/Button';
 
@@ -17,9 +19,12 @@ const TestsList = ({ items }) => {
   const [testId, setTestId] = useLocalStorage('selected-test');
   const [progressData, setProgressData] = useLocalStorage('progress');
   const router = useRouter();
+  const dispatch = useDispatch();
 
   useEffect(() => {
     setProgressData(null);
+    setTestId(null);
+    dispatch(clearCurrentTestAction());
   }, []);
 
   useEffect(() => {
@@ -74,7 +79,7 @@ const TestsList = ({ items }) => {
 export default TestsList;
 
 TestsList.propTypes = {
-  tests: PropTypes.arrayOf(
+  items: PropTypes.arrayOf(
     PropTypes.shape({
       id: PropTypes.number,
       title: PropTypes.string,
@@ -85,7 +90,13 @@ TestsList.propTypes = {
           title: PropTypes.string,
           question_type: PropTypes.string,
           answer: PropTypes.number,
-          answers: PropTypes.arrayOf(PropTypes.object)
+          answers: PropTypes.arrayOf(
+            PropTypes.shape({
+              id: PropTypes.number,
+              text: PropTypes.string,
+              is_right: PropTypes.bool
+            })
+          )
         })
       )
     })

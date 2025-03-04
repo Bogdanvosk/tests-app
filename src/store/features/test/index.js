@@ -37,7 +37,7 @@ export const testSlice = createSlice({
       state.currentTest = null;
       state.error = action.payload;
     },
-    clearCurrentTest: state => {
+    clearCurrentTestAction: state => {
       state.currentTest = null;
     },
     createTestAction: state => {
@@ -227,7 +227,7 @@ export const {
   getTestByIdAction,
   getTestByIdSuccess,
   getTestByIdError,
-  clearCurrentTest,
+  clearCurrentTestAction: clearCurrentTest,
   createTestAction,
   createTestSuccess,
   createTestError,

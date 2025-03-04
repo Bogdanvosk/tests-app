@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import cn from 'classnames';
 
 import s from './PassProgress.module.scss';
@@ -23,3 +24,24 @@ const PassProgress = ({ data, active, className = '' }) => {
 };
 
 export default PassProgress;
+
+PassProgress.propTypes = {
+  data: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.number,
+      isCorrect: PropTypes.bool,
+      question_type: PropTypes.string,
+      title: PropTypes.string,
+      answer: PropTypes.number,
+      answers: PropTypes.arrayOf(
+        PropTypes.shape({
+          id: PropTypes.number,
+          text: PropTypes.string,
+          is_right: PropTypes.bool
+        })
+      )
+    })
+  ),
+  active: PropTypes.number,
+  className: PropTypes.string
+};

@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import cn from 'classnames';
 
 import {
-  clearCurrentTest,
+  clearCurrentTestAction,
   createTestAction,
   deleteTestAction,
   updateTestAction
@@ -60,7 +60,7 @@ const CreateNavbar = ({ currentTest }) => {
 
   const handleDeleteTest = () => {
     dispatch(deleteTestAction(currentTest.id));
-    dispatch(clearCurrentTest());
+    dispatch(clearCurrentTestAction());
     setTitle('');
     toastify('success', 'Тест успешно удален');
   };

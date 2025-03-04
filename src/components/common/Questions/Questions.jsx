@@ -36,8 +36,6 @@ const Questions = ({
     if (acceptedAction?.actionValue === 'delete-question') {
       handleDeleteQuestion(acceptedAction.id);
     }
-
-    // if ()
   }, [acceptedAction]);
 
   useEffect(() => {

@@ -5,7 +5,6 @@ import { useRouter } from 'next/router';
 import { isNumber } from '@/utils/isNumber';
 import { toastify } from '@/utils/toastify';
 import { useModalContext } from '../ModalProvider/ModalProvider';
-import useLocalStorage from '@/hooks/useLocalStorage';
 
 import RadioGroup from '../RadioGroup/RadioGroup';
 import Typography from '../Typography/Typography';
@@ -18,7 +17,6 @@ export const QuestionMetaContext = createContext(null);
 
 const PassQuestion = ({ question, onSelectAnswer, onSetNextQuestion, questions }) => {
   const [isQuestionPassed, setIsQuestionPassed] = useState(false);
-  const [selectedAnswerId, setSelectedAnswer] = useState(null);
   const [selectedAnswers, setSelectedAnswers] = useState([]);
   const [numberAnswer, setNumberAnswer] = useState('');
   const [acceptedAction, setAcceptedAction] = useState(null);
@@ -43,17 +41,16 @@ const PassQuestion = ({ question, onSelectAnswer, onSetNextQuestion, questions }
     if (isQuestionPassed) {
       setIsQuestionPassed(false);
       setSelectedAnswers([]);
-      setSelectedAnswer(null);
       setNumberAnswer('');
       return onSetNextQuestion();
     }
 
     if (question.question_type === 'single') {
-      if (!selectedAnswerId) {
+      if (!selectedAnswers[0]) {
         toastify('error', 'Выберите ответ');
         return;
       }
-      const isCorrect = question.answers.find(answer => answer.id === selectedAnswerId).is_right;
+      const isCorrect = question.answers.find(answer => answer.id === selectedAnswers[0]).is_right;
       onSelectAnswer(isCorrect);
     }
 
@@ -99,7 +96,7 @@ const PassQuestion = ({ question, onSelectAnswer, onSetNextQuestion, questions }
     showModal('accept', {
       handleIsAccepted,
       actionValue: 'finish-test',
-      title: `Поздравляем❗ 😁 Вы ответили правильно на ${correctQuestions} из ${questions.length} вопросов. (${passedPercent}%) ${passedPercent > 50 ? '✅' : '❌'}`,
+      title: `Поздравляем! 😊 Вы ответили правильно на ${correctQuestions} из ${questions.length} вопросов. (${passedPercent}%) ${passedPercent > 50 ? '✅' : '❌'}`,
       success: 'Завершить тест',
       fail: null
     });
@@ -115,10 +112,8 @@ const PassQuestion = ({ question, onSelectAnswer, onSetNextQuestion, questions }
           <QuestionMetaContext.Provider value={question.question_type}>
             <RadioGroup
               options={question.answers}
-              selected={question.question_type === 'single' ? selectedAnswerId : selectedAnswers}
-              onChange={
-                question.question_type === 'single' ? setSelectedAnswer : setSelectedAnswers
-              }
+              selected={selectedAnswers}
+              onChange={setSelectedAnswers}
               isQuestionPassed={isQuestionPassed}
             />
           </QuestionMetaContext.Provider>
@@ -145,3 +140,34 @@ const PassQuestion = ({ question, onSelectAnswer, onSetNextQuestion, questions }
 };
 
 export default PassQuestion;
+
+PassQuestion.propTypes = {
+  question: PropTypes.shape({
+    id: PropTypes.number,
+    title: PropTypes.string,
+    question_type: PropTypes.string,
+    answers: PropTypes.arrayOf(
+      PropTypes.shape({
+        id: PropTypes.number,
+        text: PropTypes.string,
+        is_right: PropTypes.bool
+      })
+    )
+  }),
+  onSelectAnswer: PropTypes.func,
+  onSetNextQuestion: PropTypes.func,
+  questions: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.number,
+      title: PropTypes.string,
+      question_type: PropTypes.string,
+      answers: PropTypes.arrayOf(
+        PropTypes.shape({
+          id: PropTypes.number,
+          text: PropTypes.string,
+          is_right: PropTypes.bool
+        })
+      )
+    })
+  )
+};

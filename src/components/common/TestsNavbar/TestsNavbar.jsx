@@ -11,7 +11,7 @@ import Container from '../Container/Container';
 
 import s from './TestsNavbar.module.scss';
 
-const TestsNavbar = ({ sort }) => {
+const TestsNavbar = () => {
   const [user, setUser] = useLocalStorage('user');
   const [testId, setTestId] = useLocalStorage('selected-test');
 

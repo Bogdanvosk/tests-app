@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import cn from 'classnames';
 
 import s from './Pagination.module.scss';
@@ -21,3 +22,9 @@ const Pagination = ({ totalPages, handleSetPage, currentPage }) => {
 };
 
 export default Pagination;
+
+Pagination.propTypes = {
+  totalPages: PropTypes.number,
+  handleSetPage: PropTypes.func,
+  currentPage: PropTypes.number
+};

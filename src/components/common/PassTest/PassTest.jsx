@@ -86,8 +86,6 @@ const PassTest = () => {
 
   const handleSetNextQuestion = useCallback(() => {
     const newActiveQuestionId = questions.findIndex(q => q.id === activeQuestion?.id) + 1;
-    console.log('newActiveQuestionId', newActiveQuestionId);
-
     setActiveQuestion(questions[newActiveQuestionId]);
   }, [activeQuestion?.id, questions]);
 
