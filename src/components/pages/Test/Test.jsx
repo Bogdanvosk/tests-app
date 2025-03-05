@@ -1,6 +1,5 @@
 import { createContext, useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useRouter } from 'next/router';
 
 import { getTestByIdAction } from '@/store/features/test';
 import { selectCurrentQuestions, selectCurrentTest } from '@/store/features/test/selectors';
@@ -19,9 +18,7 @@ export const SelectQuestionContext = createContext(null);
 export const QuestionTypeContext = createContext(null);
 
 const Test = () => {
-  const router = useRouter();
   const dispatch = useDispatch();
-  const [user, setUser] = useLocalStorage('user');
   const [currTestId, setCurrTestId] = useLocalStorage('selected-test');
 
   const currentTest = useSelector(selectCurrentTest);
@@ -35,10 +32,6 @@ const Test = () => {
   useEffect(() => {
     currTestId && dispatch(getTestByIdAction(currTestId));
   }, []);
-
-  useEffect(() => {
-    if (user === null) router.push('/sign-in');
-  }, [user]);
 
   useEffect(() => {
     !isQuestionFormOpen && setQuestionType(questionTypes[0].value);

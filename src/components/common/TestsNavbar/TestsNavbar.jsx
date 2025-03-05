@@ -25,6 +25,7 @@ const TestsNavbar = () => {
   const handleLogout = () => {
     setUser(null);
     dispatch(logoutAction());
+    router.push('/sign-in');
   };
 
   const handleClickCreateTest = () => {
@@ -39,7 +40,7 @@ const TestsNavbar = () => {
           <Button className={cn(s.button, s.delete)} onClick={handleLogout}>
             Выйти из аккаунта
           </Button>
-          {user.is_admin && (
+          {user !== null && user.is_admin && (
             <Button className={s.button} type='button' onClick={handleClickCreateTest}>
               Создать тест
             </Button>

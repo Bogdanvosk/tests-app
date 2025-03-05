@@ -36,10 +36,6 @@ const CreateNavbar = ({ currentTest }) => {
     }
   }, [currentTest]);
 
-  useEffect(() => {
-    if (user === null) router.push('/sign-in');
-  }, [user]);
-
   const debouncedValue = useDebounce(title, 500).trim();
   useEffect(() => {
     if (!currentTest || !title) return;
@@ -68,6 +64,7 @@ const CreateNavbar = ({ currentTest }) => {
   const handleLogout = () => {
     setUser(null);
     dispatch(logoutAction());
+    router.push('/sign-in');
   };
 
   const handleClickAllTests = () => {
