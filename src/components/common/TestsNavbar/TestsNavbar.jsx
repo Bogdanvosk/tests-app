@@ -39,9 +39,11 @@ const TestsNavbar = () => {
           <Button className={cn(s.button, s.delete)} onClick={handleLogout}>
             Выйти из аккаунта
           </Button>
-          <Button className={s.button} type='button' onClick={handleClickCreateTest}>
-            Создать тест
-          </Button>
+          {user.is_admin && (
+            <Button className={s.button} type='button' onClick={handleClickCreateTest}>
+              Создать тест
+            </Button>
+          )}
         </div>
       </Container>
     </div>

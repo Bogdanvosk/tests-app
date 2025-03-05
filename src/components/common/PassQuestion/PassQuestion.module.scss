@@ -16,6 +16,11 @@
   justify-content: flex-end;
   gap: 1rem;
   margin-top: 1rem;
+
+  @media (max-width: $xs) {
+    flex-direction: column;
+    align-items: normal;
+  }
 }
 
 .next {
@@ -24,6 +29,10 @@
 
 .finish {
   @include navbar-button-delete;
+}
+
+.button {
+  padding: 1rem;
 }
 
 .input {

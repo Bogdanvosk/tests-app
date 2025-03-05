@@ -10,6 +10,11 @@
   height: 35px;
   border-radius: 50%;
   background-color: darken($color-linen, 5%);
+
+  @include mobile {
+    width: 30px;
+    height: 30px;
+  }
 }
 
 .correct {
