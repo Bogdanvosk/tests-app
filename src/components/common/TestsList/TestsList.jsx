@@ -15,9 +15,9 @@ const TestsList = ({ items }) => {
   const { showModal } = useModalContext();
   const [acceptedAction, setAcceptedAction] = useState(null);
 
-  const [user, setUser] = useLocalStorage('user');
-  const [testId, setTestId] = useLocalStorage('selected-test');
-  const [progressData, setProgressData] = useLocalStorage('progress');
+  const { value: user } = useLocalStorage('user');
+  const { setValue: setTestId } = useLocalStorage('selected-test');
+  const { setValue: setProgressData } = useLocalStorage('progress');
   const router = useRouter();
   const dispatch = useDispatch();
 
@@ -60,15 +60,17 @@ const TestsList = ({ items }) => {
       <ul className={s.list}>
         {items &&
           items.map(test => (
-            <li key={test.id} className={s.item} onClick={() => acceptPassTest(test.id)}>
-              <div className={s.title}>{test.title}</div>
-              {user.is_admin && (
-                <Button
-                  className={s.edit}
-                  iconName='edit'
-                  onClick={() => handleEditTest(test.id)}
-                ></Button>
-              )}
+            <li id='test' key={test.id} className={s.item}>
+              <Button className={s.itemButton} onClick={() => acceptPassTest(test.id)}>
+                <div className={s.title}>{test.title}</div>
+                {user.is_admin && (
+                  <Button
+                    className={s.edit}
+                    iconName='edit'
+                    onClick={() => handleEditTest(test.id)}
+                  ></Button>
+                )}
+              </Button>
             </li>
           ))}
       </ul>

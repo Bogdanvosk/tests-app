@@ -12,8 +12,11 @@ import Container from '../Container/Container';
 import s from './TestsNavbar.module.scss';
 
 const TestsNavbar = () => {
-  const [user, setUser] = useLocalStorage('user');
-  const [testId, setTestId] = useLocalStorage('selected-test');
+  const { value: user, setValue: setUser } = useLocalStorage('user');
+  const { setValue: setTestId } = useLocalStorage('selected-test');
+
+  console.log(user);
+  
 
   const dispatch = useDispatch();
   const router = useRouter();

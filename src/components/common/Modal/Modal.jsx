@@ -13,8 +13,9 @@ const Modal = ({ children, className = '' }) => {
   const modalRef = useRef(null);
 
   const onCloseModal = e => {
-    if (e.target.tagName === 'svg') return;
-    if (e.target.tagName === 'LI') return;
+    const id = e.target.id;
+
+    if (id === 'delete' || id === 'test') return;
 
     hideModal();
   };

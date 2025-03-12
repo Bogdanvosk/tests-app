@@ -18,7 +18,7 @@ import s from './PassTest.module.scss';
 const PassTest = () => {
   const [questions, setQuestions] = useState([]);
   const [activeQuestion, setActiveQuestion] = useState(null);
-  const [progressData, setProgressData] = useLocalStorage('progress');
+  const { value: progressData, setValue: setProgressData } = useLocalStorage('progress');
 
   const params = useParams();
   const router = useRouter();
@@ -117,7 +117,6 @@ const PassTest = () => {
           onSelectAnswer={handlePassQuestion}
           onSetNextQuestion={handleSetNextQuestion}
         />
-        {}
       </Container>
     </div>
   );

@@ -12,11 +12,15 @@
   gap: 0.63rem;
   width: 50%;
   padding: 1.25rem;
+  color: $color-white;
   background-color: $color-gray;
   border: 5px solid transparent;
   border-radius: 10px;
-  transition: border-color 0.3s ease, background-color 0.3s ease,
+  transition:
+    border-color 0.3s ease,
+    background-color 0.3s ease,
     transform 0.3s ease;
+  box-shadow: none;
   cursor: pointer;
 
   @include hover {

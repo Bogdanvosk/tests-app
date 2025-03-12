@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import Icon from '../Icon/Icon';
 import FormInput from '../FormInput/FormInput';
 import SortableItem from '../SortableItem/SortableItem';
+import Button from '../Button/Button';
 
 import s from './Answer.module.scss';
 
@@ -31,9 +32,9 @@ const Answer = ({ field, fieldIndex = 0, acceptDeleteAnswer, handleChangeCorrect
           onClick={onChangeCorrectAnswer}
         />
 
-        <div onClick={onDeleteAnswer}>
+        <Button className={s.deleteButton} onClick={onDeleteAnswer}>
           <Icon id='delete' name='delete' className={s.delete} />
-        </div>
+        </Button>
       </div>
     </SortableItem>
   );

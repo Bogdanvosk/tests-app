@@ -15,6 +15,9 @@
 }
 
 .delete {
+  background-color: transparent;
+  box-shadow: none;
+  
   @include delete-icon(5px, 24px);
 
   @include mobile {

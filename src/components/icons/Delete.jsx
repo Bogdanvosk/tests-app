@@ -4,7 +4,7 @@ const Delete = ({ className = '' }) => {
   return (
     <svg
       version='1.1'
-      id='Capa_1'
+      id='delete'
       width='800px'
       height='800px'
       viewBox='0 0 482.428 482.429'

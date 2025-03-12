@@ -17,7 +17,7 @@ import AuthLabel from '../AuthLabel/AuthLabel';
 import s from './AuthForm.module.scss';
 
 const AuthForm = ({ mode, className = '' }) => {
-  const [user, setUser] = useLocalStorage('user');
+  const { setValue: setUser } = useLocalStorage('user');
   const [isAdmin, setIsAdmin] = useState(false);
   const serverError = useSelector(selectError);
   const dispatch = useDispatch();

@@ -4,9 +4,11 @@
   gap: 1rem;
   width: 100%;
   padding: 1rem;
+  background-color: transparent;
   border: 3px solid $color-light-gray;
   border-radius: 8px;
   transition: border-color 0.3s ease;
+  box-shadow: none;
   cursor: pointer;
 
   @include hover {

@@ -2,6 +2,8 @@ import cn from 'classnames';
 import { useContext } from 'react';
 import PropTypes from 'prop-types';
 
+import Button from '../Button/Button';
+
 import { QuestionMetaContext } from '../PassQuestion/PassQuestion';
 
 import s from './RadioOption.module.scss';
@@ -18,7 +20,7 @@ const RadioOption = ({ value, title, selected, onChange, incorrect, correct }) =
   const isItemSelected = selected.includes(value) || correct;
 
   return (
-    <div
+    <Button
       className={cn(s.item, {
         [s.selected]: isItemSelected,
         [s.incorrect]: selected && incorrect
@@ -36,7 +38,7 @@ const RadioOption = ({ value, title, selected, onChange, incorrect, correct }) =
           })}
         ></span>
       </label>
-    </div>
+    </Button>
   );
 };
 

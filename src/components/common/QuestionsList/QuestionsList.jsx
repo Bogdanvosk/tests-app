@@ -2,6 +2,7 @@ import PropTypes from 'prop-types';
 
 import Question from '../Question/Question';
 import Icon from '../Icon/Icon';
+import Button from '../Button/Button';
 
 import s from './QuestionsList.module.scss';
 
@@ -12,9 +13,9 @@ const QuestionsList = ({ questions = [], onDeleteQuestion }) => {
         return (
           <li className={s.question} key={question.id}>
             <Question question={question} />
-            <div onClick={() => onDeleteQuestion(question.id)}>
+            <Button className={s.deleteButton} onClick={() => onDeleteQuestion(question.id)}>
               <Icon name='delete' className={s.delete} />
-            </div>
+            </Button>
           </li>
         );
       })}

@@ -18,10 +18,6 @@ const Accept = ({
 }) => {
   const { hideModal } = useModalContext();
 
-  const onCloseModal = () => {
-    hideModal();
-  };
-
   const onAccept = () => {
     handleIsAccepted({ actionValue, id });
     hideModal();
@@ -37,7 +33,7 @@ const Accept = ({
           {success || 'Да'}
         </Button>
         {fail && (
-          <Button className={cn(s.button, s.cancel)} onClick={onCloseModal}>
+          <Button className={cn(s.button, s.cancel)} onClick={hideModal}>
             {fail}
           </Button>
         )}

@@ -1,14 +1,14 @@
 import { useRouter } from 'next/router';
 import { useEffect } from 'react';
+import { useDispatch } from 'react-redux';
 
 import useLocalStorage from '@/hooks/useLocalStorage';
-
-import Test from '@/components/pages/Test/Test';
-import { useDispatch } from 'react-redux';
 import { clearCurrentUser } from '@/store/features/auth';
 
+import Test from '@/components/pages/Test/Test';
+
 const Page = () => {
-  const [user, setUser] = useLocalStorage('user');
+  const { value: user } = useLocalStorage('user');
   const router = useRouter();
   const dispatch = useDispatch();
 

@@ -17,7 +17,7 @@ const RadioGroup = ({ options, selected, onChange, isQuestionPassed }) => {
 
   const setIncorrect = id => {
     const correctAnswersIds = options.filter(a => a.is_right).map(a => a.id);
-    if (questionType === 'single') {
+    if (questionType === 'single' && selected.length && correctAnswersIds.length) {
       if (selected[0] === correctAnswersIds[0]) return false;
       if (selected[0] !== correctAnswersIds[0] && selected[0] === id) return true;
     }

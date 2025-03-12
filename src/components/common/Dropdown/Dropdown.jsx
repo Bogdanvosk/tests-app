@@ -1,8 +1,9 @@
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useMemo, useState } from 'react';
 import PropTypes from 'prop-types';
 import cn from 'classnames';
 
 import { QuestionTypeContext, SelectQuestionContext } from '@/components/pages/Test/Test';
+import Button from '../Button/Button';
 
 import s from './Dropdown.module.scss';
 
@@ -19,33 +20,36 @@ const Dropdown = ({ options, onSelectOption }) => {
 
   const toggleDropdown = () => setIsOpen(!isOpen);
 
-  const handleItemClick = ({ target }) => {
-    const id = target.id;
+  const handleItemClick = value => {
+    const newQuestionType = options.find(item => item.value === value).value;
 
-    const newQuestionType = options.find(item => item.value === id).value;
-
-    setSelectedItem(id);
+    setSelectedItem(value);
     setIsOpen(false);
     onSelectOption(newQuestionType);
   };
 
+  const option = useMemo(
+    () => options.find(item => item.value === selectedItem).text,
+    [options, selectedItem]
+  );
+
   return (
     <div className={cn(s.dropdown, { [s.selected]: selectedQuestion })}>
-      <div className={s.header} onClick={toggleDropdown}>
-        {options.find(item => item.value === selectedItem).text}
-      </div>
+      <Button className={s.header} onClick={toggleDropdown}>
+        {option}
+      </Button>
       <div className={cn(s.body, { [s.open]: isOpen })}>
         {options.map(item => (
-          <div
+          <Button
             id={item.value}
             key={item.id}
             className={cn(s.item, {
               [s.selected]: item.value === selectedItem
             })}
-            onClick={handleItemClick}
+            onClick={() => handleItemClick(item.value)}
           >
             {item.text}
-          </div>
+          </Button>
         ))}
       </div>
     </div>

@@ -1,11 +1,11 @@
 import { useRouter } from 'next/router';
 import { useEffect } from 'react';
 
-import useLocalStorage from 'hooks/useLocalStorage';
+import useLocalStorage from '@/hooks/useLocalStorage';
 
 export default function Home() {
   const router = useRouter();
-  const [user, setUser] = useLocalStorage('user');
+  const { value: user } = useLocalStorage('user');
 
   useEffect(() => {
     user !== null ? router.push('/test-list') : router.push('/sign-in');

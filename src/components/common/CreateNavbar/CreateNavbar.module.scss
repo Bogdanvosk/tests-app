@@ -40,18 +40,21 @@
   }
 }
 
-.deleteIcon {
-  @include delete-icon(16px, 16px);
-
-  @media (max-width: $xs) {
-    display: none;
-  }
-}
-
 .button {
   @include navbar-button;
 }
 
 .delete {
   @include navbar-button-delete;
+}
+
+.deleteIcon {
+  background-color: transparent;
+  box-shadow: none;
+
+  @include delete-icon(16px, 16px);
+
+  @media (max-width: $xs) {
+    display: none;
+  }
 }

@@ -7,7 +7,7 @@ import { clearCurrentUser } from '@/store/features/auth';
 import Tests from '@/components/pages/Tests/Tests';
 
 const Page = () => {
-  const [user, setUser] = useLocalStorage('user');
+  const { value: user } = useLocalStorage('user');
   const dispatch = useDispatch();
 
   useEffect(() => {

@@ -22,8 +22,8 @@ import Input from '../Input/Input';
 import s from './CreateNavbar.module.scss';
 
 const CreateNavbar = ({ currentTest }) => {
-  const [user, setUser] = useLocalStorage('user');
-  const [currTestId, setCurrTestId] = useLocalStorage('selected-test');
+  const { setValue: setUser } = useLocalStorage('user');
+  const { setValue: setCurrTestId } = useLocalStorage('selected-test');
   const [title, setTitle] = useState('');
 
   const dispatch = useDispatch();
@@ -94,7 +94,7 @@ const CreateNavbar = ({ currentTest }) => {
               onChange={handleChangeTitle}
               placeholder='Введите название теста'
             />
-            <span className={s.deleteIcon} onClick={handleClearTitle}></span>
+            <Button className={s.deleteIcon} onClick={handleClearTitle} />
           </label>
           {!currentTest && (
             <Button

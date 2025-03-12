@@ -19,7 +19,7 @@ export const QuestionTypeContext = createContext(null);
 
 const Test = () => {
   const dispatch = useDispatch();
-  const [currTestId, setCurrTestId] = useLocalStorage('selected-test');
+  const { value: currTestId } = useLocalStorage('selected-test');
 
   const currentTest = useSelector(selectCurrentTest);
   const currentQuestions = useSelector(selectCurrentQuestions);

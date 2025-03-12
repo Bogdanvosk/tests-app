@@ -3,6 +3,7 @@ import cn from 'classnames';
 
 import Typography from '../Typography/Typography';
 import Icon from '../Icon/Icon';
+import Button from '../Button/Button';
 
 import s from './Tabs.module.scss';
 
@@ -14,7 +15,7 @@ const Tabs = ({ activeTab, tabs, onSetFormMode }) => {
   return (
     <div className={s.tabs}>
       {tabs.map((tab, index) => (
-        <div
+        <Button
           key={`tab-${tab.title}_${index}`}
           className={cn(s.tab, { [s.active]: activeTab === tab.mode })}
           onClick={() => handleClickTab(tab.mode)}
@@ -23,7 +24,7 @@ const Tabs = ({ activeTab, tabs, onSetFormMode }) => {
           <Typography tag='p' className={s.title}>
             {tab.title}
           </Typography>
-        </div>
+        </Button>
       ))}
     </div>
   );
