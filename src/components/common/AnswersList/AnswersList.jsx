@@ -36,7 +36,9 @@ const AnswersList = ({ fields, questionType, questionStep, setAcceptedAction }) 
     showModal('accept', {
       handleIsAccepted,
       actionValue: 'delete-answer',
-      id: index
+      id: index,
+      title: 'Удалить ответ?',
+      fail: 'Отмена'
     });
   };
 

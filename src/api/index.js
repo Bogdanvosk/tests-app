@@ -26,7 +26,7 @@ export const getUserReq = async () => {
 };
 
 // TEST
-export const getCurrentTestReq = async id => {
+export const getTestById = async id => {
   const { data } = await instance.get(`/tests/${id}`);
 
   return data;

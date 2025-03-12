@@ -5,6 +5,7 @@ import { useContext } from 'react';
 import { isOpenFormContext } from '@/components/common/Questions/Questions';
 
 import { SelectQuestionContext } from '@/components/pages/Test/Test';
+import Button from '../Button/Button';
 
 import s from './Question.module.scss';
 
@@ -13,14 +14,14 @@ const Question = ({ question }) => {
   const { handleSelectQuestion } = useContext(SelectQuestionContext);
 
   return (
-    <div
+    <Button
       onClick={() => handleSelectQuestion(question.id)}
       className={cn(s.question, {
         [s.selected]: isFormOpen && question.id === id
       })}
     >
       {question.title}
-    </div>
+    </Button>
   );
 };
 
@@ -32,6 +33,12 @@ Question.propTypes = {
     title: PropTypes.string,
     question_type: PropTypes.string,
     answer: PropTypes.number,
-    answers: PropTypes.arrayOf(PropTypes.object)
+    answers: PropTypes.arrayOf(
+      PropTypes.shape({
+        id: PropTypes.number,
+        text: PropTypes.string,
+        is_right: PropTypes.bool
+      })
+    )
   })
 };

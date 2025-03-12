@@ -15,6 +15,7 @@ import Icon from '@/components/common/Icon/Icon';
 import Container from '@/components/common/Container/Container';
 import Input from '@/components/common/Input/Input';
 import Pagination from '@/components/common/Pagination/Pagination';
+import Button from '@/components/common/Button/Button';
 
 import s from './Tests.module.scss';
 
@@ -80,10 +81,10 @@ const Tests = () => {
       <TestsNavbar sort={sort} />
       <Container className={s.container}>
         <div className={s.params}>
-          <div className={s.sort} onClick={handleSetSort}>
+          <Button className={s.sort} onClick={handleSetSort}>
             <span>По дате создания</span>{' '}
             <Icon name='arrow' className={cn(s.sortArrow, { [s.up]: sort === 'created_at_asc' })} />
-          </div>
+          </Button>
           <label htmlFor='search' className={s.searchLabel}>
             <Input
               id='search'
@@ -92,7 +93,7 @@ const Tests = () => {
               onChange={handleChangeSearch}
               placeholder='Поиск'
             />
-            <span className={s.deleteIcon} onClick={handleClearSearch}></span>
+            <Button className={s.deleteIcon} onClick={handleClearSearch}></Button>
           </label>
         </div>
         {allTests && <TestsList items={tests.tests} />}

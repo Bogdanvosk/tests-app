@@ -229,7 +229,7 @@ const QuestionForm = ({ onCloseForm }) => {
 
   const handleDeleteAnswer = id => {
     if (handleValidateAnswer(id)) {
-      const index = fields.findIndex((f, idx) => idx === id);
+      const index = fields.findIndex((_, idx) => idx === id);
       remove(id);
       setEditingAnswerId(null);
 
@@ -257,7 +257,7 @@ const QuestionForm = ({ onCloseForm }) => {
 
     const deletedAnswerId = answers[id];
     const answersCount = answers.length;
-    const correctAnswersCount = answers.filter(a => a.is_right === true).length;
+    const correctAnswersCount = answers.filter(a => a.is_right).length;
 
     if (answersCount === 2) {
       toastify('error', 'Нельзя удалить вопрос, количество вариантов ответа должно быть более 2');

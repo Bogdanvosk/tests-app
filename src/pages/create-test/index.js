@@ -1,13 +1,15 @@
+import { useRouter } from 'next/router';
 import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 
 import useLocalStorage from '@/hooks/useLocalStorage';
 import { clearCurrentUser } from '@/store/features/auth';
 
-import Tests from '@/components/pages/Tests/Tests';
+import Test from '@/components/pages/Test/Test';
 
 const Page = () => {
   const { value: user } = useLocalStorage('user');
+  const router = useRouter();
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -15,9 +17,9 @@ const Page = () => {
   }, []);
 
   useEffect(() => {
-    if (user === null) router.push('/sign-in');
+    if (!user.is_admin) router.push('/test-list');
   }, [user]);
-  return <Tests />;
+  return <Test />;
 };
 
 export default Page;

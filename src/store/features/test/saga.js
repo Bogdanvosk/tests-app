@@ -14,8 +14,8 @@ import {
   deleteTestSuccess,
   getAllTestsError,
   getAllTestsSuccess,
-  getCurrentTestError,
-  getCurrentTestSuccess,
+  getTestByIdError,
+  getTestByIdSuccess,
   updateAnswerError,
   updateAnswerSuccess,
   updatePositionError,
@@ -33,7 +33,7 @@ import {
   deleteQuestionReq,
   deleteTestReq,
   getAllTestsReq,
-  getCurrentTestReq,
+  getTestById,
   updateAnswerReq,
   updatePositionReq,
   updateQuestionReq,
@@ -41,7 +41,7 @@ import {
 } from '@/api';
 import {
   CREATE_TEST,
-  GET_CURRENT_TEST,
+  GET_TEST_BY_ID,
   ADD_QUESTION,
   DELETE_QUESTION,
   UPDATE_TEST,
@@ -56,7 +56,7 @@ import {
 
 export function* testSagaWatcher() {
   yield takeLatest(GET_ALL_TESTS, getAllTestsWorker);
-  yield takeLatest(GET_CURRENT_TEST, getCurrentTestWorker);
+  yield takeLatest(GET_TEST_BY_ID, getTestByIdWorker);
   yield takeLatest(CREATE_TEST, createTestWorker);
   yield takeLatest(UPDATE_TEST, updateTestWorker);
   yield takeLatest(DELETE_TEST, deleteTestWorker);
@@ -80,12 +80,12 @@ function* getAllTestsWorker({ payload }) {
   }
 }
 
-function* getCurrentTestWorker({ payload }) {
+function* getTestByIdWorker({ payload }) {
   try {
-    const data = yield call(getCurrentTestReq, payload);
-    yield put(getCurrentTestSuccess(data));
+    const data = yield call(getTestById, payload);
+    yield put(getTestByIdSuccess(data));
   } catch (error) {
-    yield put(getCurrentTestError(error));
+    yield put(getTestByIdError(error));
   }
 }
 

@@ -1,12 +1,12 @@
 import { useRouter } from 'next/router';
 import { useEffect } from 'react';
-import useLocalStorage from 'hooks/useLocalStorage';
+import useLocalStorage from '@/hooks/useLocalStorage';
 
 import Auth from '@/components/pages/Auth/Auth';
 
 const Page = () => {
-  const [mode, setMode] = useLocalStorage('mode');
-  const [user, setUser] = useLocalStorage('user');
+  const { setValue: setMode } = useLocalStorage('mode');
+  const { value: user } = useLocalStorage('user');
   const router = useRouter();
   const { query } = router;
 
@@ -16,10 +16,7 @@ const Page = () => {
     };
 
     query.auth && setMode(getModeFromUrl());
-    if (user !== null) {
-      if (user.is_admin) router.push('/test');
-      else router.push('/test-list');
-    }
+    user !== null && router.push('/test-list');
   }, [user]);
 
   if (query.auth && (query.auth[0] === 'sign-in' || query.auth[0] === 'sign-up')) {

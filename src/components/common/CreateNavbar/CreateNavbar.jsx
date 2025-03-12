@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import cn from 'classnames';
 
 import {
-  clearCurrentTest,
+  clearCurrentTestAction,
   createTestAction,
   deleteTestAction,
   updateTestAction
@@ -22,8 +22,8 @@ import Input from '../Input/Input';
 import s from './CreateNavbar.module.scss';
 
 const CreateNavbar = ({ currentTest }) => {
-  const [user, setUser] = useLocalStorage('user');
-  const [currTestId, setCurrTestId] = useLocalStorage('test');
+  const { setValue: setUser } = useLocalStorage('user');
+  const { setValue: setCurrTestId } = useLocalStorage('selected-test');
   const [title, setTitle] = useState('');
 
   const dispatch = useDispatch();
@@ -35,10 +35,6 @@ const CreateNavbar = ({ currentTest }) => {
       setCurrTestId(currentTest.id);
     }
   }, [currentTest]);
-
-  useEffect(() => {
-    if (user === null) router.push('/sign-in');
-  }, [user]);
 
   const debouncedValue = useDebounce(title, 500).trim();
   useEffect(() => {
@@ -60,7 +56,7 @@ const CreateNavbar = ({ currentTest }) => {
 
   const handleDeleteTest = () => {
     dispatch(deleteTestAction(currentTest.id));
-    dispatch(clearCurrentTest());
+    dispatch(clearCurrentTestAction());
     setTitle('');
     toastify('success', 'Тест успешно удален');
   };
@@ -68,6 +64,7 @@ const CreateNavbar = ({ currentTest }) => {
   const handleLogout = () => {
     setUser(null);
     dispatch(logoutAction());
+    router.push('/sign-in');
   };
 
   const handleClickAllTests = () => {
@@ -97,7 +94,7 @@ const CreateNavbar = ({ currentTest }) => {
               onChange={handleChangeTitle}
               placeholder='Введите название теста'
             />
-            <span className={s.deleteIcon} onClick={handleClearTitle}></span>
+            <Button className={s.deleteIcon} onClick={handleClearTitle} />
           </label>
           {!currentTest && (
             <Button

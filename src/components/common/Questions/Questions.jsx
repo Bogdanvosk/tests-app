@@ -62,7 +62,9 @@ const Questions = ({
     showModal('accept', {
       handleIsAccepted,
       actionValue: 'delete-question',
-      id
+      id,
+      title: 'Удалить вопрос?',
+      fail: 'Отмена'
     });
   };
 

@@ -1,9 +1,9 @@
 import cn from 'classnames';
 import PropTypes from 'prop-types';
 
-import s from './Label.module.scss';
+import s from './AuthLabel.module.scss';
 
-const Label = ({ children, reversed = false, title = '', className = '' }) => {
+const AuthLabel = ({ children, reversed = false, title = '', className = '' }) => {
   return (
     <label className={cn(s.label, className)}>
       {reversed ? (
@@ -21,11 +21,11 @@ const Label = ({ children, reversed = false, title = '', className = '' }) => {
   );
 };
 
-export default Label;
+export default AuthLabel;
 
-Label.propTypes = {
+AuthLabel.propTypes = {
   children: PropTypes.node,
-  reversed: PropTypes.boolean,
+  reversed: PropTypes.bool,
   title: PropTypes.string,
   className: PropTypes.string
 };

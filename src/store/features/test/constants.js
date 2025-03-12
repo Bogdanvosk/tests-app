@@ -6,7 +6,7 @@ import {
   deleteQuestionAction,
   deleteTestAction,
   getAllTestsAction,
-  getCurrentTestAction,
+  getTestByIdAction,
   updateAnswerAction,
   updatePositionAction,
   updateQuestionAction,
@@ -14,7 +14,7 @@ import {
 } from '.';
 
 export const GET_ALL_TESTS = getAllTestsAction.type;
-export const GET_CURRENT_TEST = getCurrentTestAction.type;
+export const GET_TEST_BY_ID = getTestByIdAction.type;
 export const CREATE_TEST = createTestAction.type;
 export const UPDATE_TEST = updateTestAction.type;
 export const DELETE_TEST = deleteTestAction.type;

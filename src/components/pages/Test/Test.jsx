@@ -1,8 +1,7 @@
 import { createContext, useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useRouter } from 'next/router';
 
-import { getCurrentTestAction } from '@/store/features/test';
+import { getTestByIdAction } from '@/store/features/test';
 import { selectCurrentQuestions, selectCurrentTest } from '@/store/features/test/selectors';
 import { selectIsLoading } from '@/store/features/auth/selectors';
 import useLocalStorage from '@/hooks/useLocalStorage';
@@ -19,10 +18,8 @@ export const SelectQuestionContext = createContext(null);
 export const QuestionTypeContext = createContext(null);
 
 const Test = () => {
-  const router = useRouter();
   const dispatch = useDispatch();
-  const [user, setUser] = useLocalStorage('user');
-  const [currTestId, setCurrTestId] = useLocalStorage('test');
+  const { value: currTestId } = useLocalStorage('selected-test');
 
   const currentTest = useSelector(selectCurrentTest);
   const currentQuestions = useSelector(selectCurrentQuestions);
@@ -33,16 +30,8 @@ const Test = () => {
   const [isQuestionFormOpen, setIsQuestionFormOpen] = useState(false);
 
   useEffect(() => {
-    currTestId && dispatch(getCurrentTestAction(currTestId));
+    currTestId && dispatch(getTestByIdAction(currTestId));
   }, []);
-
-  useEffect(() => {
-    if (user === null) router.push('/sign-in');
-  }, [user]);
-
-  useEffect(() => {
-    currentTest ? setCurrTestId(currentTest?.id) : setCurrTestId(null);
-  }, [currentTest]);
 
   useEffect(() => {
     !isQuestionFormOpen && setQuestionType(questionTypes[0].value);

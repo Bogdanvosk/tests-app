@@ -12,7 +12,7 @@ import AuthForm from '../../common/AuthForm/AuthForm';
 import s from './Auth.module.scss';
 
 const Auth = () => {
-  const [mode, setMode] = useLocalStorage('mode');
+  const { value: mode, setValue: setMode } = useLocalStorage('mode');
   const router = useRouter();
 
   const handleSetFormMode = modeValue => {

@@ -8,12 +8,15 @@ import { useModalContext } from '../ModalProvider/ModalProvider';
 
 import s from './Accept.module.scss';
 
-const Accept = ({ handleIsAccepted, actionValue, id }) => {
+const Accept = ({
+  handleIsAccepted,
+  actionValue,
+  id = null,
+  title = 'Вы уверены?',
+  success,
+  fail
+}) => {
   const { hideModal } = useModalContext();
-
-  const onCloseModal = () => {
-    hideModal();
-  };
 
   const onAccept = () => {
     handleIsAccepted({ actionValue, id });
@@ -23,15 +26,17 @@ const Accept = ({ handleIsAccepted, actionValue, id }) => {
   return (
     <div className={s.accept}>
       <Typography tag='p' className={s.title}>
-        Вы уверены?
+        {title}
       </Typography>
       <div className={s.buttons}>
         <Button className={s.button} onClick={onAccept}>
-          Да
+          {success || 'Да'}
         </Button>
-        <Button className={cn(s.button, s.cancel)} onClick={onCloseModal}>
-          Отмена
-        </Button>
+        {fail && (
+          <Button className={cn(s.button, s.cancel)} onClick={hideModal}>
+            {fail}
+          </Button>
+        )}
       </div>
     </div>
   );
@@ -42,5 +47,8 @@ export default Accept;
 Accept.propTypes = {
   handleIsAccepted: PropTypes.func,
   actionValue: PropTypes.string,
-  id: PropTypes.number
+  id: PropTypes.number,
+  title: PropTypes.string,
+  success: PropTypes.string,
+  fail: PropTypes.string
 };

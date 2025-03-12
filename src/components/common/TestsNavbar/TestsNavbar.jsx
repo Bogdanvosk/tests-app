@@ -4,14 +4,19 @@ import { useDispatch } from 'react-redux';
 import cn from 'classnames';
 
 import useLocalStorage from '@/hooks/useLocalStorage';
+import { logoutAction } from '@/store/features/auth';
 
 import Button from '../Button/Button';
 import Container from '../Container/Container';
 
 import s from './TestsNavbar.module.scss';
 
-const TestsNavbar = ({ sort }) => {
-  const [user, setUser] = useLocalStorage('user');
+const TestsNavbar = () => {
+  const { value: user, setValue: setUser } = useLocalStorage('user');
+  const { setValue: setTestId } = useLocalStorage('selected-test');
+
+  console.log(user);
+  
 
   const dispatch = useDispatch();
   const router = useRouter();
@@ -23,10 +28,12 @@ const TestsNavbar = ({ sort }) => {
   const handleLogout = () => {
     setUser(null);
     dispatch(logoutAction());
+    router.push('/sign-in');
   };
 
   const handleClickCreateTest = () => {
-    router.push('/test');
+    setTestId(null);
+    router.push('/create-test');
   };
 
   return (
@@ -36,9 +43,11 @@ const TestsNavbar = ({ sort }) => {
           <Button className={cn(s.button, s.delete)} onClick={handleLogout}>
             Выйти из аккаунта
           </Button>
-          <Button className={s.button} type='button' onClick={handleClickCreateTest}>
-            Создать тест
-          </Button>
+          {user !== null && user.is_admin && (
+            <Button className={s.button} type='button' onClick={handleClickCreateTest}>
+              Создать тест
+            </Button>
+          )}
         </div>
       </Container>
     </div>

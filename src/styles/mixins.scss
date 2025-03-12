@@ -120,6 +120,7 @@
 
 @mixin navbar-button-delete {
   padding: 1rem 2rem;
+  font-weight: 700;
   background-color: $color-red;
 
   @include hover {
