@@ -15,9 +15,6 @@ const TestsNavbar = () => {
   const { value: user, setValue: setUser } = useLocalStorage('user');
   const { setValue: setTestId } = useLocalStorage('selected-test');
 
-  console.log(user);
-  
-
   const dispatch = useDispatch();
   const router = useRouter();
 
